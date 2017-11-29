@@ -150,6 +150,10 @@
       
       <p class="shortcomment cmt">Main package for Parquet Avro APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for Parquet Avro APIs. Import all.</p><pre><span class="kw">import</span> com.spotify.scio.parquet.avro._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.parquet">parquet</a></dd></dl></div>
     </li><li class="current-entities indented5">
+                        <a class="object" href="package$$ParquetAvroFile$.html" title=""></a>
+                        <a class="class" href="package$$ParquetAvroFile.html" title=""></a>
+                        <a href="package$$ParquetAvroFile.html" title="">ParquetAvroFile</a>
+                      </li><li class="current-entities indented5">
                         <span class="separator"></span>
                         <a class="class" href="package$$ParquetAvroSCollection.html" title="Enhanced version of SCollection with Parquet Avro methods."></a>
                         <a href="package$$ParquetAvroSCollection.html" title="Enhanced version of SCollection with Parquet Avro methods.">ParquetAvroSCollection</a>
@@ -362,9 +366,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.spotify.scio.parquet.avro.ParquetAvroScioContext#parquetAvroFile" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="input">
-      <a id="parquetAvroFile[T&lt;:org.apache.avro.specific.SpecificRecordBase](path:String,projection:org.apache.avro.Schema,predicate:org.apache.parquet.filter2.predicate.FilterPredicate)(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parquetAvroFile[T&lt;:SpecificRecordBase](String,Schema,FilterPredicate)(ClassTag[T]):SCollection[T]"></a>
+      <a id="parquetAvroFile[T&lt;:org.apache.avro.specific.SpecificRecordBase](path:String,projection:org.apache.avro.Schema,predicate:org.apache.parquet.filter2.predicate.FilterPredicate)(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.parquet.avro.package.ParquetAvroFile[T]"></a><a id="parquetAvroFile[T&lt;:SpecificRecordBase](String,Schema,FilterPredicate)(ClassTag[T]):ParquetAvroFile[T]"></a>
       <span class="permalink">
-      <a href="../../../../../com/spotify/scio/parquet/avro/package$$ParquetAvroScioContext.html#parquetAvroFile[T&lt;:org.apache.avro.specific.SpecificRecordBase](path:String,projection:org.apache.avro.Schema,predicate:org.apache.parquet.filter2.predicate.FilterPredicate)(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../../../com/spotify/scio/parquet/avro/package$$ParquetAvroScioContext.html#parquetAvroFile[T&lt;:org.apache.avro.specific.SpecificRecordBase](path:String,projection:org.apache.avro.Schema,predicate:org.apache.parquet.filter2.predicate.FilterPredicate)(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.parquet.avro.package.ParquetAvroFile[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -373,10 +377,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">parquetAvroFile</span><span class="tparams">[<span name="T">T &lt;: <a href="https://avro.apache.org/docs/current/api/java/org/apache/avro/specific/SpecificRecordBase.html#org.apache.avro.specific.SpecificRecordBase" class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</a></span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="projection">projection: <span class="extype" name="org.apache.avro.Schema">Schema</span> = <span class="symbol">null</span></span>, <span name="predicate">predicate: <span class="extype" name="org.apache.parquet.filter2.predicate.FilterPredicate">FilterPredicate</span> = <span class="symbol">null</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.4/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.parquet.avro.ParquetAvroScioContext.parquetAvroFile.T">T</span>]</span>)</span><span class="result">: <a href="../../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.parquet.avro.ParquetAvroScioContext.parquetAvroFile.T">T</span>]</span>
+        <span class="name">parquetAvroFile</span><span class="tparams">[<span name="T">T &lt;: <a href="https://avro.apache.org/docs/current/api/java/org/apache/avro/specific/SpecificRecordBase.html#org.apache.avro.specific.SpecificRecordBase" class="extype" name="org.apache.avro.specific.SpecificRecordBase">SpecificRecordBase</a></span>]</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="projection">projection: <span class="extype" name="org.apache.avro.Schema">Schema</span> = <span class="symbol">null</span></span>, <span name="predicate">predicate: <span class="extype" name="org.apache.parquet.filter2.predicate.FilterPredicate">FilterPredicate</span> = <span class="symbol">null</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.4/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.parquet.avro.ParquetAvroScioContext.parquetAvroFile.T">T</span>]</span>)</span><span class="result">: <a href="package$$ParquetAvroFile.html" class="extype" name="com.spotify.scio.parquet.avro.ParquetAvroFile">ParquetAvroFile</a>[<span class="extype" name="com.spotify.scio.parquet.avro.ParquetAvroScioContext.parquetAvroFile.T">T</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Get an SCollection for a Parquet file as Avro records.</p><div class="fullcomment"><div class="comment cmt"><p>Get an SCollection for a Parquet file as Avro records.</p><p>Note that due to limitations of the underlying <code>HadoopInputFormatIO</code>,
+      <p class="shortcomment cmt">Get an SCollection for a Parquet file as Avro records.</p><div class="fullcomment"><div class="comment cmt"><p>Get an SCollection for a Parquet file as Avro records. Since Avro records produced by
+Parquet column projection may be incomplete and may fail serialization, you must
+<a href="package$$ParquetAvroFile.html#map[U](f:T=&gt;U)(implicitevidence$3:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" class="extmbr" name="com.spotify.scio.parquet.avro.ParquetAvroFile#map">map</a> the result to extract projected fields from the Avro records.</p><p>Note that due to limitations of the underlying <code>HadoopInputFormatIO</code>,
 Avro <a href="https://avro.apache.org/docs/current/api/java/org/apache/avro/generic/GenericRecord.html" class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</a> and dynamic work rebalancing
 are not supported. Without the latter, pipelines may not autoscale up or down during the
 initial read and subsequent fused transforms.
