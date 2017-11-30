@@ -266,7 +266,7 @@ hr {
 </style>
           
           <section id="header">
-            <div class="comment"><h1>DoFn Example</h1></div>
+            <div class="comment"><h1>Mix Beam DoFn and Scio</h1></div>
             <div class="code"></div>
           </section>
           
@@ -295,7 +295,7 @@ hr {
               </section>
             
               <section class="">
-                <div class="comment "><p>Apply a native Java Beam SDK <code>Transform[PCollection[InputT], PCollection[OutputT]]</code>, in
+                <div class="comment "><p>Apply a native Java Beam SDK <code>PTransform[PCollection[InputT], PCollection[OutputT]]</code>, in
 this case a <code>ParDo</code> of <code>DoFn[InputT, OutputT]</code></p></p></div>
                 <div class="code ">      .<span class="identifier"><a target="doc" href="https://spotify.github.io/scio/api/com/spotify/scio/values/SCollection.html#applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_>:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$4:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" data-tooltip="<span>com.spotify.scio.values.SCollection.applyTransform[U](transform: org.apache.beam.sdk.transforms.PTransform[_ >: org.apache.beam.sdk.values.PCollection[T], org.apache.beam.sdk.values.PCollection[U]])(implicit evidence$4: scala.reflect.ClassTag[U]): com.spotify.scio.values.SCollection[U]</span>">applyTransform</a></span>(<span class="identifier">ParDo</span>.<span class="identifier">of</span>(<span class="keyword">new</span> <span class="identifier">DoFn</span>[<span class="identifier">String</span>, <span class="identifier">Int</span>]{&nbsp;</div>
               </section>
