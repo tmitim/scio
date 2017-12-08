@@ -117,10 +117,10 @@
       </span>
       
       <p class="shortcomment cmt">Main package for public APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for public APIs. Import all.</p><pre><span class="kw">import</span> com.spotify.scio._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../../index.html" class="extype" name="com.spotify">spotify</a></dd></dl></div>
-    </li><li name="com.spotify.scio.bigquery" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="bigquery"></a><a id="bigquery:bigquery"></a>
+    </li><li name="com.spotify.scio.io" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="io"></a><a id="io:io"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/index.html#bigquery" title="Permalink">
+      <a href="../../../com/spotify/scio/index.html#io" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -129,24 +129,14 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="Main package for BigQuery APIs." href="../index.html"><span class="name">bigquery</span></a>
+        <a title="" href="../index.html"><span class="name">io</span></a>
       </span>
       
-      <p class="shortcomment cmt">Main package for BigQuery APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for BigQuery APIs. Import all.</p><pre><span class="kw">import</span> com.spotify.scio.bigquery._</pre><p>There are two BigQuery dialects,
-<a href="https://cloud.google.com/bigquery/docs/reference/legacy-sql" target="_blank">legacy</a> and
-<a href="https://cloud.google.com/bigquery/docs/reference/standard-sql/" target="_blank">standard</a>.
-APIs that take a BigQuery query string as argument, e.g.
-<a href="../BigQueryClient.html#getQueryRows(sqlQuery:String,flattenResults:Boolean):Iterator[com.spotify.scio.bigquery.TableRow]" class="extmbr" name="com.spotify.scio.bigquery.BigQueryClient#getQueryRows">BigQueryClient.getQueryRows</a>,
-<a href="../BigQueryClient.html#getQuerySchema(sqlQuery:String):com.google.api.services.bigquery.model.TableSchema" class="extmbr" name="com.spotify.scio.bigquery.BigQueryClient#getQuerySchema">BigQueryClient.getQuerySchema</a>,
-<a href="../BigQueryClient.html#getTypedRows[T&lt;:com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation](newSource:String)(implicitevidence$1:reflect.runtime.universe.TypeTag[T]):Iterator[T]" class="extmbr" name="com.spotify.scio.bigquery.BigQueryClient#getTypedRows">BigQueryClient.getTypedRows</a> and
-<a href="../types/BigQueryType$$fromQuery.html" class="extype" name="com.spotify.scio.bigquery.types.BigQueryType.fromQuery">BigQueryType.fromQuery</a>, automatically
-detects the query's dialect. To override this, start the query with either <code>#legacysql</code> or
-<code>#standardsql</code> comment line.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
-    </li><li name="com.spotify.scio.bigquery.dynamic" visbl="pub" class="indented5 current" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
+    </li><li name="com.spotify.scio.io.dynamic" visbl="pub" class="indented5 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="dynamic"></a><a id="dynamic:dynamic"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigquery/index.html#dynamic" title="Permalink">
+      <a href="../../../../com/spotify/scio/io/index.html#dynamic" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -158,28 +148,16 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="name">dynamic</span>
       </span>
       
-      <p class="shortcomment cmt">BigQuery package for dynamic table destinations.</p><div class="fullcomment"><div class="comment cmt"><p>BigQuery package for dynamic table destinations. Import All.</p><pre><span class="kw">import</span> com.spotify.scio.bigquery.dynamic._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></dd></dl></div>
+      <p class="shortcomment cmt">IO package for dynamic destinations.</p><div class="fullcomment"><div class="comment cmt"><p>IO package for dynamic destinations. Import All.</p><pre><span class="kw">import</span> com.spotify.scio.io.dynamic._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.io">io</a></dd></dl></div>
     </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="class" href="package$$DynamicBigQuerySCollection.html" title="Enhanced version of SCollection with dynamic destinations methods."></a>
-                        <a href="package$$DynamicBigQuerySCollection.html" title="Enhanced version of SCollection with dynamic destinations methods.">DynamicBigQuerySCollection</a>
-                      </li><li name="com.spotify.scio.bigquery.types" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="types"></a><a id="types:types"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigquery/index.html#types" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">package</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="../types/index.html"><span class="name">types</span></a>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></dd></dl></div>
-    </li>
+                        <a class="class" href="package$$DynamicIoSCollection.html" title="Enhanced version of SCollection with dynamic destinations methods."></a>
+                        <a href="package$$DynamicIoSCollection.html" title="Enhanced version of SCollection with dynamic destinations methods.">DynamicIoSCollection</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="package$$DynamicTextIoSCollection.html" title="Enhanced version of SCollection with dynamic destinations methods."></a>
+                        <a href="package$$DynamicTextIoSCollection.html" title="Enhanced version of SCollection with dynamic destinations methods.">DynamicTextIoSCollection</a>
+                      </li>
               </ul>
             </div>
           </div>
@@ -187,9 +165,9 @@ detects the query's dialect. To override this, start the query with either <code
             <body class="package value">
       <div id="definition">
         <div class="big-circle package">p</div>
-        <p id="owner"><a href="../../../../index.html" class="extype" name="com">com</a>.<a href="../../../index.html" class="extype" name="com.spotify">spotify</a>.<a href="../../index.html" class="extype" name="com.spotify.scio">scio</a>.<a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></p>
+        <p id="owner"><a href="../../../../index.html" class="extype" name="com">com</a>.<a href="../../../index.html" class="extype" name="com.spotify">spotify</a>.<a href="../../index.html" class="extype" name="com.spotify.scio">scio</a>.<a href="../index.html" class="extype" name="com.spotify.scio.io">io</a></p>
         <h1>dynamic<span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/dynamic/index.html" title="Permalink">
+      <a href="../../../../../com/spotify/scio/io/dynamic/index.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -207,7 +185,7 @@ detects the query's dialect. To override this, start the query with either <code
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>BigQuery package for dynamic table destinations. Import All.</p><pre><span class="kw">import</span> com.spotify.scio.bigquery.dynamic._</pre></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>IO package for dynamic destinations. Import All.</p><pre><span class="kw">import</span> com.spotify.scio.io.dynamic._</pre></div><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
@@ -223,10 +201,10 @@ detects the query's dialect. To override this, start the query with either <code
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.spotify.scio.bigquery.dynamic.DynamicBigQuerySCollection" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DynamicBigQuerySCollection[T]extendsAnyVal"></a><a id="DynamicBigQuerySCollection[T]:DynamicBigQuerySCollection[T]"></a>
+              <ol><li name="com.spotify.scio.io.dynamic.DynamicIoSCollection" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DynamicIoSCollection[T]extendsAnyVal"></a><a id="DynamicIoSCollection[T]:DynamicIoSCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/dynamic/index.html#DynamicBigQuerySCollection[T]extendsAnyVal" title="Permalink">
+      <a href="../../../../../com/spotify/scio/io/dynamic/index.html#DynamicIoSCollection[T]extendsAnyVal" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -235,7 +213,24 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="Enhanced version of SCollection with dynamic destinations methods." href="package$$DynamicBigQuerySCollection.html"><span class="name">DynamicBigQuerySCollection</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyVal" class="extype" name="scala.collection.immutable.List">AnyVal</a></span>
+        <a title="Enhanced version of SCollection with dynamic destinations methods." href="package$$DynamicIoSCollection.html"><span class="name">DynamicIoSCollection</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyVal" class="extype" name="scala.collection.immutable.List">AnyVal</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Enhanced version of <a href="../../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> with dynamic
+destinations methods.</p>
+    </li><li name="com.spotify.scio.io.dynamic.DynamicTextIoSCollection" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DynamicTextIoSCollectionextendsAnyVal"></a><a id="DynamicTextIoSCollection:DynamicTextIoSCollection"></a>
+      <span class="permalink">
+      <a href="../../../../../com/spotify/scio/io/dynamic/index.html#DynamicTextIoSCollectionextendsAnyVal" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a title="Enhanced version of SCollection with dynamic destinations methods." href="package$$DynamicTextIoSCollection.html"><span class="name">DynamicTextIoSCollection</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyVal" class="extype" name="scala.collection.immutable.List">AnyVal</a></span>
       </span>
       
       <p class="shortcomment cmt">Enhanced version of <a href="../../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> with dynamic
