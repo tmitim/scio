@@ -321,7 +321,7 @@ etc. and <code>Counter</code> tracks count.</p></p></div>
               </section>
             
               <section class="">
-                <div class="comment "><p>Open text files a <code>SCollection[String]</code></p></p></div>
+                <div class="comment "><p>Open text files as an <code>SCollection[String]</code></p></p></div>
                 <div class="code ">    <span class="identifier"><a target="doc" href="https://spotify.github.io/scio/api/com/spotify/scio/ScioContext.html" data-tooltip="<span>com.spotify.scio.ScioContext</span>">sc</a></span>.<span class="identifier"><a target="doc" href="https://spotify.github.io/scio/api/com/spotify/scio/ScioContext.html#textFile(path:String,compression:org.apache.beam.sdk.io.Compression):com.spotify.scio.values.SCollection[String]" data-tooltip="<span>com.spotify.scio.ScioContext.textFile(path: String, compression: org.apache.beam.sdk.io.Compression): com.spotify.scio.values.SCollection[String]</span>">textFile</a></span>(<span class="identifier">input</span>)
       .<span class="identifier"><a target="doc" href="https://spotify.github.io/scio/api/com/spotify/scio/values/SCollection.html#map[U](f:T=>U)(implicitevidence$15:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" data-tooltip="<span>com.spotify.scio.values.SCollection.map[U](f: T => U)(implicit evidence$15: scala.reflect.ClassTag[U]): com.spotify.scio.values.SCollection[U]</span>">map</a></span> { <span class="identifier">w</span> =>&nbsp;</div>
               </section>
@@ -360,7 +360,7 @@ etc. and <code>Counter</code> tracks count.</p></p></div>
             
               <section class="">
                 <div class="comment "><p>Save result as text files under the output path</p></p></div>
-                <div class="code ">      .<span class="identifier"><a target="doc" href="https://spotify.github.io/scio/api/com/spotify/scio/values/SCollection.html#saveAsTextFile(path:String,suffix:String,numShards:Int):scala.concurrent.Future[com.spotify.scio.io.Tap[String]]" data-tooltip="<span>com.spotify.scio.values.SCollection.saveAsTextFile(path: String, suffix: String, numShards: Int): scala.concurrent.Future[com.spotify.scio.io.Tap[String]]</span>">saveAsTextFile</a></span>(<span class="identifier">output</span>)
+                <div class="code ">      .<span class="identifier"><a target="doc" href="https://spotify.github.io/scio/api/com/spotify/scio/values/SCollection.html#saveAsTextFile(path:String,suffix:String,numShards:Int,compression:org.apache.beam.sdk.io.Compression):scala.concurrent.Future[com.spotify.scio.io.Tap[String]]" data-tooltip="<span>com.spotify.scio.values.SCollection.saveAsTextFile(path: String, suffix: String, numShards: Int, compression: org.apache.beam.sdk.io.Compression): scala.concurrent.Future[com.spotify.scio.io.Tap[String]]</span>">saveAsTextFile</a></span>(<span class="identifier">output</span>)
 &nbsp;</div>
               </section>
             
