@@ -270,6 +270,58 @@ package object bigtable {
 
   }
 
+  /**
+    * Enhanced version of [[com.spotify.scio.values.SCollection SCollection]] with Bigtable method.
+    */
+  implicit class BigtableBulkSCollection[T]
+  (val self: SCollection[Iterable[(ByteString, Iterable[T])]])
+    extends AnyVal {
+
+    /**
+      * Save this SCollection as a Bigtable table. Note that elements must be of type `Mutation`.
+      */
+    def saveAsBigtableBulk(projectId: String,
+                       instanceId: String,
+                       tableId: String)
+                      (implicit ev: T <:< Mutation)
+    : Future[Tap[Iterable[(ByteString, Iterable[Mutation])]]] = {
+      val bigtableOptions = new BigtableOptions.Builder()
+        .setProjectId(projectId)
+        .setInstanceId(instanceId)
+        .build
+      this.saveAsBigtableBulk(bigtableOptions, tableId)
+    }
+
+    /**
+      * Save this SCollection as a Bigtable table. Note that elements must be of type `Mutation`.
+      */
+    def saveAsBigtableBulk(bigtableOptions: BigtableOptions,
+                       tableId: String)
+                      (implicit ev: T <:< Mutation)
+    : Future[Tap[Iterable[(ByteString, Iterable[Mutation])]]] = {
+      if (self.context.isTest) {
+        val output = BigtableOutput(
+          bigtableOptions.getProjectId, bigtableOptions.getInstanceId, tableId)
+        self.context.testOut(output.asInstanceOf[TestIO[Iterable[(ByteString, Iterable[T])]]])(self)
+      } else {
+        val sink = PatchedBigtableIO.bulkWrite()
+          .withBigtableOptions(bigtableOptions).withTableId(tableId)
+        self
+          .map { kvs =>
+            val mkvs = kvs.map(
+              kv => KV.of(kv._1, kv._2)
+            )
+            mkvs.asJava
+              .asInstanceOf[java.lang.Iterable[KV[ByteString, java.lang.Iterable[Mutation]]]]
+          }
+          .applyInternal(sink)
+      }
+      Future.failed(new NotImplementedError("Bigtable future not implemented"))
+    }
+
+  }
+
+
   case class BigtableInput(projectId: String, instanceId: String, tableId: String)
     extends TestIO[Row](s"$projectId\t$instanceId\t$tableId")
 

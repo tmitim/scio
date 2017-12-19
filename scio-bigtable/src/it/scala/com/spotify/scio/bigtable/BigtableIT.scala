@@ -97,6 +97,15 @@ class BigtableIT extends PipelineSpec {
         .saveAsBigtable(projectId, instanceId, tableId)
       sc1.close().waitUntilFinish()
 
+      // Write rows again to table via bulk write
+      val sc3 = ScioContext()
+      sc3
+        .parallelize(testData.map(kv => (Unit, toWriteMutation(kv._1, kv._2))))
+        .groupByKey
+        .values
+        .saveAsBigtableBulk(projectId, instanceId, tableId)
+      sc3.close().waitUntilFinish()
+
       // Read rows back
       val sc2 = ScioContext()
       // Filter rows in case there are other keys in the table
