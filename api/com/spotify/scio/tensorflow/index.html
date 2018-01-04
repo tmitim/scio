@@ -369,6 +369,14 @@ detects the query's dialect. To override this, start the query with either <code
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="class" href="FeatureInfo.html" title="Information necessary to extract a given feature in TF."></a>
+                        <a href="FeatureInfo.html" title="Information necessary to extract a given feature in TF.">FeatureInfo</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="object" href="FeatureKind$.html" title="Mapping between Scala types and TF types"></a>
+                        <a href="FeatureKind$.html" title="Mapping between Scala types and TF types">FeatureKind</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="class" href="package$$TFExampleIO.html" title=""></a>
                         <a href="package$$TFExampleIO.html" title="">TFExampleIO</a>
                       </li><li class="current-entities indented4">
@@ -392,9 +400,13 @@ detects the query's dialect. To override this, start the query with either <code
                         <a class="class" href="TFRecordSCollectionFunctions.html" title=""></a>
                         <a href="TFRecordSCollectionFunctions.html" title="">TFRecordSCollectionFunctions</a>
                       </li><li class="current-entities indented4">
+                        <a class="object" href="TFRecordSpec$.html" title=""></a>
+                        <a class="trait" href="TFRecordSpec.html" title="Contains metadata about TFRecords."></a>
+                        <a href="TFRecordSpec.html" title="Contains metadata about TFRecords.">TFRecordSpec</a>
+                      </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="TFScioConextFunctions.html" title=""></a>
-                        <a href="TFScioConextFunctions.html" title="">TFScioConextFunctions</a>
+                        <a class="class" href="TFScioContextFunctions.html" title=""></a>
+                        <a href="TFScioContextFunctions.html" title="">TFScioContextFunctions</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="TensorFlowSCollectionFunctions.html" title="Enhanced version of SCollection with TensorFlow methods."></a>
@@ -527,7 +539,23 @@ detects the query's dialect. To override this, start the query with either <code
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.spotify.scio.tensorflow.TFExampleIO" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.spotify.scio.tensorflow.FeatureInfo" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FeatureInfoextendsProductwithSerializable"></a><a id="FeatureInfo:FeatureInfo"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#FeatureInfoextendsProductwithSerializable" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a title="Information necessary to extract a given feature in TF." href="FeatureInfo.html"><span class="name">FeatureInfo</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="kind">kind: <a href="FeatureKind$.html#FeatureKind=com.spotify.scio.tensorflow.FeatureKind.Value" class="extmbr" name="com.spotify.scio.tensorflow.FeatureKind.FeatureKind">FeatureKind</a></span>, <span name="tags">tags: <span class="extype" name="scala.Predef.Map">Map</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.4/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Information necessary to extract a given feature in TF.</p>
+    </li><li name="com.spotify.scio.tensorflow.TFExampleIO" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TFExampleIOextendsTestIO[org.tensorflow.example.Example]withProductwithSerializable"></a><a id="TFExampleIO:TFExampleIO"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/tensorflow/index.html#TFExampleIOextendsTestIO[org.tensorflow.example.Example]withProductwithSerializable" title="Permalink">
@@ -623,10 +651,26 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       
-    </li><li name="com.spotify.scio.tensorflow.TFScioConextFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TFScioConextFunctionsextendsAnyVal"></a><a id="TFScioConextFunctions:TFScioConextFunctions"></a>
+    </li><li name="com.spotify.scio.tensorflow.TFRecordSpec" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="TFRecordSpecextendsAnyRef"></a><a id="TFRecordSpec:TFRecordSpec"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/tensorflow/index.html#TFScioConextFunctionsextendsAnyVal" title="Permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#TFRecordSpecextendsAnyRef" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a title="Contains metadata about TFRecords." href="TFRecordSpec.html"><span class="name">TFRecordSpec</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Contains metadata about TFRecords.</p><div class="fullcomment"><div class="comment cmt"><p>Contains metadata about TFRecords. Useful to read the records later on.</p></div></div>
+    </li><li name="com.spotify.scio.tensorflow.TFScioContextFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TFScioContextFunctionsextendsAnyVal"></a><a id="TFScioContextFunctions:TFScioContextFunctions"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#TFScioContextFunctionsextendsAnyVal" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -635,7 +679,7 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="TFScioConextFunctions.html"><span class="name">TFScioConextFunctions</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyVal" class="extype" name="scala.collection.immutable.List">AnyVal</a></span>
+        <a title="" href="TFScioContextFunctions.html"><span class="name">TFScioContextFunctions</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyVal" class="extype" name="scala.collection.immutable.List">AnyVal</a></span>
       </span>
       
       
@@ -663,23 +707,7 @@ detects the query's dialect. To override this, start the query with either <code
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="com.spotify.scio.tensorflow#FeatureDesc" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="FeatureDesc:com.spotify.scio.tensorflow.TFExampleSCollectionFunctions.FeatureDesc.type"></a><a id="FeatureDesc:tensorflow.TFExampleSCollectionFunctions.FeatureDesc.type"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/tensorflow/index.html#FeatureDesc:com.spotify.scio.tensorflow.TFExampleSCollectionFunctions.FeatureDesc.type" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">FeatureDesc</span><span class="result">: <span class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions.FeatureDesc">tensorflow.TFExampleSCollectionFunctions.FeatureDesc</span>.type</span>
-      </span>
-      
-      <p class="shortcomment cmt">Expose <code>com.spotify.scio.tensorflow.TFExampleSCollectionFunctions.FeatureDesc</code>.</p>
-    </li><li name="com.spotify.scio.tensorflow#makeTFExampleSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+                <li name="com.spotify.scio.tensorflow#makeTFExampleSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="makeTFExampleSCollectionFunctions[T&lt;:org.tensorflow.example.Example](s:com.spotify.scio.values.SCollection[T]):com.spotify.scio.tensorflow.TFExampleSCollectionFunctions[T]"></a><a id="makeTFExampleSCollectionFunctions[T&lt;:Example](SCollection[T]):TFExampleSCollectionFunctions[T]"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTFExampleSCollectionFunctions[T&lt;:org.tensorflow.example.Example](s:com.spotify.scio.values.SCollection[T]):com.spotify.scio.tensorflow.TFExampleSCollectionFunctions[T]" title="Permalink">
@@ -714,9 +742,9 @@ detects the query's dialect. To override this, start the query with either <code
       <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
 <a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>.</p>
     </li><li name="com.spotify.scio.tensorflow#makeTFScioContextFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="makeTFScioContextFunctions(s:com.spotify.scio.ScioContext):com.spotify.scio.tensorflow.TFScioConextFunctions"></a><a id="makeTFScioContextFunctions(ScioContext):TFScioConextFunctions"></a>
+      <a id="makeTFScioContextFunctions(s:com.spotify.scio.ScioContext):com.spotify.scio.tensorflow.TFScioContextFunctions"></a><a id="makeTFScioContextFunctions(ScioContext):TFScioContextFunctions"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTFScioContextFunctions(s:com.spotify.scio.ScioContext):com.spotify.scio.tensorflow.TFScioConextFunctions" title="Permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTFScioContextFunctions(s:com.spotify.scio.ScioContext):com.spotify.scio.tensorflow.TFScioContextFunctions" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -725,10 +753,10 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">makeTFScioContextFunctions</span><span class="params">(<span name="s">s: <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a></span>)</span><span class="result">: <a href="TFScioConextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioConextFunctions">TFScioConextFunctions</a></span>
+        <span class="name">makeTFScioContextFunctions</span><span class="params">(<span name="s">s: <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a></span>)</span><span class="result">: <a href="TFScioContextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioContextFunctions">TFScioContextFunctions</a></span>
       </span>
       
-      <p class="shortcomment cmt">Implicit conversion from <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a> to <a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>.</p>
+      <p class="shortcomment cmt">Implicit conversion from <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a> to <a href="TFScioContextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioContextFunctions">TFScioContextFunctions</a>.</p>
     </li><li name="com.spotify.scio.tensorflow#makeTensorFlowSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="makeTensorFlowSCollectionFunctions[T](s:com.spotify.scio.values.SCollection[T])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions[T]"></a><a id="makeTensorFlowSCollectionFunctions[T](SCollection[T])(ClassTag[T]):TensorFlowSCollectionFunctions[T]"></a>
       <span class="permalink">
@@ -746,6 +774,38 @@ detects the query's dialect. To override this, start the query with either <code
       
       <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
 <a href="TensorFlowSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions">TensorFlowSCollectionFunctions</a>.</p>
+    </li><li name="com.spotify.scio.tensorflow.FeatureKind" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="FeatureKind"></a><a id="FeatureKind:FeatureKind"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#FeatureKind" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Mapping between Scala types and TF types" href="FeatureKind$.html"><span class="name">FeatureKind</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/Enumeration.html#scala.Enumeration" class="extype" name="scala.Enumeration">Enumeration</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Mapping between Scala types and TF types</p>
+    </li><li name="com.spotify.scio.tensorflow.TFRecordSpec" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TFRecordSpec"></a><a id="TFRecordSpec:TFRecordSpec"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#TFRecordSpec" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="TFRecordSpec$.html"><span class="name">TFRecordSpec</span></a>
+      </span>
+      
+      
     </li>
               </ol>
             </div>

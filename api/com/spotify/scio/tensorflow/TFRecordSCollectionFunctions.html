@@ -135,6 +135,14 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="class" href="FeatureInfo.html" title="Information necessary to extract a given feature in TF."></a>
+                        <a href="FeatureInfo.html" title="Information necessary to extract a given feature in TF.">FeatureInfo</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="object" href="FeatureKind$.html" title="Mapping between Scala types and TF types"></a>
+                        <a href="FeatureKind$.html" title="Mapping between Scala types and TF types">FeatureKind</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="class" href="package$$TFExampleIO.html" title=""></a>
                         <a href="package$$TFExampleIO.html" title="">TFExampleIO</a>
                       </li><li class="current-entities indented4">
@@ -158,9 +166,13 @@
                         <a class="class" href="" title=""></a>
                         <a href="" title="">TFRecordSCollectionFunctions</a>
                       </li><li class="current-entities indented4">
+                        <a class="object" href="TFRecordSpec$.html" title=""></a>
+                        <a class="trait" href="TFRecordSpec.html" title="Contains metadata about TFRecords."></a>
+                        <a href="TFRecordSpec.html" title="Contains metadata about TFRecords.">TFRecordSpec</a>
+                      </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="TFScioConextFunctions.html" title=""></a>
-                        <a href="TFScioConextFunctions.html" title="">TFScioConextFunctions</a>
+                        <a class="class" href="TFScioContextFunctions.html" title=""></a>
+                        <a href="TFScioContextFunctions.html" title="">TFScioContextFunctions</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="TensorFlowSCollectionFunctions.html" title="Enhanced version of SCollection with TensorFlow methods."></a>
@@ -520,9 +532,9 @@
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions#saveAsTfRecordFile" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="output">
-      <a id="saveAsTfRecordFile(path:String,suffix:String,compressionType:org.apache.beam.sdk.io.TFRecordIO.CompressionType,numShards:Int)(implicitev:T&lt;:&lt;Array[Byte]):scala.concurrent.Future[com.spotify.scio.io.Tap[Array[Byte]]]"></a><a id="saveAsTfRecordFile(String,String,CompressionType,Int)(&lt;:&lt;[T,Array[Byte]]):Future[Tap[Array[Byte]]]"></a>
+      <a id="saveAsTfRecordFile(path:String,suffix:String,compression:org.apache.beam.sdk.io.Compression,numShards:Int)(implicitev:T&lt;:&lt;Array[Byte]):scala.concurrent.Future[com.spotify.scio.io.Tap[Array[Byte]]]"></a><a id="saveAsTfRecordFile(String,String,Compression,Int)(&lt;:&lt;[T,Array[Byte]]):Future[Tap[Array[Byte]]]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/tensorflow/TFRecordSCollectionFunctions.html#saveAsTfRecordFile(path:String,suffix:String,compressionType:org.apache.beam.sdk.io.TFRecordIO.CompressionType,numShards:Int)(implicitev:T&lt;:&lt;Array[Byte]):scala.concurrent.Future[com.spotify.scio.io.Tap[Array[Byte]]]" title="Permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/TFRecordSCollectionFunctions.html#saveAsTfRecordFile(path:String,suffix:String,compression:org.apache.beam.sdk.io.Compression,numShards:Int)(implicitev:T&lt;:&lt;Array[Byte]):scala.concurrent.Future[com.spotify.scio.io.Tap[Array[Byte]]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -531,12 +543,13 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">saveAsTfRecordFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;.tfrecords&quot;</span></span>, <span name="compressionType">compressionType: <span class="extype" name="org.apache.beam.sdk.io.TFRecordIO.CompressionType">CompressionType</span> = <span class="symbol">CompressionType.NONE</span></span>, <span name="numShards">numShards: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions.T">T</span>, <a href="http://www.scala-lang.org/api/2.12.4/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Byte.html#scala.Byte" class="extype" name="scala.Byte">Byte</a>]]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<a href="../io/Tap.html" class="extype" name="com.spotify.scio.io.Tap">Tap</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Byte.html#scala.Byte" class="extype" name="scala.Byte">Byte</a>]]]</span>
+        <span class="name">saveAsTfRecordFile</span><span class="params">(<span name="path">path: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="suffix">suffix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;.tfrecords&quot;</span></span>, <span name="compression">compression: <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/io/Compression.html#org.apache.beam.sdk.io.Compression" class="extype" name="org.apache.beam.sdk.io.Compression">Compression</a> = <span class="symbol">Compression.UNCOMPRESSED</span></span>, <span name="numShards">numShards: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.&lt;:&lt;">&lt;:&lt;</span>[<span class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions.T">T</span>, <a href="http://www.scala-lang.org/api/2.12.4/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Byte.html#scala.Byte" class="extype" name="scala.Byte">Byte</a>]]</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/Future.html#scala.concurrent.Future" class="extype" name="scala.concurrent.Future">Future</a>[<a href="../io/Tap.html" class="extype" name="com.spotify.scio.io.Tap">Tap</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Byte.html#scala.Byte" class="extype" name="scala.Byte">Byte</a>]]]</span>
       </span>
       
       <p class="shortcomment cmt">Save this SCollection as a TensorFlow TFRecord file.</p><div class="fullcomment"><div class="comment cmt"><p>Save this SCollection as a TensorFlow TFRecord file. Note that elements must be of type
 <code>Array[Byte]</code>. The recommended record encoding is <code>org.tensorflow.example.Example</code> protocol
-buffers (which contain <code>org.tensorflow.example.Features</code> as a field) serialized as bytes.</p></div></div>
+buffers (which contain <code>org.tensorflow.example.Features</code> as a field) serialized as bytes.
+</p></div></div>
     </li><li name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions#self" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="self:com.spotify.scio.values.SCollection[T]"></a><a id="self:SCollection[T]"></a>
       <span class="permalink">

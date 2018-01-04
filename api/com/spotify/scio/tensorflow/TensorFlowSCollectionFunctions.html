@@ -135,6 +135,14 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="class" href="FeatureInfo.html" title="Information necessary to extract a given feature in TF."></a>
+                        <a href="FeatureInfo.html" title="Information necessary to extract a given feature in TF.">FeatureInfo</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="object" href="FeatureKind$.html" title="Mapping between Scala types and TF types"></a>
+                        <a href="FeatureKind$.html" title="Mapping between Scala types and TF types">FeatureKind</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="class" href="package$$TFExampleIO.html" title=""></a>
                         <a href="package$$TFExampleIO.html" title="">TFExampleIO</a>
                       </li><li class="current-entities indented4">
@@ -158,9 +166,13 @@
                         <a class="class" href="TFRecordSCollectionFunctions.html" title=""></a>
                         <a href="TFRecordSCollectionFunctions.html" title="">TFRecordSCollectionFunctions</a>
                       </li><li class="current-entities indented4">
+                        <a class="object" href="TFRecordSpec$.html" title=""></a>
+                        <a class="trait" href="TFRecordSpec.html" title="Contains metadata about TFRecords."></a>
+                        <a href="TFRecordSpec.html" title="Contains metadata about TFRecords.">TFRecordSpec</a>
+                      </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="TFScioConextFunctions.html" title=""></a>
-                        <a href="TFScioConextFunctions.html" title="">TFScioConextFunctions</a>
+                        <a class="class" href="TFScioContextFunctions.html" title=""></a>
+                        <a href="TFScioContextFunctions.html" title="">TFScioContextFunctions</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="" title="Enhanced version of SCollection with TensorFlow methods."></a>
@@ -537,11 +549,11 @@
       
       <p class="shortcomment cmt">Predict/infer/forward-pass on pre-trained GraphDef.</p><div class="fullcomment"><div class="comment cmt"><p>Predict/infer/forward-pass on pre-trained GraphDef.
 </p></div><dl class="paramcmts block"><dt class="param">graphUri</dt><dd class="cmt"><p>URI of pre-trained/saved TensorFlow model</p></dd><dt class="param">fetchOps</dt><dd class="cmt"><p>names of <a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Operation.html" class="extype" name="org.tensorflow.Operation">org.tensorflow.Operation</a>s to fetch the results from</p></dd><dt class="param">config</dt><dd class="cmt"><p>configuration parameters for the session specified as a serialized
-              <code>org.tensorflow.framework.ConfigProto</code> protocol buffer.</p></dd><dt class="param">inFn</dt><dd class="cmt"><p>translates input elements of T to map of input-operation -&gt;
-            <a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>. This method takes ownership of the
-            <a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>s.</p></dd><dt class="param">outFn</dt><dd class="cmt"><p>translates output of prediction from map of output-operation -&gt;
-             <a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>, to elements of V. This method takes ownership
-             of the <a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>s.</p></dd></dl></div>
+<code>org.tensorflow.framework.ConfigProto</code> protocol buffer.</p></dd><dt class="param">inFn</dt><dd class="cmt"><p>translates input elements of T to map of input-operation -&gt;
+<a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>. This method takes ownership of the
+<a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>s.</p></dd><dt class="param">outFn</dt><dd class="cmt"><p>translates output of prediction from map of output-operation -&gt;
+<a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>, to elements of V. This method takes
+ownership of the <a href="https://www.tensorflow.org/api_docs/java/reference/org/tensorflow/Tensor.html" class="extype" name="org.tensorflow.Tensor">Tensor</a>s.</p></dd></dl></div>
     </li><li name="com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions#self" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="self:com.spotify.scio.values.SCollection[T]"></a><a id="self:SCollection[T]"></a>
       <span class="permalink">

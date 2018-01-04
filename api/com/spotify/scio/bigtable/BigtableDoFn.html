@@ -135,8 +135,8 @@
       <p class="shortcomment cmt">Main package for Bigtable APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for Bigtable APIs. Import all.</p><pre><span class="kw">import</span> com.spotify.scio.bigtable._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
     </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="BigtableDoFn.html" title=""></a>
-                        <a href="BigtableDoFn.html" title="">BigtableDoFn</a>
+                        <a class="class" href="" title=""></a>
+                        <a href="" title="">BigtableDoFn</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="package$$BigtableInput.html" title=""></a>
@@ -163,8 +163,8 @@
                         <a href="ChannelPoolCreator.html" title="">ChannelPoolCreator</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="object" href="" title="Helper methods for Mutation."></a>
-                        <a href="" title="Helper methods for Mutation.">Mutations</a>
+                        <a class="object" href="Mutations$.html" title="Helper methods for Mutation."></a>
+                        <a href="Mutations$.html" title="Helper methods for Mutation.">Mutations</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
                         <a class="class" href="package$$RichBigtableDoFnTry.html" title="Enhanced version of BigtableDoFn.Try with convenience methods."></a>
@@ -186,12 +186,12 @@
             </div>
           </div>
           <div id="content">
-            <body class="object value">
+            <body class="class type">
       <div id="definition">
-        <div class="big-circle object">o</div>
+        <div class="big-circle class">c</div>
         <p id="owner"><a href="../../../index.html" class="extype" name="com">com</a>.<a href="../../index.html" class="extype" name="com.spotify">spotify</a>.<a href="../index.html" class="extype" name="com.spotify.scio">scio</a>.<a href="index.html" class="extype" name="com.spotify.scio.bigtable">bigtable</a></p>
-        <h1>Mutations<span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html" title="Permalink">
+        <h1>BigtableDoFn<span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -200,20 +200,20 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Mutations</span>
+        <span class="name">BigtableDoFn</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="org.apache.beam.sdk.transforms.DoFn">DoFn</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="org.apache.beam.sdk.values.KV">KV</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.Try">Try</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>]]]</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Helper methods for <code>Mutation</code>.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.Any" class="extype" name="scala.collection.immutable.List">Any</a></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="org.apache.beam.sdk.transforms.DoFn">DoFn</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="org.apache.beam.sdk.values.KV">KV</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.Try">Try</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>]]], <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/transforms/display/HasDisplayData.html#org.apache.beam.sdk.transforms.display.HasDisplayData" class="extype" name="org.apache.beam.sdk.transforms.display.HasDisplayData">HasDisplayData</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html#java.io.Serializable" class="extype" name="java.io.Serializable">Serializable</a>, <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.Any" class="extype" name="scala.collection.immutable.List">Any</a></div>
         </div></div>
         
 
@@ -239,7 +239,7 @@
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="com.spotify.scio.bigtable.Mutations"><span>Mutations</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="com.spotify.scio.bigtable.BigtableDoFn"><span>BigtableDoFn</span></li><li class="in" name="org.apache.beam.sdk.transforms.DoFn"><span>DoFn</span></li><li class="in" name="org.apache.beam.sdk.transforms.display.HasDisplayData"><span>HasDisplayData</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -257,19 +257,220 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.spotify.scio.bigtable.BigtableDoFn#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;[K](options:com.google.cloud.bigtable.config.BigtableOptions,maxPendingRequests:Int,cacheSupplier:com.spotify.scio.bigtable.BigtableDoFn.CacheSupplier[A,B,K]):com.spotify.scio.bigtable.BigtableDoFn[A,B]"></a><a id="&lt;init&gt;:BigtableDoFn[A,B]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#&lt;init&gt;[K](options:com.google.cloud.bigtable.config.BigtableOptions,maxPendingRequests:Int,cacheSupplier:com.spotify.scio.bigtable.BigtableDoFn.CacheSupplier[A,B,K]):com.spotify.scio.bigtable.BigtableDoFn[A,B]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BigtableDoFn</span><span class="params">(<span name="options">options: <span class="extype" name="com.google.cloud.bigtable.config.BigtableOptions">BigtableOptions</span></span>, <span name="maxPendingRequests">maxPendingRequests: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>, <span name="cacheSupplier">cacheSupplier: <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.CacheSupplier">CacheSupplier</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.&lt;init&gt;.K">K</span>]</span>)</span>
+      </span>
+      
+      
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(options:com.google.cloud.bigtable.config.BigtableOptions,maxPendingRequests:Int):com.spotify.scio.bigtable.BigtableDoFn[A,B]"></a><a id="&lt;init&gt;:BigtableDoFn[A,B]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#&lt;init&gt;(options:com.google.cloud.bigtable.config.BigtableOptions,maxPendingRequests:Int):com.spotify.scio.bigtable.BigtableDoFn[A,B]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BigtableDoFn</span><span class="params">(<span name="options">options: <span class="extype" name="com.google.cloud.bigtable.config.BigtableOptions">BigtableOptions</span></span>, <span name="maxPendingRequests">maxPendingRequests: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>)</span>
+      </span>
+      
+      
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(options:com.google.cloud.bigtable.config.BigtableOptions):com.spotify.scio.bigtable.BigtableDoFn[A,B]"></a><a id="&lt;init&gt;:BigtableDoFn[A,B]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#&lt;init&gt;(options:com.google.cloud.bigtable.config.BigtableOptions):com.spotify.scio.bigtable.BigtableDoFn[A,B]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BigtableDoFn</span><span class="params">(<span name="options">options: <span class="extype" name="com.google.cloud.bigtable.config.BigtableOptions">BigtableOptions</span></span>)</span>
+      </span>
+      
+      
+    </li></ol>
+            </div>
 
-        
-
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="org.apache.beam.sdk.transforms.DoFn.FinishBundleContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="FinishBundleContextextendsObject"></a><a id="FinishBundleContext:FinishBundleContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#FinishBundleContextextendsObject" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">FinishBundleContext</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.OnTimerContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="OnTimerContextextendsDoFn[InputT,OutputT]#WindowedContext"></a><a id="OnTimerContext:OnTimerContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#OnTimerContextextendsDoFn[InputT,OutputT]#WindowedContext" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">OnTimerContext</span><span class="result"> extends <span class="extype" name="org.apache.beam.sdk.transforms.DoFn.WindowedContext">WindowedContext</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.ProcessContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ProcessContextextendsDoFn[InputT,OutputT]#WindowedContext"></a><a id="ProcessContext:ProcessContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#ProcessContextextendsDoFn[InputT,OutputT]#WindowedContext" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ProcessContext</span><span class="result"> extends <span class="extype" name="org.apache.beam.sdk.transforms.DoFn.WindowedContext">WindowedContext</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.StartBundleContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="StartBundleContextextendsObject"></a><a id="StartBundleContext:StartBundleContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#StartBundleContextextendsObject" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">StartBundleContext</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.WindowedContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="WindowedContextextendsObject"></a><a id="WindowedContext:WindowedContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#WindowedContextextendsObject" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WindowedContext</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li></ol>
+            </div>
 
         <div class="values members">
-              <h3>Value Members</h3>
+              <h3>Abstract Value Members</h3>
+              <ol><li name="com.spotify.scio.bigtable.BigtableDoFn#asyncLookup" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="asyncLookup(session:com.google.cloud.bigtable.grpc.BigtableSession,input:A):com.google.common.util.concurrent.ListenableFuture[B]"></a><a id="asyncLookup(BigtableSession,A):ListenableFuture[B]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#asyncLookup(session:com.google.cloud.bigtable.grpc.BigtableSession,input:A):com.google.common.util.concurrent.ListenableFuture[B]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asyncLookup</span><span class="params">(<span name="session">session: <span class="extype" name="com.google.cloud.bigtable.grpc.BigtableSession">BigtableSession</span></span>, <span name="input">input: <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span></span>)</span><span class="result">: <span class="extype" name="com.google.common.util.concurrent.ListenableFuture">ListenableFuture</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>]</span>
+      </span>
+      
+      
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.ProcessContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ProcessContext"></a><a id="ProcessContext:ProcessContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#ProcessContext" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ProcessContext</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.StartBundleContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="StartBundleContext"></a><a id="StartBundleContext:StartBundleContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#StartBundleContext" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">StartBundleContext</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn.WindowedContext" visbl="pub" class="indented0 " data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="WindowedContext"></a><a id="WindowedContext:WindowedContext"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#WindowedContext" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <span class="name">WindowedContext</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li></ol>
+            </div>
+
+        <div class="values members">
+              <h3>Concrete Value Members</h3>
               <ol>
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -285,7 +486,7 @@
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html###():Int" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -301,7 +502,7 @@
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -317,7 +518,7 @@
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -333,7 +534,7 @@
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#clone():Object" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -357,7 +558,7 @@
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -373,7 +574,7 @@
     </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#equals(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#equals(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -389,7 +590,7 @@
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#finalize():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -408,10 +609,26 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#finishBundle" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="finishBundle(c:BigtableDoFn.this.FinishBundleContext):Unit"></a><a id="finishBundle(FinishBundleContext):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#finishBundle(c:BigtableDoFn.this.FinishBundleContext):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finishBundle</span><span class="params">(<span name="c">c: <a href="#FinishBundleContextextendsObject" class="extmbr" name="com.spotify.scio.bigtable.BigtableDoFn.FinishBundleContext">FinishBundleContext</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -427,10 +644,42 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn#getInputTypeDescriptor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getInputTypeDescriptor():org.apache.beam.sdk.values.TypeDescriptor[InputT]"></a><a id="getInputTypeDescriptor():TypeDescriptor[A]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#getInputTypeDescriptor():org.apache.beam.sdk.values.TypeDescriptor[InputT]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getInputTypeDescriptor</span><span class="params">()</span><span class="result">: <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/values/TypeDescriptor.html#org.apache.beam.sdk.values.TypeDescriptor" class="extype" name="org.apache.beam.sdk.values.TypeDescriptor">TypeDescriptor</a>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn#getOutputTypeDescriptor" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getOutputTypeDescriptor():org.apache.beam.sdk.values.TypeDescriptor[OutputT]"></a><a id="getOutputTypeDescriptor():TypeDescriptor[KV[A,Try[B]]]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#getOutputTypeDescriptor():org.apache.beam.sdk.values.TypeDescriptor[OutputT]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getOutputTypeDescriptor</span><span class="params">()</span><span class="result">: <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/values/TypeDescriptor.html#org.apache.beam.sdk.values.TypeDescriptor" class="extype" name="org.apache.beam.sdk.values.TypeDescriptor">TypeDescriptor</a>[<span class="extype" name="org.apache.beam.sdk.values.KV">KV</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.Try">Try</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>]]]</span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#hashCode():Int" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#hashCode():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -449,7 +698,7 @@
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -465,7 +714,7 @@
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -478,10 +727,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="com.spotify.scio.bigtable.Mutations#newDeleteFromColumn" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newDeleteFromColumn(familyName:String,columnQualifier:com.google.protobuf.ByteString,startTimestampMicros:Long,endTimestampMicros:Long):com.google.bigtable.v2.Mutation"></a><a id="newDeleteFromColumn(String,ByteString,Long,Long):Mutation"></a>
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#newSession" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="newSession():com.google.cloud.bigtable.grpc.BigtableSession"></a><a id="newSession():BigtableSession"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#newDeleteFromColumn(familyName:String,columnQualifier:com.google.protobuf.ByteString,startTimestampMicros:Long,endTimestampMicros:Long):com.google.bigtable.v2.Mutation" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#newSession():com.google.cloud.bigtable.grpc.BigtableSession" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -490,78 +739,14 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">newDeleteFromColumn</span><span class="params">(<span name="familyName">familyName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="columnQualifier">columnQualifier: <span class="extype" name="com.google.protobuf.ByteString">ByteString</span></span>, <span name="startTimestampMicros">startTimestampMicros: <a href="http://www.scala-lang.org/api/2.12.4/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>, <span name="endTimestampMicros">endTimestampMicros: <a href="http://www.scala-lang.org/api/2.12.4/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <span class="extype" name="com.google.bigtable.v2.Mutation">Mutation</span></span>
+        <span class="name">newSession</span><span class="params">()</span><span class="result">: <span class="extype" name="com.google.cloud.bigtable.grpc.BigtableSession">BigtableSession</span></span>
       </span>
       
-      <p class="shortcomment cmt">New <code>DeleteFromColumn</code> mutation.</p>
-    </li><li name="com.spotify.scio.bigtable.Mutations#newDeleteFromFamily" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newDeleteFromFamily(familyName:String):com.google.bigtable.v2.Mutation"></a><a id="newDeleteFromFamily(String):Mutation"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#newDeleteFromFamily(familyName:String):com.google.bigtable.v2.Mutation" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newDeleteFromFamily</span><span class="params">(<span name="familyName">familyName: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="com.google.bigtable.v2.Mutation">Mutation</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">New <code>DeleteFromFamily</code> mutation.</p>
-    </li><li name="com.spotify.scio.bigtable.Mutations#newDeleteFromRow" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newDeleteFromRow:com.google.bigtable.v2.Mutation"></a><a id="newDeleteFromRow:Mutation"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#newDeleteFromRow:com.google.bigtable.v2.Mutation" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newDeleteFromRow</span><span class="result">: <span class="extype" name="com.google.bigtable.v2.Mutation">Mutation</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">New <code>DeleteFromRow</code> mutation.</p>
-    </li><li name="com.spotify.scio.bigtable.Mutations#newSetCell" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newSetCell(familyName:String,columnQualifier:com.google.protobuf.ByteString,value:com.google.protobuf.ByteString,timestampMicros:Long):com.google.bigtable.v2.Mutation"></a><a id="newSetCell(String,ByteString,ByteString,Long):Mutation"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#newSetCell(familyName:String,columnQualifier:com.google.protobuf.ByteString,value:com.google.protobuf.ByteString,timestampMicros:Long):com.google.bigtable.v2.Mutation" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newSetCell</span><span class="params">(<span name="familyName">familyName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="columnQualifier">columnQualifier: <span class="extype" name="com.google.protobuf.ByteString">ByteString</span></span>, <span name="value">value: <span class="extype" name="com.google.protobuf.ByteString">ByteString</span></span>, <span name="timestampMicros">timestampMicros: <a href="http://www.scala-lang.org/api/2.12.4/scala/Long.html#scala.Long" class="extype" name="scala.Long">Long</a></span>)</span><span class="result">: <span class="extype" name="com.google.bigtable.v2.Mutation">Mutation</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">New <code>SetCell</code> mutation.</p>
-    </li><li name="com.spotify.scio.bigtable.Mutations#newSetCell" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="newSetCell(familyName:String,columnQualifier:com.google.protobuf.ByteString,value:com.google.protobuf.ByteString):com.google.bigtable.v2.Mutation"></a><a id="newSetCell(String,ByteString,ByteString):Mutation"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#newSetCell(familyName:String,columnQualifier:com.google.protobuf.ByteString,value:com.google.protobuf.ByteString):com.google.bigtable.v2.Mutation" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newSetCell</span><span class="params">(<span name="familyName">familyName: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="columnQualifier">columnQualifier: <span class="extype" name="com.google.protobuf.ByteString">ByteString</span></span>, <span name="value">value: <span class="extype" name="com.google.protobuf.ByteString">ByteString</span></span>)</span><span class="result">: <span class="extype" name="com.google.bigtable.v2.Mutation">Mutation</span></span>
-      </span>
-      
-      <p class="shortcomment cmt">New <code>SetCell</code> mutation using the current timestamp.</p>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="index.html" class="extype" name="com.spotify.scio.bigtable">com.spotify.scio.bigtable</a>] </dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#notify():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -580,7 +765,7 @@
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -596,10 +781,74 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn#populateDisplayData" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="populateDisplayData(x$1:org.apache.beam.sdk.transforms.display.DisplayData.Builder):Unit"></a><a id="populateDisplayData(Builder):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#populateDisplayData(x$1:org.apache.beam.sdk.transforms.display.DisplayData.Builder):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">populateDisplayData</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="org.apache.beam.sdk.transforms.display.DisplayData.Builder">Builder</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn → HasDisplayData</dd></dl></div>
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#processElement" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="processElement(c:BigtableDoFn.this.ProcessContext,window:org.apache.beam.sdk.transforms.windowing.BoundedWindow):Unit"></a><a id="processElement(ProcessContext,BoundedWindow):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#processElement(c:BigtableDoFn.this.ProcessContext,window:org.apache.beam.sdk.transforms.windowing.BoundedWindow):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">processElement</span><span class="params">(<span name="c">c: <a href="#ProcessContextextendsDoFn[InputT,OutputT]#WindowedContext" class="extmbr" name="com.spotify.scio.bigtable.BigtableDoFn.ProcessContext">ProcessContext</a></span>, <span name="window">window: <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/transforms/windowing/BoundedWindow.html#org.apache.beam.sdk.transforms.windowing.BoundedWindow" class="extype" name="org.apache.beam.sdk.transforms.windowing.BoundedWindow">BoundedWindow</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#setup" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="setup():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#setup():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">setup</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      
+    </li><li name="com.spotify.scio.bigtable.BigtableDoFn#startBundle" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="startBundle():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#startBundle():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">startBundle</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -615,7 +864,7 @@
     </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#toString():String" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#toString():String" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -631,7 +880,7 @@
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#wait():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -653,7 +902,7 @@
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -675,7 +924,7 @@
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/Mutations$.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -702,11 +951,62 @@
 
         
 
-        
+        <div class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="org.apache.beam.sdk.transforms.DoFn#getAllowedTimestampSkew" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getAllowedTimestampSkew():org.joda.time.Duration"></a><a id="getAllowedTimestampSkew():Duration"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#getAllowedTimestampSkew():org.joda.time.Duration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version ) see corresponding Javadoc for more information.">getAllowedTimestampSkew</span><span class="params">()</span><span class="result">: <span class="extype" name="org.joda.time.Duration">Duration</span></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd><dt>Annotations</dt><dd>
+                <span class="name">@Deprecated</span>
+              
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version )</i> see corresponding Javadoc for more information.</p></dd></dl></div>
+    </li><li name="org.apache.beam.sdk.transforms.DoFn#prepareForProcessing" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="prepareForProcessing():Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigtable/BigtableDoFn.html#prepareForProcessing():Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version ) see corresponding Javadoc for more information.">prepareForProcessing</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>DoFn</dd><dt>Annotations</dt><dd>
+                <span class="name">@Deprecated</span>
+              
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version )</i> see corresponding Javadoc for more information.</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="org.apache.beam.sdk.transforms.DoFn">
+              <h3>Inherited from <span class="extype" name="org.apache.beam.sdk.transforms.DoFn">DoFn</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="org.apache.beam.sdk.values.KV">KV</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.Try">Try</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>]]]</h3>
+            </div><div class="parent" name="org.apache.beam.sdk.transforms.display.HasDisplayData">
+              <h3>Inherited from <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/transforms/display/HasDisplayData.html#org.apache.beam.sdk.transforms.display.HasDisplayData" class="extype" name="org.apache.beam.sdk.transforms.display.HasDisplayData">HasDisplayData</a></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html#java.io.Serializable" class="extype" name="java.io.Serializable">Serializable</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyRef" class="extype" name="scala.collection.immutable.List">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.Any" class="extype" name="scala.collection.immutable.List">Any</a></h3>

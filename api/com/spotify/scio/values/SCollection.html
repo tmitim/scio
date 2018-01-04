@@ -1203,6 +1203,41 @@ pipeline completes successfully.</p></div></div>
       <p class="shortcomment cmt">Compute the SCollection's data distribution using approximate <code>N</code>-tiles.</p><div class="fullcomment"><div class="comment cmt"><p>Compute the SCollection's data distribution using approximate <code>N</code>-tiles.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new SCollection whose single value is an <code>Iterable</code> of the approximate <code>N</code>-tiles of
 the elements</p></dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#randomSplit" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
+      <a id="randomSplit(weightA:Double,weightB:Double):(com.spotify.scio.values.SCollection[T],com.spotify.scio.values.SCollection[T],com.spotify.scio.values.SCollection[T])"></a><a id="randomSplit(Double,Double):(SCollection[T],SCollection[T],SCollection[T])"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#randomSplit(weightA:Double,weightB:Double):(com.spotify.scio.values.SCollection[T],com.spotify.scio.values.SCollection[T],com.spotify.scio.values.SCollection[T])" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">randomSplit</span><span class="params">(<span name="weightA">weightA: <a href="http://www.scala-lang.org/api/2.12.4/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>, <span name="weightB">weightB: <a href="http://www.scala-lang.org/api/2.12.4/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>)</span><span class="result">: (<a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>], <a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>], <a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>])</span>
+      </span>
+      
+      <p class="shortcomment cmt">Randomly splits this SCollection into three parts.</p><div class="fullcomment"><div class="comment cmt"><p>Randomly splits this SCollection into three parts.
+Note: <code>0 &lt; weightA + weightB &lt; 1</code>
+</p></div><dl class="paramcmts block"><dt class="param">weightA</dt><dd class="cmt"><p>weight for first SCollection, should be in the range <code>(0, 1)</code></p></dd><dt class="param">weightB</dt><dd class="cmt"><p>weight for second SCollection, should be in the range <code>(0, 1)</code></p></dd><dt>returns</dt><dd class="cmt"><p>split SCollections in a Tuple3</p></dd></dl></div>
+    </li><li name="com.spotify.scio.values.SCollection#randomSplit" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
+      <a id="randomSplit(weight:Double):(com.spotify.scio.values.SCollection[T],com.spotify.scio.values.SCollection[T])"></a><a id="randomSplit(Double):(SCollection[T],SCollection[T])"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#randomSplit(weight:Double):(com.spotify.scio.values.SCollection[T],com.spotify.scio.values.SCollection[T])" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">randomSplit</span><span class="params">(<span name="weight">weight: <a href="http://www.scala-lang.org/api/2.12.4/scala/Double.html#scala.Double" class="extype" name="scala.Double">Double</a></span>)</span><span class="result">: (<a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>], <a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>])</span>
+      </span>
+      
+      <p class="shortcomment cmt">Randomly splits this SCollection into two parts.</p><div class="fullcomment"><div class="comment cmt"><p>Randomly splits this SCollection into two parts.
+</p></div><dl class="paramcmts block"><dt class="param">weight</dt><dd class="cmt"><p>weight for left hand side SCollection, should be in the range <code>(0, 1)</code></p></dd><dt>returns</dt><dd class="cmt"><p>split SCollections in a Tuple2</p></dd></dl></div>
+    </li><li name="com.spotify.scio.values.SCollection#randomSplit" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
       <a id="randomSplit(weights:Array[Double]):Array[com.spotify.scio.values.SCollection[T]]"></a><a id="randomSplit(Array[Double]):Array[SCollection[T]]"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/values/SCollection.html#randomSplit(weights:Array[Double]):Array[com.spotify.scio.values.SCollection[T]]" title="Permalink">
