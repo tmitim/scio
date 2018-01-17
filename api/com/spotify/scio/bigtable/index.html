@@ -209,10 +209,6 @@ detects the query's dialect. To override this, start the query with either <code
                         <a href="Mutations$.html" title="Helper methods for Mutation.">Mutations</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
-                        <a class="class" href="package$$RichBigtableDoFnTry.html" title="Enhanced version of BigtableDoFn.Try with convenience methods."></a>
-                        <a href="package$$RichBigtableDoFnTry.html" title="Enhanced version of BigtableDoFn.Try with convenience methods.">RichBigtableDoFnTry</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
                         <a class="class" href="package$$RichRow.html" title="Enhanced version of Row with convenience methods."></a>
                         <a href="package$$RichRow.html" title="Enhanced version of Row with convenience methods.">RichRow</a>
                       </li><li class="current-entities indented4">
@@ -431,6 +427,23 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
+    </li><li name="com.spotify.scio.transforms" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="transforms"></a><a id="transforms:transforms"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/index.html#transforms" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Main package for transforms APIs." href="../transforms/index.html"><span class="name">transforms</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Main package for transforms APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for transforms APIs. Import all.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
     </li><li name="com.spotify.scio.util" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="util"></a><a id="util:util"></a>
       <span class="permalink">
@@ -544,9 +557,9 @@ detects the query's dialect. To override this, start the query with either <code
         <div id="types" class="types members">
               <h3>Type Members</h3>
               <ol><li name="com.spotify.scio.bigtable.BigtableDoFn" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="BigtableDoFn[A,B]extendsDoFn[A,org.apache.beam.sdk.values.KV[A,com.spotify.scio.bigtable.BigtableDoFn.Try[B]]]"></a><a id="BigtableDoFn[A,B]:BigtableDoFn[A,B]"></a>
+      <a id="BigtableDoFn[A,B]extendsAsyncLookupDoFn[A,B,com.google.cloud.bigtable.grpc.BigtableSession]"></a><a id="BigtableDoFn[A,B]:BigtableDoFn[A,B]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/index.html#BigtableDoFn[A,B]extendsDoFn[A,org.apache.beam.sdk.values.KV[A,com.spotify.scio.bigtable.BigtableDoFn.Try[B]]]" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigtable/index.html#BigtableDoFn[A,B]extendsAsyncLookupDoFn[A,B,com.google.cloud.bigtable.grpc.BigtableSession]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -555,7 +568,7 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="BigtableDoFn.html"><span class="name">BigtableDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="org.apache.beam.sdk.transforms.DoFn">DoFn</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="org.apache.beam.sdk.values.KV">KV</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.Try">Try</span>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>]]]</span>
+        <a title="" href="BigtableDoFn.html"><span class="name">BigtableDoFn</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="../transforms/AsyncLookupDoFn.html" class="extype" name="com.spotify.scio.transforms.AsyncLookupDoFn">AsyncLookupDoFn</a>[<span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.A">A</span>, <span class="extype" name="com.spotify.scio.bigtable.BigtableDoFn.B">B</span>, <span class="extype" name="com.google.cloud.bigtable.grpc.BigtableSession">BigtableSession</span>]</span>
       </span>
       
       
@@ -655,22 +668,6 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       
-    </li><li name="com.spotify.scio.bigtable.RichBigtableDoFnTry" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="RichBigtableDoFnTry[A]extendsAnyVal"></a><a id="RichBigtableDoFnTry[A]:RichBigtableDoFnTry[A]"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigtable/index.html#RichBigtableDoFnTry[A]extendsAnyVal" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="Enhanced version of BigtableDoFn.Try with convenience methods." href="package$$RichBigtableDoFnTry.html"><span class="name">RichBigtableDoFnTry</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.4/scala/collection/immutable/List.html#scala.AnyVal" class="extype" name="scala.collection.immutable.List">AnyVal</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Enhanced version of <code>BigtableDoFn.Try</code> with convenience methods.</p>
     </li><li name="com.spotify.scio.bigtable.RichRow" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="RichRowextendsAnyVal"></a><a id="RichRow:RichRow"></a>
       <span class="permalink">

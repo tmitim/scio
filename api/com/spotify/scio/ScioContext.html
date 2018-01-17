@@ -383,6 +383,23 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
+    </li><li name="com.spotify.scio.transforms" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="transforms"></a><a id="transforms:transforms"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/index.html#transforms" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="Main package for transforms APIs." href="transforms/index.html"><span class="name">transforms</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Main package for transforms APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for transforms APIs. Import all.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
     </li><li name="com.spotify.scio.util" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="util"></a><a id="util:util"></a>
       <span class="permalink">
@@ -718,9 +735,9 @@ behavior, start the query string with <code>#legacysql</code> or <code>#standard
       
       <p class="shortcomment cmt">Close the context.</p><div class="fullcomment"><div class="comment cmt"><p>Close the context. No operation can be performed once the context is closed.</p></div></div>
     </li><li name="com.spotify.scio.ScioContext#customInput" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="input">
-      <a id="customInput[T,I&gt;:org.apache.beam.sdk.values.PBegin&lt;:org.apache.beam.sdk.values.PInput](name:String,transform:org.apache.beam.sdk.transforms.PTransform[I,org.apache.beam.sdk.values.PCollection[T]])(implicitevidence$18:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="customInput[T,I&lt;:PInput&gt;:PBegin](String,PTransform[I,PCollection[T]])(ClassTag[T]):SCollection[T]"></a>
+      <a id="customInput[T,I&gt;:org.apache.beam.sdk.values.PBegin&lt;:org.apache.beam.sdk.values.PInput](name:String,transform:org.apache.beam.sdk.transforms.PTransform[I,org.apache.beam.sdk.values.PCollection[T]])(implicitevidence$22:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="customInput[T,I&lt;:PInput&gt;:PBegin](String,PTransform[I,PCollection[T]])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#customInput[T,I&gt;:org.apache.beam.sdk.values.PBegin&lt;:org.apache.beam.sdk.values.PInput](name:String,transform:org.apache.beam.sdk.transforms.PTransform[I,org.apache.beam.sdk.values.PCollection[T]])(implicitevidence$18:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#customInput[T,I&gt;:org.apache.beam.sdk.values.PBegin&lt;:org.apache.beam.sdk.values.PInput](name:String,transform:org.apache.beam.sdk.transforms.PTransform[I,org.apache.beam.sdk.values.PCollection[T]])(implicitevidence$22:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -993,9 +1010,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Get PipelineOptions as a more specific sub-type.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelize" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelize[K,V](elems:Map[K,V])(implicitevidence$20:scala.reflect.ClassTag[K],implicitevidence$21:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]"></a><a id="parallelize[K,V](Map[K,V])(ClassTag[K],ClassTag[V]):SCollection[(K,V)]"></a>
+      <a id="parallelize[K,V](elems:Map[K,V])(implicitevidence$24:scala.reflect.ClassTag[K],implicitevidence$25:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]"></a><a id="parallelize[K,V](Map[K,V])(ClassTag[K],ClassTag[V]):SCollection[(K,V)]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[K,V](elems:Map[K,V])(implicitevidence$20:scala.reflect.ClassTag[K],implicitevidence$21:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[K,V](elems:Map[K,V])(implicitevidence$24:scala.reflect.ClassTag[K],implicitevidence$25:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1009,9 +1026,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Distribute a local Scala <code>Map</code> to form an SCollection.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelize" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelize[T](elems:Iterable[T])(implicitevidence$19:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelize[T](Iterable[T])(ClassTag[T]):SCollection[T]"></a>
+      <a id="parallelize[T](elems:Iterable[T])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelize[T](Iterable[T])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[T](elems:Iterable[T])(implicitevidence$19:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[T](elems:Iterable[T])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1025,9 +1042,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Distribute a local Scala <code>Iterable</code> to form an SCollection.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelizeTimestamped" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[T],Iterable[Instant])(ClassTag[T]):SCollection[T]"></a>
+      <a id="parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$27:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[T],Iterable[Instant])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$27:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1041,9 +1058,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Distribute a local Scala <code>Iterable</code> with timestamps to form an SCollection.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelizeTimestamped" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$22:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[(T,Instant)])(ClassTag[T]):SCollection[T]"></a>
+      <a id="parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$26:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[(T,Instant)])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$22:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$26:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1090,9 +1107,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       <p class="shortcomment cmt">Get an SCollection for a Protobuf file.</p><div class="fullcomment"><div class="comment cmt"><p>Get an SCollection for a Protobuf file.</p><p>Protobuf messages are serialized into <code>Array[Byte]</code> and stored in Avro files to leverage
 Avro's block file format.</p></div></div>
     </li><li name="com.spotify.scio.ScioContext#pubsubSubscription" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="input">
-      <a id="pubsubSubscription[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$13:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="pubsubSubscription[T](String,String,String)(ClassTag[T]):SCollection[T]"></a>
+      <a id="pubsubSubscription[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$17:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="pubsubSubscription[T](String,String,String)(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#pubsubSubscription[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$13:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#pubsubSubscription[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$17:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1106,9 +1123,9 @@ Avro's block file format.</p></div></div>
       
       <p class="shortcomment cmt">Get an SCollection for a Pub/Sub subscription.</p>
     </li><li name="com.spotify.scio.ScioContext#pubsubSubscriptionWithAttributes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="input">
-      <a id="pubsubSubscriptionWithAttributes[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$16:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]"></a><a id="pubsubSubscriptionWithAttributes[T](String,String,String)(ClassTag[T]):SCollection[(T,Map[String,String])]"></a>
+      <a id="pubsubSubscriptionWithAttributes[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$20:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]"></a><a id="pubsubSubscriptionWithAttributes[T](String,String,String)(ClassTag[T]):SCollection[(T,Map[String,String])]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#pubsubSubscriptionWithAttributes[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$16:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#pubsubSubscriptionWithAttributes[T](sub:String,idAttribute:String,timestampAttribute:String)(implicitevidence$20:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1122,9 +1139,9 @@ Avro's block file format.</p></div></div>
       
       <p class="shortcomment cmt">Get an SCollection for a Pub/Sub subscription that includes message attributes.</p>
     </li><li name="com.spotify.scio.ScioContext#pubsubTopic" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="input">
-      <a id="pubsubTopic[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$14:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="pubsubTopic[T](String,String,String)(ClassTag[T]):SCollection[T]"></a>
+      <a id="pubsubTopic[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$18:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="pubsubTopic[T](String,String,String)(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#pubsubTopic[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$14:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#pubsubTopic[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$18:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1138,9 +1155,9 @@ Avro's block file format.</p></div></div>
       
       <p class="shortcomment cmt">Get an SCollection for a Pub/Sub topic.</p>
     </li><li name="com.spotify.scio.ScioContext#pubsubTopicWithAttributes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="input">
-      <a id="pubsubTopicWithAttributes[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$17:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]"></a><a id="pubsubTopicWithAttributes[T](String,String,String)(ClassTag[T]):SCollection[(T,Map[String,String])]"></a>
+      <a id="pubsubTopicWithAttributes[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$21:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]"></a><a id="pubsubTopicWithAttributes[T](String,String,String)(ClassTag[T]):SCollection[(T,Map[String,String])]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#pubsubTopicWithAttributes[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$17:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#pubsubTopicWithAttributes[T](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$21:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[(T,Map[String,String])]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1270,9 +1287,9 @@ Avro's block file format.</p></div></div>
 <a href="avro/types/AvroType.html" class="extype" name="com.spotify.scio.avro.types.AvroType">AvroType.toSchema</a>.
 </p></div></div>
     </li><li name="com.spotify.scio.ScioContext#typedBigQuery" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="typedBigQuery[T&lt;:com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation](newSource:String)(implicitevidence$10:scala.reflect.ClassTag[T],implicitevidence$11:reflect.runtime.universe.TypeTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="typedBigQuery[T&lt;:HasAnnotation](String)(ClassTag[T],scala.reflect.api.JavaUniverse.TypeTag[T]):SCollection[T]"></a>
+      <a id="typedBigQuery[T&lt;:com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation](newSource:String)(implicitevidence$14:scala.reflect.ClassTag[T],implicitevidence$15:reflect.runtime.universe.TypeTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="typedBigQuery[T&lt;:HasAnnotation](String)(ClassTag[T],scala.reflect.api.JavaUniverse.TypeTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#typedBigQuery[T&lt;:com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation](newSource:String)(implicitevidence$10:scala.reflect.ClassTag[T],implicitevidence$11:reflect.runtime.universe.TypeTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#typedBigQuery[T&lt;:com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation](newSource:String)(implicitevidence$14:scala.reflect.ClassTag[T],implicitevidence$15:reflect.runtime.universe.TypeTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>

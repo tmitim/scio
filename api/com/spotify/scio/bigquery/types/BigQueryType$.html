@@ -607,6 +607,22 @@ example:</p><pre>@BigQueryType.toTable
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="com.spotify.scio.bigquery.types.BigQueryType#fromAvro" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="converters">
+      <a id="fromAvro[T]:org.apache.avro.generic.GenericRecord=&gt;T"></a><a id="fromAvro[T]:(GenericRecord)⇒T"></a>
+      <span class="permalink">
+      <a href="../../../../../com/spotify/scio/bigquery/types/BigQueryType$.html#fromAvro[T]:org.apache.avro.generic.GenericRecord=&gt;T" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">macro </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fromAvro</span><span class="tparams">[<span name="T">T</span>]</span><span class="result">: (<a href="https://avro.apache.org/docs/current/api/java/org/apache/avro/generic/GenericRecord.html#org.apache.avro.generic.GenericRecord" class="extype" name="org.apache.avro.generic.GenericRecord">GenericRecord</a>) ⇒ <span class="extype" name="com.spotify.scio.bigquery.types.BigQueryType.fromAvro.T">T</span></span>
+      </span>
+      
+      <p class="shortcomment cmt">Generate a converter function from Avro <span class="extype" name="GenericRecord">GenericRecord</span> to the given case class <code>T</code>.</p>
     </li><li name="com.spotify.scio.bigquery.types.BigQueryType#fromTableRow" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="converters">
       <a id="fromTableRow[T]:com.google.api.services.bigquery.model.TableRow=&gt;T"></a><a id="fromTableRow[T]:(google.api.services.bigquery.model.TableRow)⇒T"></a>
       <span class="permalink">
