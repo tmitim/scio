@@ -858,6 +858,40 @@ behavior, start the query string with <code>#legacysql</code> or <code>#standard
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.spotify.scio.ScioContext#initCounter" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="initCounter(namespace:String,name:String):org.apache.beam.sdk.metrics.Counter"></a><a id="initCounter(String,String):Counter"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#initCounter(namespace:String,name:String):org.apache.beam.sdk.metrics.Counter" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initCounter</span><span class="params">(<span name="namespace">namespace: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/metrics/Counter.html#org.apache.beam.sdk.metrics.Counter" class="extype" name="org.apache.beam.sdk.metrics.Counter">Counter</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Initialize a new <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/metrics/Counter.html" class="extype" name="org.apache.beam.sdk.metrics.Counter">Counter</a> metric.</p>
+    </li><li name="com.spotify.scio.ScioContext#initCounter" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="initCounter[T](name:String)(implicitevidence$28:scala.reflect.ClassTag[T]):org.apache.beam.sdk.metrics.Counter"></a><a id="initCounter[T](String)(ClassTag[T]):Counter"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#initCounter[T](name:String)(implicitevidence$28:scala.reflect.ClassTag[T]):org.apache.beam.sdk.metrics.Counter" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">initCounter</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.4/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.ScioContext.initCounter.T">T</span>]</span>)</span><span class="result">: <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/metrics/Counter.html#org.apache.beam.sdk.metrics.Counter" class="extype" name="org.apache.beam.sdk.metrics.Counter">Counter</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Initialize a new <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/metrics/Counter.html" class="extype" name="org.apache.beam.sdk.metrics.Counter">Counter</a> metric using <code>T</code> as namespace.</p><div class="fullcomment"><div class="comment cmt"><p>Initialize a new <a href="https://beam.apache.org/documentation/sdks/javadoc/2.2.0/org/apache/beam/sdk/metrics/Counter.html" class="extype" name="org.apache.beam.sdk.metrics.Counter">Counter</a> metric using <code>T</code> as namespace.
+Default is &quot;com.spotify.scio.ScioMetrics&quot; if <code>T</code> is not specified.
+</p></div></div>
     </li><li name="com.spotify.scio.ScioContext#isClosed" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="isClosed:Boolean"></a>
       <span class="permalink">

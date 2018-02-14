@@ -143,6 +143,10 @@
                         <a href="BigQueryIO.html" title="">BigQueryIO</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="trait" href="BigTableMatchers.html" title="Trait with ScalaTest Matchers for SCollections specific to BigTable output."></a>
+                        <a href="BigTableMatchers.html" title="Trait with ScalaTest Matchers for SCollections specific to BigTable output.">BigTableMatchers</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="class" href="CustomIO.html" title=""></a>
                         <a href="CustomIO.html" title="">CustomIO</a>
                       </li><li class="current-entities indented4">
@@ -240,7 +244,7 @@
             <span class="toggle">
               Known Subclasses
             </span>
-            <div class="subClasses hiddenContent"><a href="PipelineSpec.html" class="extype" name="com.spotify.scio.testing.PipelineSpec">PipelineSpec</a></div>
+            <div class="subClasses hiddenContent"><a href="BigTableMatchers.html" class="extype" name="com.spotify.scio.testing.BigTableMatchers">BigTableMatchers</a>, <a href="PipelineSpec.html" class="extype" name="com.spotify.scio.testing.PipelineSpec">PipelineSpec</a></div>
           </div></div>
         
 
@@ -480,6 +484,23 @@
       </span>
       
       <p class="shortcomment cmt">Assert that the SCollection in question contains a single provided element.</p>
+    </li><li name="com.spotify.scio.testing.SCollectionMatchers#containValue" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="containValue[T](value:T)(implicitevidence$15:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="containValue[T](T)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#containValue[T](value:T)(implicitevidence$15:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">containValue</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="com.spotify.scio.testing.SCollectionMatchers.containValue.T">T</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.4/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.testing.SCollectionMatchers.containValue.T">T</span>]</span>)</span><span class="result">: <a href="SCollectionMatchers$IterableMatcher.html" class="extype" name="com.spotify.scio.testing.SCollectionMatchers.IterableMatcher">IterableMatcher</a>[<a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.testing.SCollectionMatchers.containValue.T">T</span>], <span class="extype" name="com.spotify.scio.testing.SCollectionMatchers.containValue.T">T</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Assert that the SCollection in question contains the provided element without making
+ assumptions about other elements in the collection.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -497,9 +518,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="com.spotify.scio.testing.SCollectionMatchers#equalMapOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="equalMapOf[K,V](value:Map[K,V])(implicitevidence$15:scala.reflect.ClassTag[K],implicitevidence$16:scala.reflect.ClassTag[V]):SCollectionMatchers.this.SingleMatcher[com.spotify.scio.values.SCollection[(K,V)],java.util.Map[K,V]]"></a><a id="equalMapOf[K,V](Map[K,V])(ClassTag[K],ClassTag[V]):SingleMatcher[SCollection[(K,V)],Map[K,V]]"></a>
+      <a id="equalMapOf[K,V](value:Map[K,V])(implicitevidence$16:scala.reflect.ClassTag[K],implicitevidence$17:scala.reflect.ClassTag[V]):SCollectionMatchers.this.SingleMatcher[com.spotify.scio.values.SCollection[(K,V)],java.util.Map[K,V]]"></a><a id="equalMapOf[K,V](Map[K,V])(ClassTag[K],ClassTag[V]):SingleMatcher[SCollection[(K,V)],Map[K,V]]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#equalMapOf[K,V](value:Map[K,V])(implicitevidence$15:scala.reflect.ClassTag[K],implicitevidence$16:scala.reflect.ClassTag[V]):SCollectionMatchers.this.SingleMatcher[com.spotify.scio.values.SCollection[(K,V)],java.util.Map[K,V]]" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#equalMapOf[K,V](value:Map[K,V])(implicitevidence$16:scala.reflect.ClassTag[K],implicitevidence$17:scala.reflect.ClassTag[V]):SCollectionMatchers.this.SingleMatcher[com.spotify.scio.values.SCollection[(K,V)],java.util.Map[K,V]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -529,9 +550,9 @@
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.spotify.scio.testing.SCollectionMatchers#exist" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="exist[T](predicate:T=&gt;Boolean)(implicitevidence$19:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="exist[T]((T)⇒Boolean)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
+      <a id="exist[T](predicate:T=&gt;Boolean)(implicitevidence$20:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="exist[T]((T)⇒Boolean)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#exist[T](predicate:T=&gt;Boolean)(implicitevidence$19:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#exist[T](predicate:T=&gt;Boolean)(implicitevidence$20:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -567,9 +588,9 @@
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.testing.SCollectionMatchers#forAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="forAll[T](predicate:T=&gt;Boolean)(implicitevidence$18:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="forAll[T]((T)⇒Boolean)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
+      <a id="forAll[T](predicate:T=&gt;Boolean)(implicitevidence$19:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="forAll[T]((T)⇒Boolean)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#forAll[T](predicate:T=&gt;Boolean)(implicitevidence$18:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#forAll[T](predicate:T=&gt;Boolean)(implicitevidence$19:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -808,9 +829,9 @@ The assertion expect outputs to be produced to the provided window exactly once.
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.testing.SCollectionMatchers#satisfy" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="satisfy[T](predicate:Iterable[T]=&gt;Boolean)(implicitevidence$17:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="satisfy[T]((Iterable[T])⇒Boolean)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
+      <a id="satisfy[T](predicate:Iterable[T]=&gt;Boolean)(implicitevidence$18:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]"></a><a id="satisfy[T]((Iterable[T])⇒Boolean)(ClassTag[T]):IterableMatcher[SCollection[T],T]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#satisfy[T](predicate:Iterable[T]=&gt;Boolean)(implicitevidence$17:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/SCollectionMatchers.html#satisfy[T](predicate:Iterable[T]=&gt;Boolean)(implicitevidence$18:scala.reflect.ClassTag[T]):SCollectionMatchers.this.IterableMatcher[com.spotify.scio.values.SCollection[T],T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
