@@ -445,6 +445,54 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="com.spotify.scio.bigquery.BigQueryClient#exportTableAsAvro" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="exportTableAsAvro(sourceTable:String,destinationUris:List[String],gzipCompression:Boolean):Unit"></a><a id="exportTableAsAvro(String,List[String],Boolean):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#exportTableAsAvro(sourceTable:String,destinationUris:List[String],gzipCompression:Boolean):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">exportTableAsAvro</span><span class="params">(<span name="sourceTable">sourceTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationUris">destinationUris: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="gzipCompression">gzipCompression: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Export a table as Avro</p>
+    </li><li name="com.spotify.scio.bigquery.BigQueryClient#exportTableAsCsv" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="exportTableAsCsv(sourceTable:String,destinationUris:List[String],gzipCompression:Boolean,fieldDelimiter:Option[String],printHeader:Option[Boolean]):Unit"></a><a id="exportTableAsCsv(String,List[String],Boolean,Option[String],Option[Boolean]):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#exportTableAsCsv(sourceTable:String,destinationUris:List[String],gzipCompression:Boolean,fieldDelimiter:Option[String],printHeader:Option[Boolean]):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">exportTableAsCsv</span><span class="params">(<span name="sourceTable">sourceTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationUris">destinationUris: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="gzipCompression">gzipCompression: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="fieldDelimiter">fieldDelimiter: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="printHeader">printHeader: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Export a table as Csv</p>
+    </li><li name="com.spotify.scio.bigquery.BigQueryClient#exportTableAsJson" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="exportTableAsJson(sourceTable:String,destinationUris:List[String],gzipCompression:Boolean):Unit"></a><a id="exportTableAsJson(String,List[String],Boolean):Unit"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#exportTableAsJson(sourceTable:String,destinationUris:List[String],gzipCompression:Boolean):Unit" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">exportTableAsJson</span><span class="params">(<span name="sourceTable">sourceTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationUris">destinationUris: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="gzipCompression">gzipCompression: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Export a table as Json</p>
     </li><li name="com.spotify.scio.bigquery.BigQueryClient#extractLocation" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="extractLocation(sqlQuery:String):Option[String]"></a><a id="extractLocation(String):Option[String]"></a>
       <span class="permalink">
@@ -725,6 +773,54 @@ bq.getTypedRows[Row](<span class="lit">"SELECT * FROM [publicdata:samples.gsod] 
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.spotify.scio.bigquery.BigQueryClient#loadTableFromAvro" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="loadTableFromAvro(sources:List[String],destinationTable:String,createDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition,writeDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition,schema:Option[com.google.api.services.bigquery.model.TableSchema],maxBadRecords:Int,encoding:Option[String]):com.google.api.services.bigquery.model.TableReference"></a><a id="loadTableFromAvro(List[String],String,CreateDisposition,WriteDisposition,Option[TableSchema],Int,Option[String]):TableReference"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#loadTableFromAvro(sources:List[String],destinationTable:String,createDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition,writeDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition,schema:Option[com.google.api.services.bigquery.model.TableSchema],maxBadRecords:Int,encoding:Option[String]):com.google.api.services.bigquery.model.TableReference" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loadTableFromAvro</span><span class="params">(<span name="sources">sources: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="destinationTable">destinationTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="createDisposition">createDisposition: <span class="extype" name="org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition">CreateDisposition</span> = <span class="symbol"><span class="name"><a href="index.html#CREATE_IF_NEEDED:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition">CREATE_IF_NEEDED</a></span></span></span>, <span name="writeDisposition">writeDisposition: <span class="extype" name="org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition">WriteDisposition</span> = <span class="symbol"><span class="name"><a href="index.html#WRITE_APPEND:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition">WRITE_APPEND</a></span></span></span>, <span name="schema">schema: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://developers.google.com/resources/api-libraries/documentation/bigquery/v2/java/latest/com/google/api/services/bigquery/model/TableSchema.html#com.google.api.services.bigquery.model.TableSchema" class="extype" name="com.google.api.services.bigquery.model.TableSchema">TableSchema</a>] = <span class="symbol">None</span></span>, <span name="maxBadRecords">maxBadRecords: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>, <span name="encoding">encoding: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="https://developers.google.com/resources/api-libraries/documentation/bigquery/v2/java/latest/com/google/api/services/bigquery/model/TableReference.html#com.google.api.services.bigquery.model.TableReference" class="extype" name="com.google.api.services.bigquery.model.TableReference">TableReference</a></span>
+      </span>
+      
+      
+    </li><li name="com.spotify.scio.bigquery.BigQueryClient#loadTableFromCsv" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="loadTableFromCsv(sources:List[String],destinationTable:String,createDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition,writeDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition,schema:Option[com.google.api.services.bigquery.model.TableSchema],autodetect:Boolean,allowJaggedRows:Boolean,allowQuotedNewLines:Boolean,quote:Option[String],maxBadRecords:Int,skipLeadingRows:Int,fieldDelimiter:Option[String],ignoreUnknownValues:Boolean,encoding:Option[String]):com.google.api.services.bigquery.model.TableReference"></a><a id="loadTableFromCsv(List[String],String,CreateDisposition,WriteDisposition,Option[TableSchema],Boolean,Boolean,Boolean,Option[String],Int,Int,Option[String],Boolean,Option[String]):TableReference"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#loadTableFromCsv(sources:List[String],destinationTable:String,createDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition,writeDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition,schema:Option[com.google.api.services.bigquery.model.TableSchema],autodetect:Boolean,allowJaggedRows:Boolean,allowQuotedNewLines:Boolean,quote:Option[String],maxBadRecords:Int,skipLeadingRows:Int,fieldDelimiter:Option[String],ignoreUnknownValues:Boolean,encoding:Option[String]):com.google.api.services.bigquery.model.TableReference" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loadTableFromCsv</span><span class="params">(<span name="sources">sources: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="destinationTable">destinationTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="createDisposition">createDisposition: <span class="extype" name="org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition">CreateDisposition</span> = <span class="symbol"><span class="name"><a href="index.html#CREATE_IF_NEEDED:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition">CREATE_IF_NEEDED</a></span></span></span>, <span name="writeDisposition">writeDisposition: <span class="extype" name="org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition">WriteDisposition</span> = <span class="symbol"><span class="name"><a href="index.html#WRITE_APPEND:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition">WRITE_APPEND</a></span></span></span>, <span name="schema">schema: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://developers.google.com/resources/api-libraries/documentation/bigquery/v2/java/latest/com/google/api/services/bigquery/model/TableSchema.html#com.google.api.services.bigquery.model.TableSchema" class="extype" name="com.google.api.services.bigquery.model.TableSchema">TableSchema</a>] = <span class="symbol">None</span></span>, <span name="autodetect">autodetect: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="allowJaggedRows">allowJaggedRows: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="allowQuotedNewLines">allowQuotedNewLines: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="quote">quote: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="maxBadRecords">maxBadRecords: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>, <span name="skipLeadingRows">skipLeadingRows: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>, <span name="fieldDelimiter">fieldDelimiter: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>, <span name="ignoreUnknownValues">ignoreUnknownValues: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="encoding">encoding: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="https://developers.google.com/resources/api-libraries/documentation/bigquery/v2/java/latest/com/google/api/services/bigquery/model/TableReference.html#com.google.api.services.bigquery.model.TableReference" class="extype" name="com.google.api.services.bigquery.model.TableReference">TableReference</a></span>
+      </span>
+      
+      
+    </li><li name="com.spotify.scio.bigquery.BigQueryClient#loadTableFromJson" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="loadTableFromJson(sources:List[String],destinationTable:String,createDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition,writeDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition,schema:Option[com.google.api.services.bigquery.model.TableSchema],autodetect:Boolean,maxBadRecords:Int,ignoreUnknownValues:Boolean,encoding:Option[String]):com.google.api.services.bigquery.model.TableReference"></a><a id="loadTableFromJson(List[String],String,CreateDisposition,WriteDisposition,Option[TableSchema],Boolean,Int,Boolean,Option[String]):TableReference"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#loadTableFromJson(sources:List[String],destinationTable:String,createDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition,writeDisposition:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition,schema:Option[com.google.api.services.bigquery.model.TableSchema],autodetect:Boolean,maxBadRecords:Int,ignoreUnknownValues:Boolean,encoding:Option[String]):com.google.api.services.bigquery.model.TableReference" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">loadTableFromJson</span><span class="params">(<span name="sources">sources: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="destinationTable">destinationTable: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="createDisposition">createDisposition: <span class="extype" name="org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition">CreateDisposition</span> = <span class="symbol"><span class="name"><a href="index.html#CREATE_IF_NEEDED:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition">CREATE_IF_NEEDED</a></span></span></span>, <span name="writeDisposition">writeDisposition: <span class="extype" name="org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition">WriteDisposition</span> = <span class="symbol"><span class="name"><a href="index.html#WRITE_APPEND:org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition">WRITE_APPEND</a></span></span></span>, <span name="schema">schema: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<a href="https://developers.google.com/resources/api-libraries/documentation/bigquery/v2/java/latest/com/google/api/services/bigquery/model/TableSchema.html#com.google.api.services.bigquery.model.TableSchema" class="extype" name="com.google.api.services.bigquery.model.TableSchema">TableSchema</a>] = <span class="symbol">None</span></span>, <span name="autodetect">autodetect: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="maxBadRecords">maxBadRecords: <a href="http://www.scala-lang.org/api/2.12.4/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a> = <span class="symbol">0</span></span>, <span name="ignoreUnknownValues">ignoreUnknownValues: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">false</span></span>, <span name="encoding">encoding: <a href="http://www.scala-lang.org/api/2.12.4/scala/Option.html#scala.Option" class="extype" name="scala.Option">Option</a>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">None</span></span>)</span><span class="result">: <a href="https://developers.google.com/resources/api-libraries/documentation/bigquery/v2/java/latest/com/google/api/services/bigquery/model/TableReference.html#com.google.api.services.bigquery.model.TableReference" class="extype" name="com.google.api.services.bigquery.model.TableReference">TableReference</a></span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -934,9 +1030,9 @@ exist, throws in other cases (BigQuery exception, network issue etc.).
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.bigquery.BigQueryClient#waitForJobs" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="waitForJobs(jobs:com.spotify.scio.bigquery.QueryJob*):Unit"></a><a id="waitForJobs(QueryJob*):Unit"></a>
+      <a id="waitForJobs(jobs:com.spotify.scio.bigquery.BigQueryJob*):Unit"></a><a id="waitForJobs(BigQueryJob*):Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#waitForJobs(jobs:com.spotify.scio.bigquery.QueryJob*):Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/bigquery/BigQueryClient.html#waitForJobs(jobs:com.spotify.scio.bigquery.BigQueryJob*):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -945,7 +1041,7 @@ exist, throws in other cases (BigQuery exception, network issue etc.).
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">waitForJobs</span><span class="params">(<span name="jobs">jobs: <span class="extype" name="com.spotify.scio.bigquery.QueryJob">QueryJob</span>*</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
+        <span class="name">waitForJobs</span><span class="params">(<span name="jobs">jobs: <span class="extype" name="com.spotify.scio.bigquery.BigQueryJob">BigQueryJob</span>*</span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/Unit.html#scala.Unit" class="extype" name="scala.Unit">Unit</a></span>
       </span>
       
       <p class="shortcomment cmt">Wait for all jobs to finish.</p>

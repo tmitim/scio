@@ -944,6 +944,22 @@ completes successfully.
       </span>
       
       <p class="shortcomment cmt">Retrieve per step values of a single gauge from the pipeline.</p>
+    </li><li name="com.spotify.scio.ScioResult#getAwaitDuration" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getAwaitDuration:scala.concurrent.duration.Duration"></a><a id="getAwaitDuration:Duration"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/ScioResult.html#getAwaitDuration:scala.concurrent.duration.Duration" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getAwaitDuration</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/duration/Duration.html#scala.concurrent.duration.Duration" class="extype" name="scala.concurrent.duration.Duration">Duration</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">Get the timeout period of the Scio job.</p><div class="fullcomment"><div class="comment cmt"><p>Get the timeout period of the Scio job. Default to <code>Duration.Inf</code>.</p></div></div>
     </li><li name="com.spotify.scio.ScioResult#getBeamMetrics" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getBeamMetrics:com.spotify.scio.metrics.BeamMetrics"></a><a id="getBeamMetrics:BeamMetrics"></a>
       <span class="permalink">
@@ -1233,9 +1249,9 @@ completes successfully.
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.ScioResult#waitUntilDone" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="waitUntilDone(duration:scala.concurrent.duration.Duration):com.spotify.scio.ScioResult"></a><a id="waitUntilDone(Duration):ScioResult"></a>
+      <a id="waitUntilDone(duration:scala.concurrent.duration.Duration,cancelJob:Boolean):com.spotify.scio.ScioResult"></a><a id="waitUntilDone(Duration,Boolean):ScioResult"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioResult.html#waitUntilDone(duration:scala.concurrent.duration.Duration):com.spotify.scio.ScioResult" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioResult.html#waitUntilDone(duration:scala.concurrent.duration.Duration,cancelJob:Boolean):com.spotify.scio.ScioResult" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1244,17 +1260,17 @@ completes successfully.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">waitUntilDone</span><span class="params">(<span name="duration">duration: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/duration/Duration.html#scala.concurrent.duration.Duration" class="extype" name="scala.concurrent.duration.Duration">Duration</a> = <span class="symbol">Duration.Inf</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.ScioResult">ScioResult</a></span>
+        <span class="name">waitUntilDone</span><span class="params">(<span name="duration">duration: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/duration/Duration.html#scala.concurrent.duration.Duration" class="extype" name="scala.concurrent.duration.Duration">Duration</a> = <span class="symbol"><span class="name"><a href="#getAwaitDuration:scala.concurrent.duration.Duration">getAwaitDuration</a></span></span></span>, <span name="cancelJob">cancelJob: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">true</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.ScioResult">ScioResult</a></span>
       </span>
       
       <p class="shortcomment cmt">Wait until the pipeline finishes with the State <code>DONE</code> (as opposed to <code>CANCELLED</code> or
 <code>FAILED</code>).</p><div class="fullcomment"><div class="comment cmt"><p>Wait until the pipeline finishes with the State <code>DONE</code> (as opposed to <code>CANCELLED</code> or
 <code>FAILED</code>). Throw exception otherwise.
 </p></div></div>
-    </li><li name="com.spotify.scio.ScioResult#waitUntilFinish" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="waitUntilFinish(duration:scala.concurrent.duration.Duration):com.spotify.scio.ScioResult"></a><a id="waitUntilFinish(Duration):ScioResult"></a>
+    </li><li name="com.spotify.scio.ScioResult#waitUntilFinish" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="waitUntilFinish(duration:scala.concurrent.duration.Duration,cancelJob:Boolean):com.spotify.scio.ScioResult"></a><a id="waitUntilFinish(Duration,Boolean):ScioResult"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioResult.html#waitUntilFinish(duration:scala.concurrent.duration.Duration):com.spotify.scio.ScioResult" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioResult.html#waitUntilFinish(duration:scala.concurrent.duration.Duration,cancelJob:Boolean):com.spotify.scio.ScioResult" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1263,10 +1279,11 @@ completes successfully.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">waitUntilFinish</span><span class="params">(<span name="duration">duration: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/duration/Duration.html#scala.concurrent.duration.Duration" class="extype" name="scala.concurrent.duration.Duration">Duration</a> = <span class="symbol">Duration.Inf</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.ScioResult">ScioResult</a></span>
+        <span class="name">waitUntilFinish</span><span class="params">(<span name="duration">duration: <a href="http://www.scala-lang.org/api/2.12.4/scala/concurrent/duration/Duration.html#scala.concurrent.duration.Duration" class="extype" name="scala.concurrent.duration.Duration">Duration</a> = <span class="symbol"><span class="name"><a href="#getAwaitDuration:scala.concurrent.duration.Duration">getAwaitDuration</a></span></span></span>, <span name="cancelJob">cancelJob: <a href="http://www.scala-lang.org/api/2.12.4/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">true</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.ScioResult">ScioResult</a></span>
       </span>
       
-      <p class="shortcomment cmt">Wait until the pipeline finishes.</p>
+      <p class="shortcomment cmt">Wait until the pipeline finishes.</p><div class="fullcomment"><div class="comment cmt"><p>Wait until the pipeline finishes. If timeout duration is exceeded and <code>cancelJob</code> is set,
+cancel the internal <span class="extype" name="PipelineResult">PipelineResult</span>.</p></div></div>
     </li>
               </ol>
             </div>
