@@ -622,7 +622,7 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="com.spotify.scio.values.SCollection#unionAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.spotify.scio.values.SCollection#unionAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="unionAll[T](scs:Iterable[com.spotify.scio.values.SCollection[T]])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="unionAll[T](Iterable[SCollection[T]])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/values/SCollection$.html#unionAll[T](scs:Iterable[com.spotify.scio.values.SCollection[T]])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
@@ -637,7 +637,10 @@
         <span class="name">unionAll</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="scs">scs: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.unionAll.T">T</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.5/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.values.SCollection.unionAll.T">T</span>]</span>)</span><span class="result">: <a href="SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.unionAll.T">T</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Create a union of multiple SCollections</p>
+      <p class="shortcomment cmt">Create a union of multiple <a href="SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> instances.</p><div class="fullcomment"><div class="comment cmt"><p>Create a union of multiple <a href="SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> instances.
+Will throw an exception if the provided iterable is empty.
+For a version that accepts empty iterables, see <a href="../ScioContext.html#unionAll[T](scs:Iterable[com.spotify.scio.values.SCollection[T]])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" class="extmbr" name="com.spotify.scio.ScioContext#unionAll">ScioContext#unionAll</a>.
+</p></div></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

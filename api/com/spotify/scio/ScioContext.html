@@ -446,6 +446,10 @@ detects the query's dialect. To override this, start the query with either <code
                         <a href="DistCacheScioContext.html" title="An enhanced ScioContext with distributed cache features.">DistCacheScioContext</a>
                       </li><li class="current-entities indented3">
                         <span class="separator"></span>
+                        <a class="object" href="JavaConverters$.html" title=""></a>
+                        <a href="JavaConverters$.html" title="">JavaConverters</a>
+                      </li><li class="current-entities indented3">
+                        <span class="separator"></span>
                         <a class="trait" href="RunnerContext.html" title="Runner specific context."></a>
                         <a href="RunnerContext.html" title="Runner specific context.">RunnerContext</a>
                       </li><li class="current-entities indented3">
@@ -766,6 +770,22 @@ behavior, start the query string with <code>#legacysql</code> or <code>#standard
       </span>
       
       <p class="shortcomment cmt">Get an SCollection for a Datastore query.</p>
+    </li><li name="com.spotify.scio.ScioContext#empty" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="empty[T]()(implicitevidence$24:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="empty[T]()(ClassTag[T]):SCollection[T]"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#empty[T]()(implicitevidence$24:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">empty</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">()</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.5/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.ScioContext.empty.T">T</span>]</span>)</span><span class="result">: <a href="values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.ScioContext.empty.T">T</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Form an empty SCollection.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
@@ -875,9 +895,9 @@ behavior, start the query string with <code>#legacysql</code> or <code>#standard
       
       <p class="shortcomment cmt">Initialize a new <a href="https://beam.apache.org/documentation/sdks/javadoc/2.4.0/org/apache/beam/sdk/metrics/Counter.html" class="extype" name="org.apache.beam.sdk.metrics.Counter">Counter</a> metric.</p>
     </li><li name="com.spotify.scio.ScioContext#initCounter" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="initCounter[T](name:String)(implicitevidence$28:scala.reflect.ClassTag[T]):org.apache.beam.sdk.metrics.Counter"></a><a id="initCounter[T](String)(ClassTag[T]):Counter"></a>
+      <a id="initCounter[T](name:String)(implicitevidence$30:scala.reflect.ClassTag[T]):org.apache.beam.sdk.metrics.Counter"></a><a id="initCounter[T](String)(ClassTag[T]):Counter"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#initCounter[T](name:String)(implicitevidence$28:scala.reflect.ClassTag[T]):org.apache.beam.sdk.metrics.Counter" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#initCounter[T](name:String)(implicitevidence$30:scala.reflect.ClassTag[T]):org.apache.beam.sdk.metrics.Counter" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1044,9 +1064,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Get PipelineOptions as a more specific sub-type.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelize" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelize[K,V](elems:Map[K,V])(implicitevidence$24:scala.reflect.ClassTag[K],implicitevidence$25:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]"></a><a id="parallelize[K,V](Map[K,V])(ClassTag[K],ClassTag[V]):SCollection[(K,V)]"></a>
+      <a id="parallelize[K,V](elems:Map[K,V])(implicitevidence$26:scala.reflect.ClassTag[K],implicitevidence$27:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]"></a><a id="parallelize[K,V](Map[K,V])(ClassTag[K],ClassTag[V]):SCollection[(K,V)]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[K,V](elems:Map[K,V])(implicitevidence$24:scala.reflect.ClassTag[K],implicitevidence$25:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[K,V](elems:Map[K,V])(implicitevidence$26:scala.reflect.ClassTag[K],implicitevidence$27:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(K,V)]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1060,9 +1080,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Distribute a local Scala <code>Map</code> to form an SCollection.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelize" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelize[T](elems:Iterable[T])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelize[T](Iterable[T])(ClassTag[T]):SCollection[T]"></a>
+      <a id="parallelize[T](elems:Iterable[T])(implicitevidence$25:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelize[T](Iterable[T])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[T](elems:Iterable[T])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelize[T](elems:Iterable[T])(implicitevidence$25:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1076,9 +1096,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Distribute a local Scala <code>Iterable</code> to form an SCollection.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelizeTimestamped" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$27:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[T],Iterable[Instant])(ClassTag[T]):SCollection[T]"></a>
+      <a id="parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$29:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[T],Iterable[Instant])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$27:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[T],timestamps:Iterable[org.joda.time.Instant])(implicitevidence$29:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1092,9 +1112,9 @@ serialization is not guaranteed to be compatible across Scio releases.</p></div>
       
       <p class="shortcomment cmt">Distribute a local Scala <code>Iterable</code> with timestamps to form an SCollection.</p>
     </li><li name="com.spotify.scio.ScioContext#parallelizeTimestamped" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="in_memory">
-      <a id="parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$26:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[(T,Instant)])(ClassTag[T]):SCollection[T]"></a>
+      <a id="parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$28:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="parallelizeTimestamped[T](Iterable[(T,Instant)])(ClassTag[T]):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$26:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#parallelizeTimestamped[T](elems:Iterable[(T,org.joda.time.Instant)])(implicitevidence$28:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1355,6 +1375,22 @@ sc.typedBigQuery[Row](<span class="lit">"SELECT * FROM [publicdata:samples.gsod]
 supported. By default the query dialect will be automatically detected. To override this
 behavior, start the query string with <code>#legacysql</code> or <code>#standardsql</code>.
 </p></div></div>
+    </li><li name="com.spotify.scio.ScioContext#unionAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="unionAll[T](scs:Iterable[com.spotify.scio.values.SCollection[T]])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]"></a><a id="unionAll[T](Iterable[SCollection[T]])(ClassTag[T]):SCollection[T]"></a>
+      <span class="permalink">
+      <a href="../../../com/spotify/scio/ScioContext.html#unionAll[T](scs:Iterable[com.spotify.scio.values.SCollection[T]])(implicitevidence$23:scala.reflect.ClassTag[T]):com.spotify.scio.values.SCollection[T]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unionAll</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="scs">scs: <span class="extype" name="scala.Iterable">Iterable</span>[<a href="values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.ScioContext.unionAll.T">T</span>]]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.5/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.ScioContext.unionAll.T">T</span>]</span>)</span><span class="result">: <a href="values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.ScioContext.unionAll.T">T</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Create a union of multiple SCollections.</p><div class="fullcomment"><div class="comment cmt"><p>Create a union of multiple SCollections. Supports empty lists.</p></div></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">

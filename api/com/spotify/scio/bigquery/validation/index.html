@@ -139,7 +139,7 @@ APIs that take a BigQuery query string as argument, e.g.
 <a href="../BigQueryClient.html#getQueryRows(sqlQuery:String,flattenResults:Boolean):Iterator[com.spotify.scio.bigquery.TableRow]" class="extmbr" name="com.spotify.scio.bigquery.BigQueryClient#getQueryRows">BigQueryClient.getQueryRows</a>,
 <a href="../BigQueryClient.html#getQuerySchema(sqlQuery:String):com.google.api.services.bigquery.model.TableSchema" class="extmbr" name="com.spotify.scio.bigquery.BigQueryClient#getQuerySchema">BigQueryClient.getQuerySchema</a>,
 <a href="../BigQueryClient.html#getTypedRows[T&lt;:com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation](newSource:String)(implicitevidence$1:reflect.runtime.universe.TypeTag[T]):Iterator[T]" class="extmbr" name="com.spotify.scio.bigquery.BigQueryClient#getTypedRows">BigQueryClient.getTypedRows</a> and
-<a href="BigQueryType$$fromQuery.html" class="extype" name="com.spotify.scio.bigquery.types.BigQueryType.fromQuery">BigQueryType.fromQuery</a>, automatically
+<a href="../types/BigQueryType$$fromQuery.html" class="extype" name="com.spotify.scio.bigquery.types.BigQueryType.fromQuery">BigQueryType.fromQuery</a>, automatically
 detects the query's dialect. To override this, start the query with either <code>#legacysql</code> or
 <code>#standardsql</code> comment line.
 </p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
@@ -159,7 +159,7 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       <p class="shortcomment cmt">BigQuery package for dynamic table destinations.</p><div class="fullcomment"><div class="comment cmt"><p>BigQuery package for dynamic table destinations. Import All.</p><pre><span class="kw">import</span> com.spotify.scio.bigquery.dynamic._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></dd></dl></div>
-    </li><li name="com.spotify.scio.bigquery.types" visbl="pub" class="indented5 current" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.spotify.scio.bigquery.types" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="types"></a><a id="types:types"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/bigquery/index.html#types" title="Permalink">
@@ -171,31 +171,11 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <span class="name">types</span>
+        <a title="" href="../types/index.html"><span class="name">types</span></a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></dd></dl></div>
-    </li><li class="current-entities indented5">
-                        <span class="separator"></span>
-                        <a class="class" href="BigQueryTag.html" title=""></a>
-                        <a href="BigQueryTag.html" title="">BigQueryTag</a>
-                      </li><li class="current-entities indented5">
-                        <a class="object" href="BigQueryType$.html" title="Macro annotations and converter generators for BigQuery types."></a>
-                        <a class="class" href="BigQueryType.html" title="Type class for case class T annotated for BigQuery IO."></a>
-                        <a href="BigQueryType.html" title="Type class for case class T annotated for BigQuery IO.">BigQueryType</a>
-                      </li><li class="current-entities indented5">
-                        <span class="separator"></span>
-                        <a class="object" href="ConverterUtil$.html" title=""></a>
-                        <a href="ConverterUtil$.html" title="">ConverterUtil</a>
-                      </li><li class="current-entities indented5">
-                        <span class="separator"></span>
-                        <a class="object" href="SchemaUtil$.html" title="Utility for BigQuery schemas."></a>
-                        <a href="SchemaUtil$.html" title="Utility for BigQuery schemas.">SchemaUtil</a>
-                      </li><li class="current-entities indented5">
-                        <span class="separator"></span>
-                        <a class="class" href="package$$description.html" title="Case class field annotation for BigQuery field description."></a>
-                        <a href="package$$description.html" title="Case class field annotation for BigQuery field description.">description</a>
-                      </li><li name="com.spotify.scio.bigquery.validation" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="com.spotify.scio.bigquery.validation" visbl="pub" class="indented5 current" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="validation"></a><a id="validation:validation"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/bigquery/index.html#validation" title="Permalink">
@@ -207,11 +187,23 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="../validation/index.html"><span class="name">validation</span></a>
+        <span class="name">validation</span>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></dd></dl></div>
-    </li>
+    </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="class" href="DummyOverrideTypeProvider.html" title="An OverrideTypeProvider implementation with the default behavior."></a>
+                        <a href="DummyOverrideTypeProvider.html" title="An OverrideTypeProvider implementation with the default behavior.">DummyOverrideTypeProvider</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="trait" href="OverrideTypeProvider.html" title="Interface for all custom type providers."></a>
+                        <a href="OverrideTypeProvider.html" title="Interface for all custom type providers.">OverrideTypeProvider</a>
+                      </li><li class="current-entities indented5">
+                        <span class="separator"></span>
+                        <a class="object" href="OverrideTypeProviderFinder$.html" title="Common finder for the proper OverrideTypeProvider."></a>
+                        <a href="OverrideTypeProviderFinder$.html" title="Common finder for the proper OverrideTypeProvider.">OverrideTypeProviderFinder</a>
+                      </li>
               </ul>
             </div>
           </div>
@@ -220,8 +212,8 @@ detects the query's dialect. To override this, start the query with either <code
       <div id="definition">
         <div class="big-circle package">p</div>
         <p id="owner"><a href="../../../../index.html" class="extype" name="com">com</a>.<a href="../../../index.html" class="extype" name="com.spotify">spotify</a>.<a href="../../index.html" class="extype" name="com.spotify.scio">scio</a>.<a href="../index.html" class="extype" name="com.spotify.scio.bigquery">bigquery</a></p>
-        <h1>types<span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html" title="Permalink">
+        <h1>validation<span class="permalink">
+      <a href="../../../../../com/spotify/scio/bigquery/validation/index.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -234,17 +226,12 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <span class="name">types</span>
+        <span class="name">validation</span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
-          <span class="toggle">
-            Linear Supertypes
-          </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.5/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.5/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
-        </div></div>
+          <div id="comment" class="fullcommenttop"></div>
         
 
       <div id="mbrsel">
@@ -262,22 +249,10 @@ detects the query's dialect. To override this, start the query with either <code
             <ol>
               
               <li class="alpha in"><span>Alphabetic</span></li>
-              <li class="inherit out"><span>By Inheritance</span></li>
+              
             </ol>
           </div>
-          <div class="ancestors">
-                  <span class="filtertype">Inherited<br />
-                  </span>
-                  <ol id="linearization">
-                    <li class="in" name="com.spotify.scio.bigquery.types"><span>types</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
-                  </ol>
-                </div><div class="ancestors">
-              <span class="filtertype"></span>
-              <ol>
-                <li class="hideall out"><span>Hide All</span></li>
-                <li class="showall in"><span>Show All</span></li>
-              </ol>
-            </div>
+          
           <div id="visbl">
               <span class="filtertype">Visibility</span>
               <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
@@ -291,10 +266,10 @@ detects the query's dialect. To override this, start the query with either <code
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.spotify.scio.bigquery.types.BigQueryTag" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BigQueryTagextendsAnnotationwithStaticAnnotation"></a><a id="BigQueryTag:BigQueryTag"></a>
+              <ol><li name="com.spotify.scio.bigquery.validation.DummyOverrideTypeProvider" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DummyOverrideTypeProviderextendsOverrideTypeProvider"></a><a id="DummyOverrideTypeProvider:DummyOverrideTypeProvider"></a>
       <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html#BigQueryTagextendsAnnotationwithStaticAnnotation" title="Permalink">
+      <a href="../../../../../com/spotify/scio/bigquery/validation/index.html#DummyOverrideTypeProviderextendsOverrideTypeProvider" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -303,45 +278,26 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a title="" href="BigQueryTag.html"><span class="name">BigQueryTag</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.5/scala/annotation/Annotation.html#scala.annotation.Annotation" class="extype" name="scala.annotation.Annotation">Annotation</a> with <a href="http://www.scala-lang.org/api/2.12.5/scala/annotation/StaticAnnotation.html#scala.annotation.StaticAnnotation" class="extype" name="scala.annotation.StaticAnnotation">StaticAnnotation</a></span>
+        <a title="An OverrideTypeProvider implementation with the default behavior." href="DummyOverrideTypeProvider.html"><span class="name">DummyOverrideTypeProvider</span></a><span class="result"> extends <a href="OverrideTypeProvider.html" class="extype" name="com.spotify.scio.bigquery.validation.OverrideTypeProvider">OverrideTypeProvider</a></span>
       </span>
       
-      
-    </li><li name="com.spotify.scio.bigquery.types.BigQueryType" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="BigQueryType[T]extendsAnyRef"></a><a id="BigQueryType[T]:BigQueryType[T]"></a>
+      <p class="shortcomment cmt">An <a href="OverrideTypeProvider.html" class="extype" name="com.spotify.scio.bigquery.validation.OverrideTypeProvider">OverrideTypeProvider</a> implementation with the default behavior.</p>
+    </li><li name="com.spotify.scio.bigquery.validation.OverrideTypeProvider" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="OverrideTypeProviderextendsAnyRef"></a><a id="OverrideTypeProvider:OverrideTypeProvider"></a>
       <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html#BigQueryType[T]extendsAnyRef" title="Permalink">
+      <a href="../../../../../com/spotify/scio/bigquery/validation/index.html#OverrideTypeProviderextendsAnyRef" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Type class for case class T annotated for BigQuery IO." href="BigQueryType.html"><span class="name">BigQueryType</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.5/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
+        <a title="Interface for all custom type providers." href="OverrideTypeProvider.html"><span class="name">OverrideTypeProvider</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.5/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
-      <p class="shortcomment cmt">Type class for case class <code>T</code> annotated for BigQuery IO.</p><div class="fullcomment"><div class="comment cmt"><p>Type class for case class <code>T</code> annotated for BigQuery IO.</p><p>This decouples generated fields and methods from macro expansion to keep core macro free.
-</p></div></div>
-    </li><li name="com.spotify.scio.bigquery.types.description" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="descriptionextendsAnnotationwithStaticAnnotation"></a><a id="description:description"></a>
-      <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html#descriptionextendsAnnotationwithStaticAnnotation" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a title="Case class field annotation for BigQuery field description." href="package$$description.html"><span class="name">description</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.5/scala/annotation/Annotation.html#scala.annotation.Annotation" class="extype" name="scala.annotation.Annotation">Annotation</a> with <a href="http://www.scala-lang.org/api/2.12.5/scala/annotation/StaticAnnotation.html#scala.annotation.StaticAnnotation" class="extype" name="scala.annotation.StaticAnnotation">StaticAnnotation</a></span>
-      </span>
-      
-      <p class="shortcomment cmt">Case class field annotation for BigQuery field description.</p><div class="fullcomment"><div class="comment cmt"><p>Case class field annotation for BigQuery field description.</p><p>To be used with case class fields annotated with <a href="BigQueryType$$toTable.html" class="extype" name="com.spotify.scio.bigquery.types.BigQueryType.toTable">BigQueryType.toTable</a>, For example:</p><pre>@BigQueryType.toTable
-<span class="kw">case</span> <span class="kw">class</span> User(@description(<span class="lit">"user name"</span>) name: <span class="std">String</span>,
-                @description(<span class="lit">"user age"</span>) age: <span class="std">Int</span>)</pre></div></div>
+      <p class="shortcomment cmt">Interface for all custom type providers.</p>
     </li></ol>
             </div>
 
@@ -350,10 +306,10 @@ detects the query's dialect. To override this, start the query with either <code
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="com.spotify.scio.bigquery.types.BigQueryType" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="BigQueryType"></a><a id="BigQueryType:BigQueryType"></a>
+                <li name="com.spotify.scio.bigquery.validation.OverrideTypeProviderFinder" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OverrideTypeProviderFinder"></a><a id="OverrideTypeProviderFinder:OverrideTypeProviderFinder"></a>
       <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html#BigQueryType" title="Permalink">
+      <a href="../../../../../com/spotify/scio/bigquery/validation/index.html#OverrideTypeProviderFinder" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -362,53 +318,10 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a title="Macro annotations and converter generators for BigQuery types." href="BigQueryType$.html"><span class="name">BigQueryType</span></a>
+        <a title="Common finder for the proper OverrideTypeProvider." href="OverrideTypeProviderFinder$.html"><span class="name">OverrideTypeProviderFinder</span></a>
       </span>
       
-      <p class="shortcomment cmt">Macro annotations and converter generators for BigQuery types.</p><div class="fullcomment"><div class="comment cmt"><p>Macro annotations and converter generators for BigQuery types.</p><p>The following table lists each legacy SQL data type, its standard SQL equivalent and Scala type.</p><pre>Legacy SQL      Standard SQL    Scala <span class="kw">type</span>
-BOOLEAN         BOOL            <span class="std">Boolean</span>
-INTEGER         INT64           <span class="std">Long</span>, <span class="std">Int</span>
-FLOAT           FLOAT64         <span class="std">Double</span>, <span class="std">Float</span>
-STRING          STRING          <span class="std">String</span>
-BYTES           BYTES           com.google.protobuf.ByteString, <span class="std">Array</span>[<span class="std">Byte</span>]
-RECORD          STRUCT          Nested <span class="kw">case</span> <span class="kw">class</span>
-REPEATED        ARRAY           <span class="std">List</span>[T]
-TIMESTAMP       TIMESTAMP       org.joda.time.Instant
-DATE            DATE            org.joda.time.LocalDate
-TIME            TIME            org.joda.time.LocalTime
-DATETIME        DATETIME        org.joda.time.LocalDateTime</pre></div></div>
-    </li><li name="com.spotify.scio.bigquery.types.ConverterUtil" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ConverterUtil"></a><a id="ConverterUtil:ConverterUtil"></a>
-      <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html#ConverterUtil" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="" href="ConverterUtil$.html"><span class="name">ConverterUtil</span></a>
-      </span>
-      
-      
-    </li><li name="com.spotify.scio.bigquery.types.SchemaUtil" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SchemaUtil"></a><a id="SchemaUtil:SchemaUtil"></a>
-      <span class="permalink">
-      <a href="../../../../../com/spotify/scio/bigquery/types/index.html#SchemaUtil" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a title="Utility for BigQuery schemas." href="SchemaUtil$.html"><span class="name">SchemaUtil</span></a>
-      </span>
-      
-      <p class="shortcomment cmt">Utility for BigQuery schemas.</p>
+      <p class="shortcomment cmt">Common finder for the proper <a href="OverrideTypeProvider.html" class="extype" name="com.spotify.scio.bigquery.validation.OverrideTypeProvider">OverrideTypeProvider</a>.</p>
     </li>
               </ol>
             </div>
@@ -419,11 +332,7 @@ DATETIME        DATETIME        org.joda.time.LocalDateTime</pre></div></div>
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.5/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
-            </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.5/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
-            </div>
+        
         
         </div>
 
