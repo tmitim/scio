@@ -67,8 +67,10 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
                      suffix: String = "",
                      codec: CodecFactory = CodecFactory.deflateCodec(6),
                      metadata: Map[String, AnyRef] = Map.empty)
-  : Future[Tap[T]] =
-    self.write(nio.AvroFile[T](path, schema))(nio.AvroFile.Parameters(numShards, suffix, codec, metadata))
+  : Future[Tap[T]] = {
+    val paramters = nio.AvroFile.Parameters(numShards, suffix, codec, metadata)
+    self.write(nio.AvroFile[T](path, schema))(paramters)
+  }
 
   /**
    * Save this SCollection as an Avro file. Note that element type `T` must be a case class
@@ -82,8 +84,9 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
                           metadata: Map[String, AnyRef] = Map.empty)
                          (implicit ct: ClassTag[T], tt: TypeTag[T], ev: T <:< HasAvroAnnotation)
   : Future[Tap[T]] = {
+    val parameters = nio.Typed.AvroFile.Parameters(numShards, suffix, codec, metadata)
     self.asInstanceOf[SCollection[T with HasAvroAnnotation]]
-      .write(nio.Typed.AvroFile[T with HasAvroAnnotation](path))(nio.Typed.AvroFile.Parameters(numShards, suffix, codec, metadata))
+      .write(nio.Typed.AvroFile[T with HasAvroAnnotation](path))(parameters)
       .asInstanceOf[Future[Tap[T]]]
   }
 

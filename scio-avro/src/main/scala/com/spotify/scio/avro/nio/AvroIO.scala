@@ -83,13 +83,14 @@ case class ObjectFile[T: ClassTag](path: String)
     params match {
       case ObjectFile.Parameters(numShards, suffix, metadata) =>
         val elemCoder = sc.getCoder[T]
+        val parameters = AvroFile.Parameters(numShards, suffix, metadata = metadata)
         sc
           .parDo(new DoFn[T, GenericRecord] {
             @ProcessElement
             private[scio] def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
               c.output(AvroBytesUtil.encode(elemCoder, c.element()))
           })
-          .write(AvroFile(path, AvroBytesUtil.schema))(AvroFile.Parameters(numShards, suffix, metadata = metadata))
+          .write(AvroFile(path, AvroBytesUtil.schema))(parameters)
         sc.context.makeFuture(ObjectFileTap[T](ScioUtil.addPartSuffix(path)))
     }
 }
