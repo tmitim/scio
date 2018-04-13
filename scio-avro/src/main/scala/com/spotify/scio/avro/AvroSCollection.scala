@@ -42,7 +42,7 @@ import scala.reflect.runtime.universe._
 /** Enhanced version of [[SCollection]] with Avro methods. */
 final class AvroSCollection[T](@transient val self: SCollection[T]) extends Serializable {
 
-  import self.{context, pathWithShards, saveAsInMemoryTap, ct}
+  import self.{context, saveAsInMemoryTap, ct}
 
   /**
    * Extract data from this SCollection as a `Future`. The `Future` will be completed once the
@@ -51,31 +51,20 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
    */
   def materialize: Future[Tap[T]] = materialize(ScioUtil.getTempFile(context), isCheckpoint = false)
   private[scio] def materialize(path: String, isCheckpoint: Boolean): Future[Tap[T]] =
-    internalSaveAsObjectFile(path, isCheckpoint = isCheckpoint, isMaterialized = true)
+    if(context.isTest && isCheckpoint) {
+      // if it's a test and checkpoint - no need to test checkpoint data
+      ()
+      saveAsInMemoryTap
+    } else if(context.isTest) {
+      // Do not run assertions on materilized value but still access test context to trigger
+      // the test checking if we're running inside a JobTest
+      context.testOutNio
+      saveAsInMemoryTap
+    } else {
+      saveAsObjectFile(path)
+    }
 
-  private def avroOut[U](write: gio.AvroIO.Write[U],
-                         path: String, numShards: Int, suffix: String,
-                         codec: CodecFactory,
-                         metadata: Map[String, AnyRef]) =
-    write
-      .to(pathWithShards(path))
-      .withNumShards(numShards)
-      .withSuffix(suffix + ".avro")
-      .withCodec(codec)
-      .withMetadata(metadata.asJava)
-
-  private def typedAvroOut[U](write: gio.AvroIO.TypedWrite[U, Void, GenericRecord],
-                              path: String, numShards: Int, suffix: String,
-                              codec: CodecFactory,
-                              metadata: Map[String, AnyRef]) =
-    write
-      .to(pathWithShards(path))
-      .withNumShards(numShards)
-      .withSuffix(suffix + ".avro")
-      .withCodec(codec)
-      .withMetadata(metadata.asJava)
-
-   /**
+  /**
    * Save this SCollection as an Avro file.
    * @param schema must be not null if `T` is of type
    *               [[org.apache.avro.generic.GenericRecord GenericRecord]].
@@ -88,26 +77,13 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
                      codec: CodecFactory = CodecFactory.deflateCodec(6),
                      metadata: Map[String, AnyRef] = Map.empty)
   : Future[Tap[T]] =
-    if (context.isTest) {
-      ???
-      // context.testOut(AvroIO(path))(this)
-      // saveAsInMemoryTap
-    } else {
-      val cls = ScioUtil.classOf[T]
-      val t = if (classOf[SpecificRecordBase] isAssignableFrom cls) {
-        gio.AvroIO.write(cls)
-      } else {
-        gio.AvroIO.writeGenericRecords(schema).asInstanceOf[gio.AvroIO.Write[T]]
-      }
-      self.applyInternal(avroOut(t, path, numShards, suffix, codec, metadata))
-      context.makeFuture(AvroTap(ScioUtil.addPartSuffix(path), schema))
-    }
+    self.write(nio.AvroFile[T](path, schema))(nio.AvroFile.Parameters(numShards, suffix, codec, metadata))
 
   /**
-    * Save this SCollection as an Avro file. Note that element type `T` must be a case class
-    * annotated with [[com.spotify.scio.avro.types.AvroType AvroType.toSchema]].
-    * @group output
-    */
+   * Save this SCollection as an Avro file. Note that element type `T` must be a case class
+   * annotated with [[com.spotify.scio.avro.types.AvroType AvroType.toSchema]].
+   * @group output
+   */
   def saveAsTypedAvroFile(path: String,
                           numShards: Int = 0,
                           suffix: String = "",
@@ -115,20 +91,9 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
                           metadata: Map[String, AnyRef] = Map.empty)
                          (implicit ct: ClassTag[T], tt: TypeTag[T], ev: T <:< HasAvroAnnotation)
   : Future[Tap[T]] = {
-    val avroT = types.AvroType[T]
-    if (context.isTest) {
-      // context.testOut(AvroIO(path))(this)
-      // saveAsInMemoryTap
-      ???
-    } else {
-      val t = gio.AvroIO.writeCustomTypeToGenericRecords()
-        .withFormatFunction(new SerializableFunction[T, GenericRecord] {
-          override def apply(input: T): GenericRecord = avroT.toGenericRecord(input)
-        })
-        .withSchema(avroT.schema)
-      self.applyInternal(typedAvroOut(t, path, numShards, suffix, codec, metadata))
-      context.makeFuture(AvroTap(ScioUtil.addPartSuffix(path), avroT.schema))
-    }
+    self.asInstanceOf[SCollection[T with HasAvroAnnotation]]
+      .write(nio.Typed.AvroFile[T with HasAvroAnnotation](path))(nio.Typed.AvroFile.Parameters(numShards, suffix, codec, metadata))
+      .asInstanceOf[Future[Tap[T]]]
   }
 
   /**
@@ -140,37 +105,7 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
    */
   def saveAsObjectFile(path: String, numShards: Int = 0, suffix: String = ".obj",
                        metadata: Map[String, AnyRef] = Map.empty): Future[Tap[T]] =
-    internalSaveAsObjectFile(path, numShards, suffix, metadata)
-
-  private def internalSaveAsObjectFile(path: String, numShards: Int = 0, suffix: String = ".obj",
-                                       metadata: Map[String, AnyRef] = Map.empty,
-                                       isCheckpoint: Boolean = false,
-                                       isMaterialized: Boolean = false)
-  : Future[Tap[T]] = {
-    if (context.isTest) {
-      // (isCheckpoint, isMaterialized) match {
-      //   // if it's a test and checkpoint - no need to test checkpoint data
-      //   case (true, _) => ()
-      //   // Do not run assertions on materilized value but still access test context to trigger
-      //   // the test checking if we're running inside a JobTest
-      //   case (_, true) => context.testOutNio
-      //   case _ => context.testOut(ObjectFileIO(path))(this)
-      // }
-      // saveAsInMemoryTap
-      ???
-    } else {
-      val elemCoder = self.getCoder[T]
-      self
-        .parDo(new DoFn[T, GenericRecord] {
-          @ProcessElement
-          private[scio] def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
-            c.output(AvroBytesUtil.encode(elemCoder, c.element()))
-        })
-        .saveAsAvroFile(path, numShards, AvroBytesUtil.schema, suffix, metadata = metadata)
-      context.makeFuture(ObjectFileTap[T](ScioUtil.addPartSuffix(path)))
-    }
-  }
-
+    self.write(nio.ObjectFile[T](path))(nio.ObjectFile.Parameters(numShards, suffix, metadata))
 
   /**
    * Save this SCollection as a Protobuf file.
@@ -180,16 +115,6 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
    * @group output
    */
   def saveAsProtobufFile(path: String, numShards: Int = 0)
-                        (implicit ev: T <:< Message): Future[Tap[T]] = {
-    if (context.isTest) {
-      // context.testOut(ProtobufIO(path))(this)
-      // saveAsInMemoryTap
-      ???
-    } else {
-      import me.lyh.protobuf.generic
-      val schema = generic.Schema.of[Message](ct.asInstanceOf[ClassTag[Message]]).toJson
-      val metadata = Map("protobuf.generic.schema" -> schema)
-      saveAsObjectFile(path, numShards, ".protobuf", metadata)
-    }
-  }
+                        (implicit ev: T <:< Message): Future[Tap[T]] =
+    self.write(nio.ProtobufFile[T](path))(nio.ProtobufFile.Parameters(numShards))
 }

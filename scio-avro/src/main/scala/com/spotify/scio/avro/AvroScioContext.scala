@@ -37,8 +37,6 @@ import scala.reflect.runtime.universe._
 
 final class AvroScioContext(@transient val self: ScioContext) extends Serializable {
 
-  import self.{requireNotClosed, pipeline, wrap, options}
-
   /**
    * Get an SCollection for an object file using default serialization.
    *
@@ -46,21 +44,8 @@ final class AvroScioContext(@transient val self: ScioContext) extends Serializab
    * serialization is not guaranteed to be compatible across Scio releases.
    * @group input
    */
-  def objectFile[T: ClassTag](path: String): SCollection[T] = requireNotClosed {
-    if (self.isTest) {
-      self.getTestInput(ObjectFileIO[T](path))
-    } else {
-      val coder = pipeline.getCoderRegistry.getScalaCoder[T](options)
-      this.avroFile[GenericRecord](path, AvroBytesUtil.schema)
-        .parDo(new DoFn[GenericRecord, T] {
-          @ProcessElement
-          private[scio] def processElement(c: DoFn[GenericRecord, T]#ProcessContext): Unit = {
-            c.output(AvroBytesUtil.decode(coder, c.element()))
-          }
-        })
-        .setName(path)
-    }
-  }
+  def objectFile[T: ClassTag](path: String): SCollection[T] =
+    self.read(nio.ObjectFile[T](path))
 
   /**
    * Get an SCollection for an Avro file.
@@ -69,40 +54,21 @@ final class AvroScioContext(@transient val self: ScioContext) extends Serializab
    * @group input
    */
   def avroFile[T: ClassTag](path: String, schema: Schema = null): SCollection[T] =
-  requireNotClosed {
-    if (self.isTest) {
-      self.getTestInput(AvroIO[T](path))
-    } else {
-      val cls = ScioUtil.classOf[T]
-      val t = if (classOf[SpecificRecordBase] isAssignableFrom cls) {
-        gio.AvroIO.read(cls).from(path)
-      } else {
-        gio.AvroIO.readGenericRecords(schema).from(path).asInstanceOf[gio.AvroIO.Read[T]]
-      }
-      wrap(self.applyInternal(t)).setName(path)
-    }
-  }
+    self.read(nio.AvroFile[T](path, schema))
 
   /**
-    * Get a typed SCollection from an Avro schema.
-    *
-    * Note that `T` must be annotated with
-    * [[com.spotify.scio.avro.types.AvroType AvroType.fromSchema]],
-    * [[com.spotify.scio.avro.types.AvroType AvroType.fromPath]], or
-    * [[com.spotify.scio.avro.types.AvroType AvroType.toSchema]].
-    *
-    * @group input
-    */
+   * Get a typed SCollection from an Avro schema.
+   *
+   * Note that `T` must be annotated with
+   * [[com.spotify.scio.avro.types.AvroType AvroType.fromSchema]],
+   * [[com.spotify.scio.avro.types.AvroType AvroType.fromPath]], or
+   * [[com.spotify.scio.avro.types.AvroType AvroType.toSchema]].
+   *
+   * @group input
+   */
   def typedAvroFile[T <: HasAvroAnnotation : ClassTag : TypeTag](path: String)
-  : SCollection[T] = requireNotClosed {
-    if (self.isTest) {
-      self.getTestInput(AvroIO[T](path))
-    } else {
-      val avroT = AvroType[T]
-      val t = gio.AvroIO.readGenericRecords(avroT.schema).from(path)
-      wrap(self.applyInternal(t)).setName(path).map(avroT.fromGenericRecord)
-    }
-  }
+  : SCollection[T] =
+    self.read(nio.Typed.AvroFile[T](path))
 
   /**
    * Get an SCollection for a Protobuf file.
@@ -112,11 +78,6 @@ final class AvroScioContext(@transient val self: ScioContext) extends Serializab
    * @group input
    */
   def protobufFile[T: ClassTag](path: String)(implicit ev: T <:< Message): SCollection[T] =
-    requireNotClosed {
-      if (self.isTest) {
-        self.getTestInput(ProtobufIO[T](path))
-      } else {
-        objectFile(path)
-      }
-    }
+    self.read(nio.ProtobufFile[T](path))
+
 }
