@@ -17,19 +17,10 @@
 
 package com.spotify.scio.avro
 
-import org.apache.beam.sdk.transforms.DoFn.ProcessElement
-import org.apache.beam.sdk.{Pipeline, PipelineResult, io => gio}
-import org.apache.beam.sdk.transforms.DoFn
 import com.google.protobuf.Message
 import org.apache.avro.Schema
-import org.apache.avro.generic.GenericRecord
-import org.apache.avro.specific.SpecificRecordBase
 import com.spotify.scio.ScioContext
-import com.spotify.scio.Implicits._
 import com.spotify.scio.values._
-import com.spotify.scio.util.ScioUtil
-import com.spotify.scio.testing._
-import com.spotify.scio.coders.AvroBytesUtil
 import com.spotify.scio.avro.types.AvroType.HasAvroAnnotation
 
 import scala.reflect.ClassTag

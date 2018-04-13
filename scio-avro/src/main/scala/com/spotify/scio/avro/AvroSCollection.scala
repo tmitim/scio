@@ -20,21 +20,12 @@ package com.spotify.scio.avro
 import scala.concurrent.Future
 import org.apache.avro.Schema
 import org.apache.avro.file.CodecFactory
-import org.apache.avro.generic.GenericRecord
-import org.apache.avro.specific.SpecificRecordBase
 import com.google.protobuf.Message
-import org.apache.beam.sdk.{Pipeline, PipelineResult, io => gio}
-import org.apache.beam.sdk.transforms.DoFn.ProcessElement
-import org.apache.beam.sdk.transforms._
-import com.spotify.scio._
-import com.spotify.scio.io._
-import com.spotify.scio.avro.io._
+import com.spotify.scio.io.Tap
 import com.spotify.scio.util._
 import com.spotify.scio.values._
-import com.spotify.scio.coders.AvroBytesUtil
 import com.spotify.scio.avro.types.AvroType.HasAvroAnnotation
 
-import scala.collection.JavaConverters._
 import scala.concurrent._
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._

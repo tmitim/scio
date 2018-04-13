@@ -25,10 +25,8 @@ import java.net.URI
 import java.nio.file.Files
 
 import org.apache.avro.specific.SpecificRecordBase
-import com.google.api.services.bigquery.model.TableReference
 import com.google.datastore.v1.{Entity, Query}
 import com.google.protobuf.Message
-import com.spotify.scio.coders.{AvroBytesUtil, KryoAtomicCoder, KryoOptions}
 import com.spotify.scio.io.Tap
 import com.spotify.scio.metrics.Metrics
 import com.spotify.scio.nio.ScioIO
@@ -37,12 +35,10 @@ import com.spotify.scio.testing._
 import com.spotify.scio.util._
 import com.spotify.scio.values._
 import org.apache.beam.sdk.PipelineResult.State
-import org.apache.beam.sdk.extensions.gcp.options.{GcpOptions, GcsOptions}
-import org.apache.beam.sdk.io.gcp.bigquery.SchemaAndRecord
-import org.apache.beam.sdk.io.gcp.{bigquery => bqio, datastore => dsio, pubsub => psio}
+import org.apache.beam.sdk.extensions.gcp.options.GcsOptions
+import org.apache.beam.sdk.io.gcp.{datastore => dsio, pubsub => psio}
 import org.apache.beam.sdk.metrics.Counter
 import org.apache.beam.sdk.options._
-import org.apache.beam.sdk.transforms.DoFn.ProcessElement
 import org.apache.beam.sdk.transforms._
 import org.apache.beam.sdk.util.CoderUtils
 import org.apache.beam.sdk.values._
