@@ -266,6 +266,7 @@ lazy val scioCore: Project = Project(
     (baseDirectory in ThisBuild).value / "version.sbt"),
   libraryDependencies ++= Seq(
     "org.apache.beam" % "beam-sdks-java-core" % beamVersion,
+    "org.apache.beam" % "beam-sdks-java-io-google-cloud-platform" % beamVersion,
     "org.apache.beam" % "beam-runners-google-cloud-dataflow-java" % beamVersion % "provided",
     "com.twitter" %% "algebird-core" % algebirdVersion,
     "com.twitter" %% "chill" % chillVersion,
