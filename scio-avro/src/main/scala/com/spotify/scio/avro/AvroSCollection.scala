@@ -85,9 +85,7 @@ final class AvroSCollection[T](@transient val self: SCollection[T]) extends Seri
                          (implicit ct: ClassTag[T], tt: TypeTag[T], ev: T <:< HasAvroAnnotation)
   : Future[Tap[T]] = {
     val parameters = nio.Typed.AvroFile.Parameters(numShards, suffix, codec, metadata)
-    self.asInstanceOf[SCollection[T with HasAvroAnnotation]]
-      .write(nio.Typed.AvroFile[T with HasAvroAnnotation](path))(parameters)
-      .asInstanceOf[Future[Tap[T]]]
+    self.write(nio.Typed.AvroFile[T](path))(parameters)
   }
 
   /**

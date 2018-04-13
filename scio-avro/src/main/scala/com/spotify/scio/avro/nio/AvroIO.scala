@@ -215,7 +215,7 @@ object AvroFile {
 
 object Typed {
 
-  case class AvroFile[T <: HasAvroAnnotation : ClassTag : TypeTag](path: String)
+  case class AvroFile[T : ClassTag : TypeTag](path: String)(implicit ev: T <:< HasAvroAnnotation)
     extends ScioIO[T] {
 
     type ReadP = Unit

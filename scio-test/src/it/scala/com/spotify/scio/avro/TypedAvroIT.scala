@@ -23,11 +23,11 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class TypedAvroIT extends FlatSpec with Matchers {
   "Typed Avro IO" should "not throw exception" in {
-    noException should be thrownBy {
+    // noException should be thrownBy {
       val tempDir = Files.createTempDir()
       TypedAvroJob.main(Array("--runner=DirectRunner", s"--output=${tempDir.getAbsolutePath}"))
       tempDir.deleteOnExit()
-    }
+    // }
   }
 }
 
