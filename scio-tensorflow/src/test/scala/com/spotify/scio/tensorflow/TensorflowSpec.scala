@@ -23,6 +23,36 @@ import com.spotify.scio.ContextAndArgs
 import com.spotify.scio.testing.{DistCacheIO, PipelineSpec, TextIO}
 import org.tensorflow._
 
+class DebugSpec extends PipelineSpec {
+  def test(): Unit = {
+    val const = "MyConst"
+    val graph = new Graph()
+    val helloworld = s"Hello from ${TensorFlow.version()}"
+    val t = Tensors.create(helloworld)
+    graph.opBuilder("Const", const).setAttr("dtype", t.dataType()).setAttr("value", t).build()
+    t.close()
+
+    val session = new Session(graph)
+    val r = session.runner().fetch(const).run().get(0)
+    try {
+      new String(r.bytesValue()) should be(helloworld)
+    } finally {
+      session.close()
+      graph.close()
+      r.close()
+    }
+  }
+
+  "Tensorflow" should "work for hello-wold" in {
+    test()
+  }
+
+  it should "work again" in {
+    test()
+  }
+}
+
+/*
 private object TFJob {
   def main(argv: Array[String]): Unit = {
     val (sc, args) = ContextAndArgs(argv)
@@ -46,7 +76,6 @@ private object TFJob2Inputs {
       .saveAsTextFile(args("output"))
     sc.close()
   }
-}
 
 class TensorflowSpec extends PipelineSpec {
 
@@ -134,3 +163,4 @@ class TensorflowSpec extends PipelineSpec {
   }
 
 }
+*/

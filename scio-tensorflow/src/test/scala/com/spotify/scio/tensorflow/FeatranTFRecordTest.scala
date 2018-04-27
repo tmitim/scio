@@ -83,6 +83,7 @@ object MultiSpecJob {
   }
 }
 
+/*
 class FeatranTFRecordTest extends PipelineSpec {
 
   val n = 10000
@@ -123,3 +124,4 @@ class FeatranTFRecordTest extends PipelineSpec {
   }
 
 }
+*/
