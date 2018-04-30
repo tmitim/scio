@@ -723,10 +723,10 @@ more accurate the estimate will be; should be <code>&gt;= 16</code></p></dd></dl
       
       <p class="shortcomment cmt">Return the cross product with another SCollection by replicating <code>that</code> to all workers.</p><div class="fullcomment"><div class="comment cmt"><p>Return the cross product with another SCollection by replicating <code>that</code> to all workers. The
 right side should be tiny and fit in memory.</p></div></div>
-    </li><li name="com.spotify.scio.values.SCollection#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="debug">
-      <a id="debug(out:()=&gt;java.io.PrintStream,prefix:String):com.spotify.scio.values.SCollection[T]"></a><a id="debug(()⇒PrintStream,String):SCollection[T]"></a>
+    </li><li name="com.spotify.scio.values.SCollection#debug" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="debug">
+      <a id="debug(out:()=&gt;java.io.PrintStream,prefix:String,enabled:Boolean):com.spotify.scio.values.SCollection[T]"></a><a id="debug(()⇒PrintStream,String,Boolean):SCollection[T]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#debug(out:()=&gt;java.io.PrintStream,prefix:String):com.spotify.scio.values.SCollection[T]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#debug(out:()=&gt;java.io.PrintStream,prefix:String,enabled:Boolean):com.spotify.scio.values.SCollection[T]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -735,10 +735,12 @@ right side should be tiny and fit in memory.</p></div></div>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">debug</span><span class="params">(<span name="out">out: () ⇒ <a href="http://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html#java.io.PrintStream" class="extype" name="java.io.PrintStream">PrintStream</a> = <span class="symbol">() =&gt; Console.out</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>]</span>
+        <span class="name">debug</span><span class="params">(<span name="out">out: () ⇒ <a href="http://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html#java.io.PrintStream" class="extype" name="java.io.PrintStream">PrintStream</a> = <span class="symbol">() =&gt; Console.out</span></span>, <span name="prefix">prefix: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="enabled">enabled: <a href="http://www.scala-lang.org/api/2.12.5/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a> = <span class="symbol">true</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.values.SCollection.T">T</span>]</span>
       </span>
       
-      <p class="shortcomment cmt">Print content of an SCollection to <code>out()</code>.</p>
+      <p class="shortcomment cmt">Print content of an SCollection to <code>out()</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Print content of an SCollection to <code>out()</code>.</p></div><dl class="paramcmts block"><dt class="param">out</dt><dd class="cmt"><p>where to write the debug information. Default: stdout</p></dd><dt class="param">prefix</dt><dd class="cmt"><p>prefix for each logged entry. Default: empty string</p></dd><dt class="param">enabled</dt><dd class="cmt"><p>if debugging is enabled or not. Default: true.
+               It can be useful to set this to sc.isTest to avoid
+               debugging when running in production.</p></dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#distinct" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="transform">
       <a id="distinct:com.spotify.scio.values.SCollection[T]"></a><a id="distinct:SCollection[T]"></a>
       <span class="permalink">
