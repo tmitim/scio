@@ -30,16 +30,17 @@ class DebugSpec extends PipelineSpec {
     val helloworld = s"Hello from ${TensorFlow.version()}"
     val t = Tensors.create(helloworld)
     graph.opBuilder("Const", const).setAttr("dtype", t.dataType()).setAttr("value", t).build()
-    t.close()
 
     val session = new Session(graph)
-    val r = session.runner().fetch(const).run().get(0)
+    val runner = session.runner()
+    val r = runner.fetch(const).run().get(0)
     try {
       new String(r.bytesValue()) should be(helloworld)
     } finally {
       session.close()
       graph.close()
       r.close()
+      t.close()
     }
   }
 
