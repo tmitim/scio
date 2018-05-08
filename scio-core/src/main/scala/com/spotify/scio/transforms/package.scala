@@ -71,8 +71,13 @@ package object transforms {
 
   }
 
-  implicit class LimitedParallelismDoFns[T: ClassTag](val self: SCollection[T]) {
-    def parallelCollectFn[U](maxDoFns: Int)(pfn: PartialFunction[T, U]): DoFn[T, U] =
+  /**
+   * Enhanced version of [[com.spotify.scio.values.SCollection SCollection]] that
+   * limits the parallelism of dofns.
+   */
+  implicit class LimitedParallelismSCollection[T: ClassTag](val self: SCollection[T]) {
+
+    private def parallelCollectFn[U](maxDoFns: Int)(pfn: PartialFunction[T, U]): DoFn[T, U] =
       new ParallelLimitedFn[T, U](maxDoFns) {
         val isDefined = ClosureCleaner(pfn.isDefinedAt(_)) // defeat closure
         val g = ClosureCleaner(pfn) // defeat closure
@@ -83,7 +88,7 @@ package object transforms {
         }
       }
 
-    def parallelFilterFn(maxDoFns: Int)(f: T => Boolean): DoFn[T, T] =
+    private def parallelFilterFn(maxDoFns: Int)(f: T => Boolean): DoFn[T, T] =
       new ParallelLimitedFn[T, T](maxDoFns) {
         val g = ClosureCleaner(f) // defeat closure
         def parallelProcessElement(c: DoFn[T, T]#ProcessContext): Unit = {
@@ -93,14 +98,14 @@ package object transforms {
         }
       }
 
-    def parallelMapFn[U](maxDoFns: Int)(f: T => U): DoFn[T, U] =
+    private def parallelMapFn[U](maxDoFns: Int)(f: T => U): DoFn[T, U] =
       new ParallelLimitedFn[T, U](maxDoFns) {
         val g = ClosureCleaner(f) // defeat closure
         def parallelProcessElement(c: DoFn[T, U]#ProcessContext): Unit =
           c.output(g(c.element()))
       }
 
-    def parallelFlatMapFn[U](maxDoFns: Int)(f: T => TraversableOnce[U]): DoFn[T, U] =
+    private def parallelFlatMapFn[U](maxDoFns: Int)(f: T => TraversableOnce[U]): DoFn[T, U] =
       new ParallelLimitedFn[T, U](maxDoFns: Int) {
         val g = ClosureCleaner(f) // defeat closure
         def parallelProcessElement(c: DoFn[T, U]#ProcessContext): Unit = {
