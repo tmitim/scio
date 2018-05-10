@@ -117,10 +117,10 @@
       </span>
       
       <p class="shortcomment cmt">Main package for public APIs.</p><div class="fullcomment"><div class="comment cmt"><p>Main package for public APIs. Import all.</p><pre><span class="kw">import</span> com.spotify.scio._</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../../index.html" class="extype" name="com.spotify">spotify</a></dd></dl></div>
-    </li><li name="com.spotify.scio.values" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="values"></a><a id="values:values"></a>
+    </li><li name="com.spotify.scio.testing" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="testing"></a><a id="testing:testing"></a>
       <span class="permalink">
-      <a href="../../../com/spotify/scio/index.html#values" title="Permalink">
+      <a href="../../../com/spotify/scio/index.html#testing" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -129,93 +129,76 @@
         <span class="kind">package</span>
       </span>
       <span class="symbol">
-        <a title="" href="index.html"><span class="name">values</span></a>
+        <a title="" href="index.html"><span class="name">testing</span></a>
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../index.html" class="extype" name="com.spotify.scio">scio</a></dd></dl></div>
-    </li><li class="current-entities indented4">
+    </li><li name="com.spotify.scio.testing.JobTest" visbl="pub" class="indented5 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="JobTest"></a><a id="JobTest:JobTest"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/testing/index.html#JobTest" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="Set up a Scio job for end-to-end unit testing." href="JobTest$.html"><span class="name">JobTest</span></a>
+      </span>
+      
+      <p class="shortcomment cmt">Set up a Scio job for end-to-end unit testing.</p><div class="fullcomment"><div class="comment cmt"><p>Set up a Scio job for end-to-end unit testing.
+To be used in a <a href="PipelineSpec.html" class="extype" name="com.spotify.scio.testing.PipelineSpec">PipelineSpec</a>. For example:</p><pre><span class="kw">import</span> com.spotify.scio.testing._
+
+<span class="kw">class</span> WordCountTest <span class="kw">extends</span> PipelineSpec {
+
+  <span class="cmt">// Mock input data, mock distributed cache and expected result</span>
+  <span class="kw">val</span> inData = <span class="std">Seq</span>(<span class="lit">"a b c d e"</span>, <span class="lit">"a b a b"</span>)
+  <span class="kw">val</span> distCache = <span class="std">Map</span>(<span class="num">1</span> -&gt; <span class="lit">"Jan"</span>, <span class="num">2</span> -&gt; <span class="lit">"Feb"</span>, <span class="num">3</span> -&gt; <span class="lit">"Mar"</span>)
+  <span class="kw">val</span> expected = <span class="std">Seq</span>(<span class="lit">"a: 3"</span>, <span class="lit">"b: 3"</span>, <span class="lit">"c: 1"</span>, <span class="lit">"d: 1"</span>, <span class="lit">"e: 1"</span>)
+
+  <span class="cmt">// Test specification</span>
+  <span class="lit">"WordCount"</span> should <span class="lit">"work"</span> in {
+    JobTest(<span class="lit">"com.spotify.scio.examples.WordCount"</span>)
+    <span class="cmt">// Or the type safe version</span>
+    <span class="cmt">// JobTest[com.spotify.scio.examples.WordCount.type]</span>
+
+      <span class="cmt">// Command line arguments</span>
+      .args(<span class="lit">"--input=in.txt"</span>, <span class="lit">"--output=out.txt"</span>)
+
+      <span class="cmt">// Mock input data</span>
+      .input(TextIO(<span class="lit">"in.txt"</span>), inData)
+
+      <span class="cmt">// Mock distributed cache</span>
+      .distCache(DistCacheIO(<span class="lit">"gs://dataflow-samples/samples/misc/months.txt"</span>), distCache)
+
+      <span class="cmt">// Verify output</span>
+      .output(TextIO(<span class="lit">"out.txt"</span>)) { actual <span class="kw">=&gt;</span> actual should containInAnyOrder (expected) }
+
+      <span class="cmt">// Run job test</span>
+      .run()
+  }
+}</pre></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="index.html" class="extype" name="com.spotify.scio.testing">testing</a></dd></dl></div>
+    </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="trait" href="DistCache.html" title="Encapsulate arbitrary data that can be distributed to all workers."></a>
-                        <a href="DistCache.html" title="Encapsulate arbitrary data that can be distributed to all workers.">DistCache</a>
-                      </li><li class="current-entities indented4">
+                        <a class="class" href="" title=""></a>
+                        <a href="" title="">BeamOptions</a>
+                      </li><li class="current-entities indented5">
                         <span class="separator"></span>
-                        <a class="class" href="DoubleSCollectionFunctions.html" title="Extra functions available on SCollections of Doubles through an implicit conversion."></a>
-                        <a href="DoubleSCollectionFunctions.html" title="Extra functions available on SCollections of Doubles through an implicit conversion.">DoubleSCollectionFunctions</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="object" href="MockDistCache$.html" title=""></a>
-                        <a href="MockDistCache$.html" title="">MockDistCache</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="PairSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs through an implicit conversion."></a>
-                        <a href="PairSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs through an implicit conversion.">PairSCollectionFunctions</a>
-                      </li><li class="current-entities indented4">
-                        <a class="object" href="SCollection$.html" title="Convenience functions for creating SCollections."></a>
-                        <a class="trait" href="SCollection.html" title="A Scala wrapper for PCollection."></a>
-                        <a href="SCollection.html" title="A Scala wrapper for PCollection.">SCollection</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SCollectionWithFanout.html" title="An enhanced SCollection that uses an intermediate node to combine parts of the data to reduce load on the final global combine step."></a>
-                        <a href="SCollectionWithFanout.html" title="An enhanced SCollection that uses an intermediate node to combine parts of the data to reduce load on the final global combine step.">SCollectionWithFanout</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SCollectionWithHotKeyFanout.html" title="An enhanced SCollection that uses an intermediate node to combine &quot;hot&quot; keys partially before performing the full combine."></a>
-                        <a href="SCollectionWithHotKeyFanout.html" title="An enhanced SCollection that uses an intermediate node to combine &quot;hot&quot; keys partially before performing the full combine.">SCollectionWithHotKeyFanout</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SCollectionWithSideInput.html" title="An enhanced SCollection that provides access to one or more SideInputs for some transforms."></a>
-                        <a href="SCollectionWithSideInput.html" title="An enhanced SCollection that provides access to one or more SideInputs for some transforms.">SCollectionWithSideInput</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SCollectionWithSideOutput.html" title="An enhanced SCollection that provides access to one or more SideOutputs for some transforms."></a>
-                        <a href="SCollectionWithSideOutput.html" title="An enhanced SCollection that provides access to one or more SideOutputs for some transforms.">SCollectionWithSideOutput</a>
-                      </li><li class="current-entities indented4">
-                        <a class="object" href="SideInput$.html" title="Companion object of SideInput."></a>
-                        <a class="trait" href="SideInput.html" title="Encapsulate an SCollection when it is being used as a side input."></a>
-                        <a href="SideInput.html" title="Encapsulate an SCollection when it is being used as a side input.">SideInput</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SideInputContext.html" title="Encapsulate context of one or more SideInputs in an SCollectionWithSideInput."></a>
-                        <a href="SideInputContext.html" title="Encapsulate context of one or more SideInputs in an SCollectionWithSideInput.">SideInputContext</a>
-                      </li><li class="current-entities indented4">
-                        <a class="object" href="SideOutput$.html" title="Companion object for SideOutput."></a>
-                        <a class="trait" href="SideOutput.html" title="Encapsulate a side output for a transform."></a>
-                        <a href="SideOutput.html" title="Encapsulate a side output for a transform.">SideOutput</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SideOutputCollections.html" title="Encapsulate output of one or more SideOutputs in an SCollectionWithSideOutput."></a>
-                        <a href="SideOutputCollections.html" title="Encapsulate output of one or more SideOutputs in an SCollectionWithSideOutput.">SideOutputCollections</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="SideOutputContext.html" title="Encapsulate context of one or more SideOutputs in an SCollectionWithSideOutput."></a>
-                        <a href="SideOutputContext.html" title="Encapsulate context of one or more SideOutputs in an SCollectionWithSideOutput.">SideOutputContext</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="trait" href="" title="Trait for setting custom names on transforms."></a>
-                        <a href="" title="Trait for setting custom names on transforms.">TransformNameable</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="WindowOptions.html" title="Window options for an SCollection."></a>
-                        <a href="WindowOptions.html" title="Window options for an SCollection.">WindowOptions</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="WindowedSCollection.html" title="An enhanced SCollection that provides access to window information via WindowedValue."></a>
-                        <a href="WindowedSCollection.html" title="An enhanced SCollection that provides access to window information via WindowedValue.">WindowedSCollection</a>
-                      </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="WindowedValue.html" title="Value with window information to be used inside a WindowedSCollection."></a>
-                        <a href="WindowedValue.html" title="Value with window information to be used inside a WindowedSCollection.">WindowedValue</a>
+                        <a class="class" href="JobTest$$Builder.html" title=""></a>
+                        <a href="JobTest$$Builder.html" title="">Builder</a>
                       </li>
               </ul>
             </div>
           </div>
           <div id="content">
-            <body class="trait type">
+            <body class="class type">
       <div id="definition">
-        <div class="big-circle trait">t</div>
-        <p id="owner"><a href="../../../index.html" class="extype" name="com">com</a>.<a href="../../index.html" class="extype" name="com.spotify">spotify</a>.<a href="../index.html" class="extype" name="com.spotify.scio">scio</a>.<a href="index.html" class="extype" name="com.spotify.scio.values">values</a></p>
-        <h1>TransformNameable<span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html" title="Permalink">
+        <div class="big-circle class">c</div>
+        <p id="owner"><a href="../../../index.html" class="extype" name="com">com</a>.<a href="../../index.html" class="extype" name="com.spotify">spotify</a>.<a href="../index.html" class="extype" name="com.spotify.scio">scio</a>.<a href="index.html" class="extype" name="com.spotify.scio.testing">testing</a>.<a href="JobTest$.html" class="extype" name="com.spotify.scio.testing.JobTest">JobTest</a></p>
+        <h1>BeamOptions<span class="permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span></h1>
@@ -225,25 +208,20 @@
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">trait</span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">TransformNameable</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
+        <span class="name">BeamOptions</span><span class="params">(<span name="opts">opts: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.6/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a> with <a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
       </span>
       </h4>
 
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Trait for setting custom names on transforms.</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
-        </div><div class="toggleContainer block">
-            <span class="toggle">
-              Known Subclasses
-            </span>
-            <div class="subClasses hiddenContent"><a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a>, <a href="SCollectionWithHotKeyFanout.html" class="extype" name="com.spotify.scio.values.SCollectionWithHotKeyFanout">SCollectionWithHotKeyFanout</a></div>
-          </div></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html#java.io.Serializable" class="extype" name="java.io.Serializable">Serializable</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -268,7 +246,7 @@
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="com.spotify.scio.values.TransformNameable"><span>TransformNameable</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="com.spotify.scio.testing.JobTest.BeamOptions"><span>BeamOptions</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -286,7 +264,26 @@
 
       <div id="template">
         <div id="allMembers">
-        
+        <div id="constructors" class="members">
+              <h3>Instance Constructors</h3>
+              <ol><li name="com.spotify.scio.testing.JobTest.BeamOptions#&lt;init&gt;" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(opts:List[String]):com.spotify.scio.testing.JobTest.BeamOptions"></a><a id="&lt;init&gt;:BeamOptions"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#&lt;init&gt;(opts:List[String]):com.spotify.scio.testing.JobTest.BeamOptions" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">new</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BeamOptions</span><span class="params">(<span name="opts">opts: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span>
+      </span>
+      
+      
+    </li></ol>
+            </div>
 
         
 
@@ -298,7 +295,7 @@
                 <li name="scala.AnyRef#!=" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a><a id="!=(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#!=(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#!=(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -314,7 +311,7 @@
     </li><li name="scala.AnyRef###" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html###():Int" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html###():Int" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -330,7 +327,7 @@
     </li><li name="scala.AnyRef#==" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a><a id="==(Any):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#==(x$1:Any):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#==(x$1:Any):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -346,7 +343,7 @@
     </li><li name="scala.Any#asInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#asInstanceOf[T0]:T0" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#asInstanceOf[T0]:T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -362,7 +359,7 @@
     </li><li name="scala.AnyRef#clone" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a><a id="clone():AnyRef"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#clone():Object" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#clone():Object" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -386,7 +383,7 @@
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#eq(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#eq(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -399,26 +396,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a><a id="equals(Any):Boolean"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#equals(x$1:Any):Boolean" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.6/scala/Boolean.html#scala.Boolean" class="extype" name="scala.Boolean">Boolean</a></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#finalize():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#finalize():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -440,7 +421,7 @@
     </li><li name="scala.AnyRef#getClass" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#getClass():Class[_]" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#getClass():Class[_]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -456,29 +437,10 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#hashCode():Int" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.12.6/scala/Int.html#scala.Int" class="extype" name="scala.Int">Int</a></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd><dt>Annotations</dt><dd>
-                <span class="name">@native</span><span class="args">()</span>
-              
-        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#isInstanceOf[T0]:Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#isInstanceOf[T0]:Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -494,7 +456,7 @@
     </li><li name="scala.AnyRef#ne" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a><a id="ne(AnyRef):Boolean"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#ne(x$1:AnyRef):Boolean" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#ne(x$1:AnyRef):Boolean" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -510,7 +472,7 @@
     </li><li name="scala.AnyRef#notify" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#notify():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#notify():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -529,7 +491,7 @@
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#notifyAll():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#notifyAll():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -545,10 +507,26 @@
                 <span class="name">@native</span><span class="args">()</span>
               
         </dd></dl></div>
+    </li><li name="com.spotify.scio.testing.JobTest.BeamOptions#opts" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="opts:List[String]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#opts:List[String]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">opts</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a><a id="synchronized[T0](⇒T0):T0"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#synchronized[T0](x$1:=&gt;T0):T0" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -561,26 +539,10 @@
       </span>
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#toString():String" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html#java.lang.String" class="extype" name="java.lang.String">String</a></span>
-      </span>
-      
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#wait():Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#wait():Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -602,7 +564,7 @@
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long,x$2:Int):Unit"></a><a id="wait(Long,Int):Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#wait(x$1:Long,x$2:Int):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -624,7 +586,7 @@
     </li><li name="scala.AnyRef#wait" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait(x$1:Long):Unit"></a><a id="wait(Long):Unit"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#wait(x$1:Long):Unit" title="Permalink">
+      <a href="../../../../com/spotify/scio/testing/JobTest$$BeamOptions.html#wait(x$1:Long):Unit" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -645,22 +607,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.spotify.scio.values.TransformNameable#withName" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="withName(name:String):TransformNameable.this.type"></a><a id="withName(String):TransformNameable.this.type"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/TransformNameable.html#withName(name:String):TransformNameable.this.type" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">withName</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="" class="extype" name="com.spotify.scio.values.TransformNameable">TransformNameable</a>.this.type</span>
-      </span>
-      
-      <p class="shortcomment cmt">Set a custom name for the next transform to be applied.</p>
     </li>
               </ol>
             </div>
@@ -671,7 +617,15 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <a href="http://docs.oracle.com/javase/8/docs/api/java/io/Serializable.html#java.io.Serializable" class="extype" name="java.io.Serializable">Serializable</a></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/Product.html#scala.Product" class="extype" name="scala.Product">Product</a></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/Equals.html#scala.Equals" class="extype" name="scala.Equals">Equals</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
