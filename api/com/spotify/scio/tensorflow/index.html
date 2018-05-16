@@ -404,9 +404,9 @@ detects the query's dialect. To override this, start the query with either <code
                         <a class="class" href="TFScioContextFunctions.html" title=""></a>
                         <a href="TFScioContextFunctions.html" title="">TFScioContextFunctions</a>
                       </li><li class="current-entities indented4">
-                        <span class="separator"></span>
-                        <a class="class" href="TensorFlowSCollectionFunctions.html" title="Enhanced version of SCollection with TensorFlow methods."></a>
-                        <a href="TensorFlowSCollectionFunctions.html" title="Enhanced version of SCollection with TensorFlow methods.">TensorFlowSCollectionFunctions</a>
+                        <a class="object" href="TensorFlowImplicits$.html" title="This allows to not only use TensorFlowImplicits as:  import TensorFlowImplicits._"></a>
+                        <a class="trait" href="TensorFlowImplicits.html" title=""></a>
+                        <a href="TensorFlowImplicits.html" title="">TensorFlowImplicits</a>
                       </li><li name="com.spotify.scio.testing" visbl="pub" class="indented4 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="testing"></a><a id="testing:testing"></a>
       <span class="permalink">
@@ -504,7 +504,7 @@ detects the query's dialect. To override this, start the query with either <code
           <span class="toggle">
             Linear Supertypes
           </span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
+          <div class="superTypes hiddenContent"><a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></div>
         </div></div>
         
 
@@ -530,7 +530,7 @@ detects the query's dialect. To override this, start the query with either <code
                   <span class="filtertype">Inherited<br />
                   </span>
                   <ol id="linearization">
-                    <li class="in" name="com.spotify.scio.tensorflow"><span>tensorflow</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                    <li class="in" name="com.spotify.scio.tensorflow"><span>tensorflow</span></li><li class="in" name="com.spotify.scio.tensorflow.TensorFlowImplicits"><span>TensorFlowImplicits</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                   </ol>
                 </div><div class="ancestors">
               <span class="filtertype"></span>
@@ -696,22 +696,22 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       
-    </li><li name="com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TensorFlowSCollectionFunctions[T]extendsSerializable"></a><a id="TensorFlowSCollectionFunctions[T]:TensorFlowSCollectionFunctions[T]"></a>
+    </li><li name="com.spotify.scio.tensorflow.TensorFlowImplicits" visbl="pub" class="indented0 " data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TensorFlowImplicitsextendsAnyRef"></a><a id="TensorFlowImplicits:TensorFlowImplicits"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/tensorflow/index.html#TensorFlowSCollectionFunctions[T]extendsSerializable" title="Permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#TensorFlowImplicitsextendsAnyRef" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a title="Enhanced version of SCollection with TensorFlow methods." href="TensorFlowSCollectionFunctions.html"><span class="name">TensorFlowSCollectionFunctions</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.6/scala/Serializable.html#scala.Serializable" class="extype" name="scala.Serializable">Serializable</a></span>
+        <a title="" href="TensorFlowImplicits.html"><span class="name">TensorFlowImplicits</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></span>
       </span>
       
-      <p class="shortcomment cmt">Enhanced version of <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> with TensorFlow methods.</p>
+      
     </li></ol>
             </div>
 
@@ -720,7 +720,26 @@ detects the query's dialect. To override this, start the query with either <code
         <div class="values members">
               <h3>Value Members</h3>
               <ol>
-                <li name="com.spotify.scio.tensorflow#makeSeqTFExampleSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+                <li name="com.spotify.scio.tensorflow.TensorFlowImplicits#makePredictSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="makePredictSCollectionFunctions[T](s:com.spotify.scio.values.SCollection[T])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.tensorflow.PredictSCollectionFunctions[T]"></a><a id="makePredictSCollectionFunctions[T](SCollection[T])(ClassTag[T]):PredictSCollectionFunctions[T]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#makePredictSCollectionFunctions[T](s:com.spotify.scio.values.SCollection[T])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.tensorflow.PredictSCollectionFunctions[T]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">makePredictSCollectionFunctions</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makePredictSCollectionFunctions.T">T</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.6/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makePredictSCollectionFunctions.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="com.spotify.scio.tensorflow.PredictSCollectionFunctions">PredictSCollectionFunctions</span>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makePredictSCollectionFunctions.T">T</span>]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
+<span class="extype" name="PredictSCollectionFunctions">PredictSCollectionFunctions</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
+<span class="extype" name="PredictSCollectionFunctions">PredictSCollectionFunctions</span>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></dd></dl></div>
+    </li><li name="com.spotify.scio.tensorflow.TensorFlowImplicits#makeSeqTFExampleSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="makeSeqTFExampleSCollectionFunctions[T&lt;:org.tensorflow.example.Example](s:com.spotify.scio.values.SCollection[Seq[T]]):com.spotify.scio.tensorflow.SeqTFExampleSCollectionFunctions[T]"></a><a id="makeSeqTFExampleSCollectionFunctions[T&lt;:Example](SCollection[Seq[T]]):SeqTFExampleSCollectionFunctions[T]"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/tensorflow/index.html#makeSeqTFExampleSCollectionFunctions[T&lt;:org.tensorflow.example.Example](s:com.spotify.scio.values.SCollection[Seq[T]]):com.spotify.scio.tensorflow.SeqTFExampleSCollectionFunctions[T]" title="Permalink">
@@ -732,12 +751,14 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">makeSeqTFExampleSCollectionFunctions</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.tensorflow.example.Example">Example</span></span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="com.spotify.scio.tensorflow.makeSeqTFExampleSCollectionFunctions.T">T</span>]]</span>)</span><span class="result">: <a href="SeqTFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.SeqTFExampleSCollectionFunctions">SeqTFExampleSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeSeqTFExampleSCollectionFunctions.T">T</span>]</span>
+        <span class="name">makeSeqTFExampleSCollectionFunctions</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.tensorflow.example.Example">Example</span></span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makeSeqTFExampleSCollectionFunctions.T">T</span>]]</span>)</span><span class="result">: <a href="SeqTFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.SeqTFExampleSCollectionFunctions">SeqTFExampleSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makeSeqTFExampleSCollectionFunctions.T">T</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
-<a href="TFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions">TFExampleSCollectionFunctions</a>.</p>
-    </li><li name="com.spotify.scio.tensorflow#makeTFExampleSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+<a href="SeqTFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.SeqTFExampleSCollectionFunctions">SeqTFExampleSCollectionFunctions</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
+<a href="SeqTFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.SeqTFExampleSCollectionFunctions">SeqTFExampleSCollectionFunctions</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></dd></dl></div>
+    </li><li name="com.spotify.scio.tensorflow.TensorFlowImplicits#makeTFExampleSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="makeTFExampleSCollectionFunctions[T&lt;:org.tensorflow.example.Example](s:com.spotify.scio.values.SCollection[T]):com.spotify.scio.tensorflow.TFExampleSCollectionFunctions[T]"></a><a id="makeTFExampleSCollectionFunctions[T&lt;:Example](SCollection[T]):TFExampleSCollectionFunctions[T]"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTFExampleSCollectionFunctions[T&lt;:org.tensorflow.example.Example](s:com.spotify.scio.values.SCollection[T]):com.spotify.scio.tensorflow.TFExampleSCollectionFunctions[T]" title="Permalink">
@@ -749,12 +770,14 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">makeTFExampleSCollectionFunctions</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.tensorflow.example.Example">Example</span></span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTFExampleSCollectionFunctions.T">T</span>]</span>)</span><span class="result">: <a href="TFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions">TFExampleSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTFExampleSCollectionFunctions.T">T</span>]</span>
+        <span class="name">makeTFExampleSCollectionFunctions</span><span class="tparams">[<span name="T">T &lt;: <span class="extype" name="org.tensorflow.example.Example">Example</span></span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makeTFExampleSCollectionFunctions.T">T</span>]</span>)</span><span class="result">: <a href="TFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions">TFExampleSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makeTFExampleSCollectionFunctions.T">T</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
-<a href="TFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions">TFExampleSCollectionFunctions</a>.</p>
-    </li><li name="com.spotify.scio.tensorflow#makeTFRecordSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+<a href="TFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions">TFExampleSCollectionFunctions</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
+<a href="TFExampleSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFExampleSCollectionFunctions">TFExampleSCollectionFunctions</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></dd></dl></div>
+    </li><li name="com.spotify.scio.tensorflow.TensorFlowImplicits#makeTFRecordSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="makeTFRecordSCollectionFunctions[T&lt;:Array[Byte]](s:com.spotify.scio.values.SCollection[T]):com.spotify.scio.tensorflow.TFRecordSCollectionFunctions[T]"></a><a id="makeTFRecordSCollectionFunctions[T&lt;:Array[Byte]](SCollection[T]):TFRecordSCollectionFunctions[T]"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTFRecordSCollectionFunctions[T&lt;:Array[Byte]](s:com.spotify.scio.values.SCollection[T]):com.spotify.scio.tensorflow.TFRecordSCollectionFunctions[T]" title="Permalink">
@@ -766,12 +789,14 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">makeTFRecordSCollectionFunctions</span><span class="tparams">[<span name="T">T &lt;: <a href="http://www.scala-lang.org/api/2.12.6/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="http://www.scala-lang.org/api/2.12.6/scala/Byte.html#scala.Byte" class="extype" name="scala.Byte">Byte</a>]</span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTFRecordSCollectionFunctions.T">T</span>]</span>)</span><span class="result">: <a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTFRecordSCollectionFunctions.T">T</span>]</span>
+        <span class="name">makeTFRecordSCollectionFunctions</span><span class="tparams">[<span name="T">T &lt;: <a href="http://www.scala-lang.org/api/2.12.6/scala/Array.html#scala.Array" class="extype" name="scala.Array">Array</a>[<a href="http://www.scala-lang.org/api/2.12.6/scala/Byte.html#scala.Byte" class="extype" name="scala.Byte">Byte</a>]</span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makeTFRecordSCollectionFunctions.T">T</span>]</span>)</span><span class="result">: <a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits.makeTFRecordSCollectionFunctions.T">T</span>]</span>
       </span>
       
       <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
-<a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>.</p>
-    </li><li name="com.spotify.scio.tensorflow#makeTFScioContextFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
+<a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
+<a href="TFRecordSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFRecordSCollectionFunctions">TFRecordSCollectionFunctions</a>.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></dd></dl></div>
+    </li><li name="com.spotify.scio.tensorflow.TensorFlowImplicits#makeTFScioContextFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="makeTFScioContextFunctions(s:com.spotify.scio.ScioContext):com.spotify.scio.tensorflow.TFScioContextFunctions"></a><a id="makeTFScioContextFunctions(ScioContext):TFScioContextFunctions"></a>
       <span class="permalink">
       <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTFScioContextFunctions(s:com.spotify.scio.ScioContext):com.spotify.scio.tensorflow.TFScioContextFunctions" title="Permalink">
@@ -786,24 +811,7 @@ detects the query's dialect. To override this, start the query with either <code
         <span class="name">makeTFScioContextFunctions</span><span class="params">(<span name="s">s: <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a></span>)</span><span class="result">: <a href="TFScioContextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioContextFunctions">TFScioContextFunctions</a></span>
       </span>
       
-      <p class="shortcomment cmt">Implicit conversion from <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a> to <a href="TFScioContextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioContextFunctions">TFScioContextFunctions</a>.</p>
-    </li><li name="com.spotify.scio.tensorflow#makeTensorFlowSCollectionFunctions" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="makeTensorFlowSCollectionFunctions[T](s:com.spotify.scio.values.SCollection[T])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions[T]"></a><a id="makeTensorFlowSCollectionFunctions[T](SCollection[T])(ClassTag[T]):TensorFlowSCollectionFunctions[T]"></a>
-      <span class="permalink">
-      <a href="../../../../com/spotify/scio/tensorflow/index.html#makeTensorFlowSCollectionFunctions[T](s:com.spotify.scio.values.SCollection[T])(implicitevidence$1:scala.reflect.ClassTag[T]):com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions[T]" title="Permalink">
-        <i class="material-icons"></i>
-      </a>
-    </span>
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">makeTensorFlowSCollectionFunctions</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="s">s: <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTensorFlowSCollectionFunctions.T">T</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.12.6/scala/reflect/ClassTag.html#scala.reflect.ClassTag" class="extype" name="scala.reflect.ClassTag">ClassTag</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTensorFlowSCollectionFunctions.T">T</span>]</span>)</span><span class="result">: <a href="TensorFlowSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions">TensorFlowSCollectionFunctions</a>[<span class="extype" name="com.spotify.scio.tensorflow.makeTensorFlowSCollectionFunctions.T">T</span>]</span>
-      </span>
-      
-      <p class="shortcomment cmt">Implicit conversion from <a href="../values/SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a> to
-<a href="TensorFlowSCollectionFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowSCollectionFunctions">TensorFlowSCollectionFunctions</a>.</p>
+      <p class="shortcomment cmt">Implicit conversion from <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a> to <a href="TFScioContextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioContextFunctions">TFScioContextFunctions</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Implicit conversion from <a href="../ScioContext.html" class="extype" name="com.spotify.scio.ScioContext">ScioContext</a> to <a href="TFScioContextFunctions.html" class="extype" name="com.spotify.scio.tensorflow.TFScioContextFunctions">TFScioContextFunctions</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></dd></dl></div>
     </li><li name="com.spotify.scio.tensorflow.TFRecordSpec" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="TFRecordSpec"></a><a id="TFRecordSpec:TFRecordSpec"></a>
       <span class="permalink">
@@ -820,6 +828,29 @@ detects the query's dialect. To override this, start the query with either <code
       </span>
       
       
+    </li><li name="com.spotify.scio.tensorflow.TensorFlowImplicits" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="TensorFlowImplicits"></a><a id="TensorFlowImplicits:TensorFlowImplicits"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/tensorflow/index.html#TensorFlowImplicits" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a title="This allows to not only use TensorFlowImplicits as:  import TensorFlowImplicits._" href="TensorFlowImplicits$.html"><span class="name">TensorFlowImplicits</span></a><span class="result"> extends <a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></span>
+      </span>
+      
+      <p class="shortcomment cmt">This allows to not only use <a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a> as:
+<code>
+ import TensorFlowImplicits._
+</code></p><div class="fullcomment"><div class="comment cmt"><p>This allows to not only use <a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a> as:
+<code>
+ import TensorFlowImplicits._
+</code></p><p>But also make them available from other places through inheritance @see <span class="extype" name="tensorflow">tensorflow</span>.
+</p></div></div>
     </li>
               </ol>
             </div>
@@ -830,7 +861,9 @@ detects the query's dialect. To override this, start the query with either <code
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="com.spotify.scio.tensorflow.TensorFlowImplicits">
+              <h3>Inherited from <a href="TensorFlowImplicits.html" class="extype" name="com.spotify.scio.tensorflow.TensorFlowImplicits">TensorFlowImplicits</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/AnyRef.html#scala.AnyRef" class="extype" name="scala.AnyRef">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.12.6/scala/Any.html#scala.Any" class="extype" name="scala.Any">Any</a></h3>
