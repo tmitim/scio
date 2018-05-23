@@ -635,7 +635,8 @@ lazy val scioJmh: Project = Project(
   classDirectory in Jmh := (classDirectory in Test).value,
   dependencyClasspath in Jmh := (dependencyClasspath in Test).value,
   libraryDependencies ++= Seq(
-    "org.slf4j" % "slf4j-nop" % slf4jVersion
+    "org.slf4j" % "slf4j-nop" % slf4jVersion,
+    "com.propensive" %% "magnolia" % "0.7.1"
   )
 ).dependsOn(
   scioCore
