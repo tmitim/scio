@@ -25,7 +25,7 @@ import java.util.zip.GZIPInputStream
 import com.google.common.hash.Hashing
 import com.google.common.primitives.Ints
 import org.apache.beam.sdk.io.Compression
-import org.apache.beam.sdk.repackaged.org.apache.commons.compress.compressors.deflate._
+import org.apache.commons.compress.compressors.deflate._
 import org.apache.commons.compress.compressors.gzip._
 
 private object TFRecordCodec {
