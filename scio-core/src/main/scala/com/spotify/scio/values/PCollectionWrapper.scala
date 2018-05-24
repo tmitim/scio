@@ -62,5 +62,4 @@ private[values] trait PCollectionWrapper[T] extends TransformNameable {
 
   private[scio] def getKvCoder[K: ClassTag, V: ClassTag]: Coder[KV[K, V]] =
     internal.getPipeline.getCoderRegistry.getScalaKvCoder[K, V](context.options)
-
 }

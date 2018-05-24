@@ -24,7 +24,7 @@ import com.esotericsoftware.kryo.io.{Input, Output}
 import com.esotericsoftware.kryo.{Kryo, Serializer}
 import com.spotify.scio.coders._
 import com.twitter.chill.IKryoRegistrar
-import org.apache.beam.sdk.coders.{Coder, AtomicCoder, ByteArrayCoder, SerializableCoder, StringUtf8Coder, VarIntCoder}
+import org.apache.beam.sdk.coders.{AtomicCoder, ByteArrayCoder, SerializableCoder, StringUtf8Coder}
 import org.apache.beam.sdk.util.CoderUtils
 import org.openjdk.jmh.annotations._
 
@@ -33,52 +33,7 @@ final case class User(id: UserId, username: String, email: String)
 final case class SpecializedUser(id: UserId, username: String, email: String)
 final case class SpecializedUserForDerived(id: UserId, username: String, email: String)
 
-trait LowPriorityCoderDerivation {
-  import language.experimental.macros, magnolia._
-  type Typeclass[T] = Coder[T]
-
-  def combine[T](ctx: CaseClass[Coder, T]): Coder[T] =
-    new AtomicCoder[T] {
-      def encode(value: T, os: OutputStream): Unit =
-        ctx.parameters.foreach { p =>
-          p.typeclass.encode(p.dereference(value), os)
-        }
-
-      def decode(is: InputStream): T = {
-        ctx.construct { p => p.typeclass.decode(is) }
-      }
-    }
-
-  // TODO: test that this actually works
-  def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] =
-    new AtomicCoder[T] {
-      val idx: Map[TypeName, Int] = sealedTrait.subtypes.map(_.typeName).zipWithIndex.toMap
-      val idc = VarIntCoder.of()
-
-      def encode(value: T, os: OutputStream): Unit =
-        sealedTrait.dispatch(value) { subtype =>
-          idc.encode(idx(subtype.typeName), os)
-          subtype.typeclass.encode(subtype.cast(value), os)
-        }
-
-      def decode(is: InputStream): T = {
-        val id = idc.decode(is)
-        val subtype = sealedTrait.subtypes(id)
-        subtype.typeclass.decode(is)
-      }
-    }
-
-  implicit def gen[T]: Coder[T] = macro Magnolia.gen[T]
-}
-
-object Implicits extends LowPriorityCoderDerivation {
-  implicit def byteArrayCoder: Coder[Array[Byte]] = ByteArrayCoder.of()
-  implicit def stringCoder: Coder[String] = StringUtf8Coder.of()
-
-  def SCoder[T](implicit c: Coder[T]): Coder[T] = c
-}
-
-import Implicits._
+import com.spotify.scio.coders.Implicits._
 
 @BenchmarkMode(Array(Mode.AverageTime))
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -170,9 +125,6 @@ class KryoAtomicCoderBenchmark {
   def derivedListDecode: List[SpecializedUserForDerived] = {
     CoderUtils.decodeFromByteArray(derivedListCoder, derivedListEncoded)
   }
-
-  // assert(derivedDecode == specializedUserForDerived, s"$derivedDecode != $specializedUserForDerived")
-  // assert(derivedListDecode == tenTimes, s"$derivedListDecode != $tenTimes")
 }
 
 final class SpecializedCoder extends AtomicCoder[SpecializedUser] {
@@ -189,6 +141,7 @@ final class SpecializedCoder extends AtomicCoder[SpecializedUser] {
       StringUtf8Coder.of().decode(is)
     )
   }
+
 }
 
 final class SpecializedKryoSerializer extends Serializer[SpecializedUser] {

@@ -293,11 +293,18 @@ lazy val scioCore: Project = Project(
     "com.google.protobuf" % "protobuf-java" % protobufVersion,
     "me.lyh" %% "protobuf-generic" % protobufGenericVersion,
     "org.apache.xbean" % "xbean-asm5-shaded" % asmVersion,
-    "org.apache.commons" % "commons-pool2" %  commonsPoolVersion
+    "org.apache.commons" % "commons-pool2" %  commonsPoolVersion,
+    // -- used to test Safe codders
+    "com.propensive" %% "magnolia" % "0.7.1",
+    directRunnerDependency % "test",
+    "org.scalatest" %% "scalatest" % scalatestVersion % "test",
+    "com.twitter" %% "bijection-core" % "0.9.5",
+    "org.hamcrest" % "hamcrest-all" % hamcrestVersion % "test"
   )
 ).dependsOn(
   scioAvro,
-  scioBigQuery % "test->test;compile->compile"
+  scioBigQuery % "test->test;compile->compile",
+  scioSchemas % "test->test"
 )
 
 lazy val scioTest: Project = Project(
@@ -636,7 +643,7 @@ lazy val scioJmh: Project = Project(
   dependencyClasspath in Jmh := (dependencyClasspath in Test).value,
   libraryDependencies ++= Seq(
     "org.slf4j" % "slf4j-nop" % slf4jVersion,
-    "com.propensive" %% "magnolia" % "0.7.1"
+    "org.scalatest" %% "scalatest" % scalatestVersion % "test"
   )
 ).dependsOn(
   scioCore

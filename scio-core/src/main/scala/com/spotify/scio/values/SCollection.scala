@@ -111,6 +111,7 @@ object SCollection {
  * @groupname window Windowing Operations
  */
 sealed trait SCollection[T] extends PCollectionWrapper[T] {
+  self =>
 
   import TupleFunctions._
   import com.spotify.scio.Implicits._
@@ -127,6 +128,11 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
 
   /** Assign a name to this SCollection. */
   def setName(name: String): SCollection[T] = context.wrap(internal.setName(name))
+
+  object coders {
+    implicit def fallback[V: ClassTag]: Coder[V] =
+      com.spotify.scio.coders.fallback.apply[V](self)
+  }
 
   /**
    * Apply a [[org.apache.beam.sdk.transforms.PTransform PTransform]] and wrap the output in an
