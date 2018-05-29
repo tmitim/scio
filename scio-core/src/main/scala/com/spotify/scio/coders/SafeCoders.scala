@@ -111,7 +111,11 @@ object Implicits extends LowPriorityCoderDerivation {
   implicit def stringCoder: Coder[String] = StringUtf8Coder.of()
   implicit def intCoder: Coder[Int] = VarIntCoder.of().asInstanceOf[Coder[Int]]
   implicit def doubleCoder: Coder[Double] = DoubleCoder.of().asInstanceOf[Coder[Double]]
-  implicit def unitCoder: Coder[Unit] = ???
+  implicit def unitCoder: Coder[Unit] =
+    new AtomicCoder[Unit] {
+      def encode(value: Unit, os: OutputStream): Unit = ()
+      def decode(is: InputStream): Unit = ()
+    }
   implicit def longCoder: Coder[Long] = ???
   implicit def iterableCoder[T](implicit c: Coder[T]): Coder[Iterable[T]] = ???
   implicit def optionCoder[T](implicit c: Coder[T]): Coder[Option[T]] = ???

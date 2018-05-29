@@ -18,6 +18,8 @@
 package com.spotify.scio.values
 
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.util.FunctionsWithSideOutput
 import org.apache.beam.sdk.transforms.ParDo
 import org.apache.beam.sdk.values.{PCollection, TupleTag, TupleTagList}
@@ -31,13 +33,11 @@ import scala.reflect.ClassTag
  * [[SCollection]]s of the [[SideOutput]]s are accessed via the additional
  * [[SideOutputCollections]] return value.
  */
-class SCollectionWithSideOutput[T: ClassTag] private[values]
+class SCollectionWithSideOutput[T] private[values]
 (val internal: PCollection[T],
  val context: ScioContext,
  sides: Iterable[SideOutput[_]])
   extends PCollectionWrapper[T] {
-
-  val ct: ClassTag[T] = implicitly[ClassTag[T]]
 
   private val sideTags = TupleTagList.of(sides.map(_.tupleTag).toList.asJava)
 
@@ -45,13 +45,13 @@ class SCollectionWithSideOutput[T: ClassTag] private[values]
    * [[SCollection.flatMap]] with an additional [[SideOutputContext]] argument and additional
    * [[SideOutputCollections]] return value.
    */
-  def flatMap[U: ClassTag](f: (T, SideOutputContext[T]) => TraversableOnce[U])
+  def flatMap[U: Coder](f: (T, SideOutputContext[T]) => TraversableOnce[U])
   : (SCollection[U], SideOutputCollections) = {
     val mainTag = new TupleTag[U]
     val tuple = this.applyInternal(
       ParDo.of(FunctionsWithSideOutput.flatMapFn(f)).withOutputTags(mainTag, sideTags))
 
-    val main = tuple.get(mainTag).setCoder(this.getCoder[U])
+    val main = tuple.get(mainTag).setCoder(Coder[U])
     (context.wrap(main), new SideOutputCollections(tuple, context))
   }
 
@@ -59,13 +59,13 @@ class SCollectionWithSideOutput[T: ClassTag] private[values]
    * [[SCollection.map]] with an additional [[SideOutputContext]] argument and additional
    * [[SideOutputCollections]] return value.
    */
-  def map[U: ClassTag](f: (T, SideOutputContext[T]) => U)
+  def map[U: Coder](f: (T, SideOutputContext[T]) => U)
   : (SCollection[U], SideOutputCollections) = {
     val mainTag = new TupleTag[U]
     val tuple = this.applyInternal(
       ParDo.of(FunctionsWithSideOutput.mapFn(f)).withOutputTags(mainTag, sideTags))
 
-    val main = tuple.get(mainTag).setCoder(this.getCoder[U])
+    val main = tuple.get(mainTag).setCoder(Coder[U])
     (context.wrap(main), new SideOutputCollections(tuple, context))
   }
 

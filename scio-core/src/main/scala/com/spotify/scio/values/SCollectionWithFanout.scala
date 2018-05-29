@@ -44,7 +44,7 @@ class SCollectionWithFanout[T: Coder] private[values] (val internal: PCollection
   /** [[SCollection.aggregate[A,U]* SCollection.aggregate]] with fan out. */
   def aggregate[A: Coder, U: Coder](aggregator: Aggregator[T, A, U]): SCollection[U] = {
     val a = aggregator  // defeat closure
-    context.wrap(internal).transform(_.map(a.prepare).sum(a.semigroup).map(a.present))
+    context.wrap(internal).transform(_.map(a.prepare).sum(a.semigroup, Coder[A]).map(a.present))
   }
 
   /** [[SCollection.combine]] with fan out. */

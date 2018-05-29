@@ -269,8 +269,8 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * of creating a new `U` to avoid memory allocation.
    * @group transform
    */
-  def aggregate[U: ClassTag](zeroValue: U)(seqOp: (U, T) => U,
-                                           combOp: (U, U) => U): SCollection[U] =
+  def aggregate[U: Coder](zeroValue: U)(seqOp: (U, T) => U,
+                                           combOp: (U, U) => U)(implicit coder: Coder[T]): SCollection[U] =
     this.pApply(Combine.globally(Functions.aggregateFn(zeroValue)(seqOp, combOp)))
 
   /**
@@ -280,7 +280,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * some cases.
    * @group transform
    */
-  def aggregate[A: Coder, U: Coder](aggregator: Aggregator[T, A, U])
+  def aggregate[A: Coder, U: Coder](aggregator: Aggregator[T, A, U])(implicit coder: Coder[T])
   : SCollection[U] = this.transform { in =>
     val a = aggregator  // defeat closure
     in.map(a.prepare).sum(a.semigroup).map(a.present)
@@ -307,9 +307,9 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * - `mergeCombiners`, to combine two `C`'s into a single one.
    * @group transform
    */
-  def combine[C: ClassTag](createCombiner: T => C)
+  def combine[C: Coder](createCombiner: T => C)
                           (mergeValue: (C, T) => C)
-                          (mergeCombiners: (C, C) => C): SCollection[C] =
+                          (mergeCombiners: (C, C) => C)(implicit coder: Coder[T]): SCollection[C] =
     this.pApply(Combine.globally(Functions.combineFn(createCombiner, mergeValue, mergeCombiners)))
 
   /**
@@ -344,7 +344,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   def countByValue(implicit coder: Coder[(T, Long)]): SCollection[(T, Long)] = this.transform {
-    _.pApply(Count.perElement[T]()).map(TupleFunctions.lvToTuple)
+    _.pApply(Count.perElement[T]()).map(TupleFunctions.klToTuple)
   }
 
   /**
@@ -381,7 +381,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * allocation; however, it should not modify t2.
    * @group transform
    */
-  def fold(zeroValue: T)(op: (T, T) => T): SCollection[T] =
+  def fold(zeroValue: T)(op: (T, T) => T)(implicit coder: Coder[T]): SCollection[T] =
     this.pApply(Combine.globally(Functions.aggregateFn(zeroValue)(op, op)))
 
   /**
@@ -389,7 +389,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * "zero value" for `T`. This could be more powerful and better optimized in some cases.
    * @group transform
    */
-  def fold(implicit mon: Monoid[T]): SCollection[T] =
+  def fold(implicit mon: Monoid[T], coder: Coder[T]): SCollection[T] =
     this.pApply(Combine.globally(Functions.reduceFn(mon)))
 
   /**
@@ -429,7 +429,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   // Scala lambda is simpler and more powerful than transforms.Max
-  def max(implicit ord: Ordering[T]): SCollection[T] = this.reduce(ord.max)
+  def max(implicit ord: Ordering[T], coder: Coder[T]): SCollection[T] = this.reduce(ord.max)
 
   /**
    * Return the mean of this SCollection as defined by the implicit `Numeric[T]`.
@@ -525,7 +525,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * binary operator.
    * @group transform
    */
-  def reduce(op: (T, T) => T): SCollection[T] =
+  def reduce(op: (T, T) => T)(implicit coder: Coder[T]): SCollection[T] =
     this.pApply(Combine.globally(Functions.reduceFn(op)))
 
   /**
@@ -562,7 +562,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * better optimized than [[reduce]] in some cases.
    * @group transform
    */
-  def sum(implicit sg: Semigroup[T]): SCollection[T] =
+  def sum(implicit sg: Semigroup[T], coder: Coder[T]): SCollection[T] =
     this.pApply(Combine.globally(Functions.reduceFn(sg)))
 
   /**
@@ -603,7 +603,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * replicating `that` to all workers. The right side should be tiny and fit in memory.
    * @group hash
    */
-  def hashLookup[V: ClassTag](that: SCollection[(T, V)])
+  def hashLookup[V: Coder](that: SCollection[(T, V)])(implicit coder: Coder[T])
   : SCollection[(T, Iterable[V])] = this.transform { in =>
     val side = that.asMultiMapSideInput
     in
@@ -705,7 +705,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * }}}
    * @group side
    */
-  def withSideInputs(sides: SideInput[_]*): SCollectionWithSideInput[T] =
+  def withSideInputs(sides: SideInput[_]*)(implicit coder: Coder[T]): SCollectionWithSideInput[T] =
     new SCollectionWithSideInput[T](internal, context, sides)
 
   // =======================================================================
@@ -730,7 +730,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * }}}
    * @group side
    */
-  def withSideOutputs(sides: SideOutput[_]*): SCollectionWithSideOutput[T] =
+  def withSideOutputs(sides: SideOutput[_]*)(implicit coder: Coder[T]): SCollectionWithSideOutput[T] =
     new SCollectionWithSideOutput[T](internal, context, sides)
 
   // =======================================================================
@@ -985,7 +985,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
                      schema: Schema = null,
                      suffix: String = "",
                      codec: CodecFactory = CodecFactory.deflateCodec(6),
-                     metadata: Map[String, AnyRef] = Map.empty)
+                     metadata: Map[String, AnyRef] = Map.empty)(implicit ct: ClassTag[T])
   : Future[Tap[T]] =
     if (context.isTest) {
       context.testOut(AvroIO(path))(this)
