@@ -19,6 +19,9 @@
 
 package com.spotify.scio.values
 
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
+
 import java.io.PrintStream
 import java.lang.{Boolean => JBoolean, Double => JDouble, Iterable => JIterable}
 import java.util.concurrent.ThreadLocalRandom
@@ -41,7 +44,6 @@ import org.apache.avro.Schema
 import org.apache.avro.file.CodecFactory
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.specific.SpecificRecordBase
-import org.apache.beam.sdk.coders.Coder
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.{CreateDisposition, WriteDisposition}
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage
 import org.apache.beam.sdk.io.gcp.{bigquery => bqio, datastore => dsio, pubsub => psio}
@@ -69,7 +71,7 @@ object SCollection {
    * Will throw an exception if the provided iterable is empty.
    * For a version that accepts empty iterables, see [[ScioContext#unionAll]].
    */
-  def unionAll[T: ClassTag](scs: Iterable[SCollection[T]]): SCollection[T] = {
+  def unionAll[T](scs: Iterable[SCollection[T]]): SCollection[T] = {
     val o = PCollectionList
       .of(scs.map(_.internal).asJava)
       .apply("UnionAll", Flatten.pCollections())
@@ -88,7 +90,7 @@ object SCollection {
     new DoubleSCollectionFunctions(s.map(num.toDouble))
 
   /** Implicit conversion from SCollection to PairSCollectionFunctions. */
-  implicit def makePairSCollectionFunctions[K: ClassTag, V: ClassTag](s: SCollection[(K, V)])
+  implicit def makePairSCollectionFunctions[K: Coder, V: Coder](s: SCollection[(K, V)])
   : PairSCollectionFunctions[K, V] =
     new PairSCollectionFunctions(s)
 
@@ -130,6 +132,18 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   def setName(name: String): SCollection[T] = context.wrap(internal.setName(name))
 
   object coders {
+    @deprecated("""
+    Coders in fallback coders are very slow and unsafe.
+    They are only provided for compatibility reasons.
+    Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
+    If a type is not supported, consider implementing your own implicit Coder for this type:
+
+      implicit def myTypeCoder: Coder[MyType] =
+        new AtomicCoder[MyType] {
+          def decode(in: InputStream): MyType = ???
+          def encode(ts: MyType, out: OutputStream): Unit = ???
+        }
+    """, since="0.6.0")
     implicit def fallback[V: ClassTag]: Coder[V] =
       com.spotify.scio.coders.fallback.apply[V](self)
   }
@@ -138,13 +152,15 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Apply a [[org.apache.beam.sdk.transforms.PTransform PTransform]] and wrap the output in an
    * [[SCollection]].
    */
-  def applyTransform[U: ClassTag](transform: PTransform[_ >: PCollection[T], PCollection[U]])
+  def applyTransform[U: Coder](transform: PTransform[_ >: PCollection[T], PCollection[U]])
   : SCollection[U] = {
-    val uCls = implicitly[ClassTag[U]].runtimeClass
-    require(
-      !(classOf[KV[_, _]] isAssignableFrom uCls),
-      "Applying a transform with KV[K, V] output, use applyKvTransform instead")
-    this.pApply(transform).setCoder(this.getCoder[U])
+    // TODO: restore that test
+    ???
+    // val uCls = implicitly[ClassTag[U]].runtimeClass
+    // require(
+    //   !(classOf[KV[_, _]] isAssignableFrom uCls),
+    //   "Applying a transform with KV[K, V] output, use applyKvTransform instead")
+    this.pApply(transform).setCoder(Coder[U])
   }
 
   /**
@@ -152,13 +168,13 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * [[SCollection]]. This is a special case of [[applyTransform]] for transforms with [[KV]]
    * output.
    */
-  def applyKvTransform[K: ClassTag, V: ClassTag]
-  (transform: PTransform[_ >: PCollection[T], PCollection[KV[K, V]]])
+  def applyKvTransform[K, V]
+  (transform: PTransform[_ >: PCollection[T], PCollection[KV[K, V]]])(implicit kvCoder: Coder[KV[K, V]])
   : SCollection[KV[K, V]] =
-    this.pApply(transform).setCoder(this.getKvCoder[K, V])
+    this.pApply(transform).setCoder(Coder[KV[K, V]])
 
   /** Apply a transform. */
-  private[scio] def transform[U: ClassTag](f: SCollection[T] => SCollection[U])
+  private[scio] def transform[U](f: SCollection[T] => SCollection[U])
   : SCollection[U] = {
     val o = internal.apply(this.tfName, new PTransform[PCollection[T], PCollection[U]]() {
       override def expand(input: PCollection[T]): PCollection[U] = {
@@ -177,7 +193,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * combine parts of the data to reduce load on the final global combine step.
    * @param fanout the number of intermediate keys that will be used
    */
-  def withFanout(fanout: Int): SCollectionWithFanout[T] =
+  def withFanout(fanout: Int)(implicit coder: Coder[T]): SCollectionWithFanout[T] =
     new SCollectionWithFanout[T](internal, context, fanout)
 
   /**
@@ -208,7 +224,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Note that this method performs a shuffle internally.
    * @group collection
    */
-  def intersection(that: SCollection[T]): SCollection[T] = this.transform {
+  def intersection(that: SCollection[T])(implicit coder: Coder[T]): SCollection[T] = this.transform {
     _.map((_, 1)).cogroup(that.map((_, 1))).flatMap { t =>
       if (t._2._1.nonEmpty && t._2._2.nonEmpty) Seq(t._1) else Seq.empty
     }
@@ -264,7 +280,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * some cases.
    * @group transform
    */
-  def aggregate[A: ClassTag, U: ClassTag](aggregator: Aggregator[T, A, U])
+  def aggregate[A: Coder, U: Coder](aggregator: Aggregator[T, A, U])
   : SCollection[U] = this.transform { in =>
     val a = aggregator  // defeat closure
     in.map(a.prepare).sum(a.semigroup).map(a.present)
@@ -274,7 +290,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Filter the elements for which the given `PartialFunction` is defined, and then map.
    * @group transform
    */
-  def collect[U: ClassTag](pfn: PartialFunction[T, U]): SCollection[U] = this.transform {
+  def collect[U: Coder](pfn: PartialFunction[T, U]): SCollection[U] = this.transform {
     _.filter(pfn.isDefinedAt).map(pfn)
   }
 
@@ -327,8 +343,8 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Count of each unique value in this SCollection as an SCollection of (value, count) pairs.
    * @group transform
    */
-  def countByValue: SCollection[(T, Long)] = this.transform {
-    _.pApply(Count.perElement[T]()).map(kvToTuple).asInstanceOf[SCollection[(T, Long)]]
+  def countByValue(implicit coder: Coder[(T, Long)]): SCollection[(T, Long)] = this.transform {
+    _.pApply(Count.perElement[T]()).map(TupleFunctions.lvToTuple)
   }
 
   /**
@@ -349,14 +365,14 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * this SCollection, and then flattening the results.
    * @group transform
    */
-  def flatMap[U: ClassTag](f: T => TraversableOnce[U]): SCollection[U] =
+  def flatMap[U: Coder](f: T => TraversableOnce[U]): SCollection[U] =
     this.parDo(Functions.flatMapFn(f))
 
   /**
    * Return a new SCollection[U] by flattening each element of an SCollection[Traversable[U]].
    * @group transform
    */
-  def flatten[U: ClassTag](implicit ev: T => TraversableOnce[U]): SCollection[U] =
+  def flatten[U: Coder](implicit ev: T => TraversableOnce[U]): SCollection[U] =
     flatMap(ev)
 
   /**
@@ -387,9 +403,10 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * [[PairSCollectionFunctions.reduceByKey]] will provide much better performance.
    * @group transform
    */
-  def groupBy[K: ClassTag](f: T => K): SCollection[(K, Iterable[T])] = this.transform {
+  def groupBy[K](f: T => K)(implicit kcoder: Coder[K], vcoder: Coder[T]): SCollection[(K, Iterable[T])] = this.transform {
+    val coder = kvCoder[K, T]
     _
-      .pApply(WithKeys.of(Functions.serializableFn(f))).setCoder(this.getKvCoder[K, T])
+      .pApply(WithKeys.of(Functions.serializableFn(f))).setCoder(coder)
       .pApply(GroupByKey.create[K, T]()).map(kvIterableToTuple)
   }
 
@@ -398,13 +415,13 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   // Scala lambda is simpler than transforms.WithKeys
-  def keyBy[K: ClassTag](f: T => K): SCollection[(K, T)] = this.map(v => (f(v), v))
+  def keyBy[K](f: T => K)(implicit coder: Coder[(K, T)]): SCollection[(K, T)] = this.map(v => (f(v), v))
 
   /**
    * Return a new SCollection by applying a function to all elements of this SCollection.
    * @group transform
    */
-  def map[U: ClassTag](f: T => U): SCollection[U] = this.parDo(Functions.mapFn(f))
+  def map[U: Coder](f: T => U): SCollection[U] = this.parDo(Functions.mapFn(f))
 
   /**
    * Return the max of this SCollection as defined by the implicit `Ordering[T]`.
@@ -441,7 +458,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   def quantilesApprox(numQuantiles: Int)
-                     (implicit ord: Ordering[T]): SCollection[Iterable[T]] = this.transform {
+                     (implicit ord: Ordering[T], coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
     _
       .pApply(ApproximateQuantiles.globally(numQuantiles, ord))
       .map(_.asInstanceOf[JIterable[T]].asScala)
@@ -516,7 +533,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @return a new SCollection whose single value is an `Iterable` of the samples
    * @group transform
    */
-  def sample(sampleSize: Int): SCollection[Iterable[T]] = this.transform {
+  def sample(sampleSize: Int)(implicit coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
     _.pApply(Sample.fixedSizeGlobally(sampleSize)).map(_.asScala)
   }
 
@@ -524,7 +541,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Return a sampled subset of this SCollection.
    * @group transform
    */
-  def sample(withReplacement: Boolean, fraction: Double): SCollection[T] = {
+  def sample(withReplacement: Boolean, fraction: Double)(implicit coder: Coder[T]): SCollection[T] = {
     if (withReplacement) {
       this.parDo(new PoissonSampler[T](fraction))
     } else {
@@ -536,7 +553,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Return an SCollection with the elements from `this` that are not in `other`.
    * @group transform
    */
-  def subtract(that: SCollection[T]): SCollection[T] = this.transform {
+  def subtract(that: SCollection[T])(implicit coder: Coder[T]): SCollection[T] = this.transform {
     _.map((_, ())).subtractByKey(that).keys
   }
 
@@ -560,7 +577,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @return a new SCollection whose single value is an `Iterable` of the top k
    * @group transform
    */
-  def top(num: Int)(implicit ord: Ordering[T]): SCollection[Iterable[T]] = this.transform {
+  def top(num: Int)(implicit ord: Ordering[T], coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
     _.pApply(Top.of(num, ord)).map(_.asInstanceOf[JIterable[T]].asScala)
   }
 
@@ -834,7 +851,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Convert values into pairs of (value, window).
    * @group window
    */
-  def withPaneInfo: SCollection[(T, PaneInfo)] = this.parDo(new DoFn[T, (T, PaneInfo)] {
+  def withPaneInfo(implicit coder: Coder[(T, PaneInfo)]): SCollection[(T, PaneInfo)] = this.parDo(new DoFn[T, (T, PaneInfo)] {
     @ProcessElement
     private[scio] def processElement(c: DoFn[T, (T, PaneInfo)]#ProcessContext): Unit =
       c.output((c.element(), c.pane()))
@@ -844,7 +861,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * Convert values into pairs of (value, timestamp).
    * @group window
    */
-  def withTimestamp: SCollection[(T, Instant)] = this.parDo(new DoFn[T, (T, Instant)] {
+  def withTimestamp(implicit coder: Coder[(T, Instant)]): SCollection[(T, Instant)] = this.parDo(new DoFn[T, (T, Instant)] {
     @ProcessElement
     private[scio] def processElement(c: DoFn[T, (T, Instant)]#ProcessContext): Unit =
       c.output((c.element(), c.timestamp()))
@@ -861,7 +878,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    *           windowed.
    * @group window
    */
-  def withWindow[W <: BoundedWindow]: SCollection[(T, W)] = this.parDo(
+  def withWindow[W <: BoundedWindow](implicit coder: Coder[(T, BoundedWindow)]): SCollection[(T, W)] = this.parDo(
     new DoFn[T, (T, BoundedWindow)] {
       @ProcessElement
       private[scio] def processElement(c: DoFn[T, (T, BoundedWindow)]#ProcessContext,
@@ -874,7 +891,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * With a optional skew
    * @group window
    */
-  def timestampBy(f: T => Instant, allowedTimestampSkew: Duration = Duration.ZERO): SCollection[T] =
+  def timestampBy(f: T => Instant, allowedTimestampSkew: Duration = Duration.ZERO)(implicit coder: Coder[T]): SCollection[T] =
     this.applyTransform(WithTimestamps.of(Functions.serializableFn(f))
       .withAllowedTimestampSkew(allowedTimestampSkew))
 
@@ -887,8 +904,8 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * pipeline completes successfully.
    * @group output
    */
-  def materialize: Future[Tap[T]] = materialize(ScioUtil.getTempFile(context), isCheckpoint = false)
-  private[scio] def materialize(path: String, isCheckpoint: Boolean): Future[Tap[T]] =
+  def materialize(implicit coder: Coder[T]): Future[Tap[T]] = materialize(ScioUtil.getTempFile(context), isCheckpoint = false)
+  private[scio] def materialize(path: String, isCheckpoint: Boolean)(implicit coder: Coder[T]): Future[Tap[T]] =
     internalSaveAsObjectFile(path, isCheckpoint = isCheckpoint)
 
   /**
@@ -899,25 +916,24 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group output
    */
   def saveAsObjectFile(path: String, numShards: Int = 0, suffix: String = ".obj",
-                       metadata: Map[String, AnyRef] = Map.empty): Future[Tap[T]] =
+                       metadata: Map[String, AnyRef] = Map.empty)(implicit coder: Coder[T]): Future[Tap[T]] =
     internalSaveAsObjectFile(path, numShards, suffix, metadata)
 
   private def internalSaveAsObjectFile(path: String, numShards: Int = 0, suffix: String = ".obj",
                                        metadata: Map[String, AnyRef] = Map.empty,
-                                       isCheckpoint: Boolean = false)
+                                       isCheckpoint: Boolean = false)(implicit elemCoder: Coder[T])
   : Future[Tap[T]] = {
     if (context.isTest) {
       // if it's a test and checkpoint - no need to test checkpoint data
       if (!isCheckpoint) context.testOut(ObjectFileIO(path))(this)
       saveAsInMemoryTap
     } else {
-      val elemCoder = this.getCoder[T]
       this
         .parDo(new DoFn[T, GenericRecord] {
           @ProcessElement
           private[scio] def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
             c.output(AvroBytesUtil.encode(elemCoder, c.element()))
-        })
+        })(genericRecordCoder(AvroBytesUtil.schema))
         .saveAsAvroFile(path, numShards, AvroBytesUtil.schema, suffix, metadata = metadata)
       context.makeFuture(ObjectFileTap[T](ScioUtil.addPartSuffix(path)))
     }
@@ -1020,7 +1036,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group output
    */
   def saveAsProtobufFile(path: String, numShards: Int = 0)
-                        (implicit ev: T <:< Message): Future[Tap[T]] = {
+                        (implicit ev: T <:< Message, coder: Coder[T], ct: ClassTag[T]): Future[Tap[T]] = {
     if (context.isTest) {
       context.testOut(ProtobufIO(path))(this)
       saveAsInMemoryTap
@@ -1177,7 +1193,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    */
   def saveAsPubsub(topic: String,
                    idAttribute: String = null,
-                   timestampAttribute: String = null)
+                   timestampAttribute: String = null)(implicit coder: Coder[T])
   : Future[Tap[T]] = {
     if (context.isTest) {
       context.testOut(PubsubIO(topic))(this)
@@ -1203,7 +1219,6 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
         val t = setup(psio.PubsubIO.writeProtos(cls.asInstanceOf[Class[Message]]))
         this.asInstanceOf[SCollection[Message]].applyInternal(t)
       } else {
-        val coder = internal.getPipeline.getCoderRegistry.getScalaCoder[T](context.options)
         val t = setup(psio.PubsubIO.writeMessages())
         this.map { t =>
           val payload = CoderUtils.encodeToByteArray(coder, t)
@@ -1221,7 +1236,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   def saveAsPubsubWithAttributes[V: ClassTag](topic: String,
                                               idAttribute: String = null,
                                               timestampAttribute: String = null)
-                                             (implicit ev: T <:< (V, Map[String, String]))
+                                             (implicit ev: T <:< (V, Map[String, String]), coder: Coder[PubsubMessage])
   : Future[Tap[V]] = {
     if (context.isTest) {
       context.testOut(PubsubIO(topic))(this)
@@ -1271,9 +1286,9 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   def saveAsTextFile(path: String,
                      suffix: String = ".txt",
                      numShards: Int = 0,
-                     compression: Compression = Compression.UNCOMPRESSED)
+                     compression: Compression = Compression.UNCOMPRESSED)(implicit ct: ClassTag[T])
   : Future[Tap[String]] = {
-    val s = if (classOf[String] isAssignableFrom this.ct.runtimeClass) {
+    val s = if (classOf[String] isAssignableFrom ct.runtimeClass) {
       this.asInstanceOf[SCollection[String]]
     } else {
       this.map(_.toString)
@@ -1310,10 +1325,9 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
 }
 // scalastyle:on number.of.methods
 
-private[scio] class SCollectionImpl[T: ClassTag](val internal: PCollection[T],
+private[scio] class SCollectionImpl[T](val internal: PCollection[T],
                                                  val context: ScioContext)
   extends SCollection[T] {
-  val ct: ClassTag[T] = implicitly[ClassTag[T]]
 }
 
 // scalastyle:on file.size.limit

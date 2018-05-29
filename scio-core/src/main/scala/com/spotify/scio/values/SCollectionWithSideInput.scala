@@ -18,6 +18,8 @@
 package com.spotify.scio.values
 
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.util.FunctionsWithSideInput.SideInputDoFn
 import com.spotify.scio.util.{ClosureCleaner, FunctionsWithSideInput}
 import org.apache.beam.sdk.transforms.DoFn.ProcessElement
@@ -33,12 +35,10 @@ import scala.util.Try
  * An enhanced SCollection that provides access to one or more [[SideInput]]s for some transforms.
  * [[SideInput]]s are accessed via the additional [[SideInputContext]] argument.
  */
-class SCollectionWithSideInput[T: ClassTag] private[values] (val internal: PCollection[T],
+class SCollectionWithSideInput[T: Coder] private[values] (val internal: PCollection[T],
                                                              val context: ScioContext,
                                                              sides: Iterable[SideInput[_]])
   extends PCollectionWrapper[T] {
-
-  val ct: ClassTag[T] = implicitly[ClassTag[T]]
 
   private def parDo[T0, U](fn: DoFn[T0, U]) = ParDo.of(fn).withSideInputs(sides.map(_.view).asJava)
 
@@ -46,28 +46,28 @@ class SCollectionWithSideInput[T: ClassTag] private[values] (val internal: PColl
   def filter(f: (T, SideInputContext[T]) => Boolean): SCollectionWithSideInput[T] = {
     val o = this
       .pApply(parDo(FunctionsWithSideInput.filterFn(f)))
-      .internal.setCoder(this.getCoder[T])
+      .internal.setCoder(Coder[T])
     new SCollectionWithSideInput[T](o, context, sides)
   }
 
   /** [[SCollection.flatMap]] with an additional [[SideInputContext]] argument. */
-  def flatMap[U: ClassTag](f: (T, SideInputContext[T]) => TraversableOnce[U])
+  def flatMap[U: Coder](f: (T, SideInputContext[T]) => TraversableOnce[U])
   : SCollectionWithSideInput[U] = {
     val o = this
       .pApply(parDo(FunctionsWithSideInput.flatMapFn(f)))
-      .internal.setCoder(this.getCoder[U])
+      .internal.setCoder(Coder[U])
     new SCollectionWithSideInput[U](o, context, sides)
   }
 
   /** [[SCollection.keyBy]] with an additional [[SideInputContext]] argument. */
-  def keyBy[K: ClassTag](f: (T, SideInputContext[T]) => K): SCollectionWithSideInput[(K, T)] =
+  def keyBy[K: Coder](f: (T, SideInputContext[T]) => K): SCollectionWithSideInput[(K, T)] =
     this.map((x, s) => (f(x, s), x))
 
   /** [[SCollection.map]] with an additional [[SideInputContext]] argument. */
-  def map[U: ClassTag](f: (T, SideInputContext[T]) => U): SCollectionWithSideInput[U] = {
+  def map[U: Coder](f: (T, SideInputContext[T]) => U): SCollectionWithSideInput[U] = {
     val o = this
       .pApply(parDo(FunctionsWithSideInput.mapFn(f)))
-      .internal.setCoder(this.getCoder[U])
+      .internal.setCoder(Coder[U])
     new SCollectionWithSideInput[U](o, context, sides)
   }
 

@@ -18,7 +18,7 @@
 package com.spotify.scio.values
 
 import com.spotify.scio.{Implicits, ScioContext}
-import org.apache.beam.sdk.coders.Coder
+import com.spotify.scio.coders.Coder
 import org.apache.beam.sdk.transforms.{Combine, DoFn, PTransform, ParDo}
 import org.apache.beam.sdk.values.{KV, PCollection, POutput}
 
@@ -37,13 +37,11 @@ private[values] trait PCollectionWrapper[T] extends TransformNameable {
    */
   val context: ScioContext
 
-  implicit val ct: ClassTag[T]
-
   private[scio] def applyInternal[Output <: POutput]
   (transform: PTransform[_ >: PCollection[T], Output]): Output =
     internal.apply(this.tfName, transform)
 
-  protected def pApply[U: ClassTag]
+  protected def pApply[U]
   (transform: PTransform[_ >: PCollection[T], PCollection[U]]): SCollection[U] = {
     val t = if (classOf[Combine.Globally[T, U]] isAssignableFrom transform.getClass) {
       // In case PCollection is windowed
@@ -54,12 +52,12 @@ private[values] trait PCollectionWrapper[T] extends TransformNameable {
     context.wrap(this.applyInternal(t))
   }
 
-  private[scio] def parDo[U: ClassTag](fn: DoFn[T, U]): SCollection[U] =
-    this.pApply(ParDo.of(fn)).setCoder(this.getCoder[U])
+  private[scio] def parDo[U: Coder](fn: DoFn[T, U]): SCollection[U] =
+    this.pApply(ParDo.of(fn)).setCoder(Coder[U])
 
-  private[scio] def getCoder[U: ClassTag]: Coder[U] =
-    internal.getPipeline.getCoderRegistry.getScalaCoder[U](context.options)
+  // private[scio] def getCoder[U: ClassTag]: Coder[U] =
+  //   internal.getPipeline.getCoderRegistry.getScalaCoder[U](context.options)
 
-  private[scio] def getKvCoder[K: ClassTag, V: ClassTag]: Coder[KV[K, V]] =
-    internal.getPipeline.getCoderRegistry.getScalaKvCoder[K, V](context.options)
+  // private[scio] def getKvCoder[K: ClassTag, V: ClassTag]: Coder[KV[K, V]] =
+  //   internal.getPipeline.getCoderRegistry.getScalaKvCoder[K, V](context.options)
 }

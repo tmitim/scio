@@ -86,22 +86,11 @@ trait LowPriorityCoderDerivation extends FromBijection {
     macro CoderUtils.staticInvokeCoder[T]
 }
 
-object fallback {
+private[scio] object fallback {
   import scala.reflect.ClassTag
-  @deprecated("""
-  Coders in `com.spotify.scio.coders.fallback._` are very slow and unsafe.
-  They are only provided for compatibility reasons.
-  Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
-  If a type is not supported, consider implementing your own implicit Coder for this type:
-
-    implicit def myTypeCoder: Coder[MyType] =
-      new AtomicCoder[MyType] {
-        def decode(in: InputStream): MyType = ???
-        def encode(ts: MyType, out: OutputStream): Unit = ???
-      }
-  """, since="0.6.0")
-  private[scio] def apply[V: ClassTag](p: com.spotify.scio.values.SCollection[_]): Coder[V] =
-    p.getCoder[V]
+  def apply[V: ClassTag](p: com.spotify.scio.values.SCollection[_]): Coder[V] =
+    ???
+    // p.getCoder[V]
 }
 
 object Implicits extends LowPriorityCoderDerivation {
@@ -122,8 +111,24 @@ object Implicits extends LowPriorityCoderDerivation {
   implicit def stringCoder: Coder[String] = StringUtf8Coder.of()
   implicit def intCoder: Coder[Int] = VarIntCoder.of().asInstanceOf[Coder[Int]]
   implicit def doubleCoder: Coder[Double] = DoubleCoder.of().asInstanceOf[Coder[Double]]
+  implicit def unitCoder: Coder[Unit] = ???
+  implicit def longCoder: Coder[Long] = ???
+  implicit def iterableCoder[T](implicit c: Coder[T]): Coder[Iterable[T]] = ???
+  implicit def optionCoder[T](implicit c: Coder[T]): Coder[Option[T]] = ???
+  // Could be derived from Bijection but since it's a very common one let's just support it.
+  implicit def jlistCoder[T](implicit c: Coder[T]): Coder[java.util.List[T]] = ???
+
+  implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
+
+  private[scio] implicit def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): Coder[org.apache.beam.sdk.values.KV[K, V]] = ???
+  implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
+  implicit def instantCoder: Coder[org.joda.time.Instant] = ???
+  implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] = ???
+  implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
+  implicit def entityCoder: Coder[com.google.datastore.v1.Entity] = ???
 
   def genericRecordCoder(schema: org.apache.avro.Schema) = AvroCoder.of(schema)
+
 
   implicit def seqCoder[T: Coder]: Coder[Seq[T]] =
     new AtomicCoder[Seq[T]] {

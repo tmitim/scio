@@ -31,7 +31,8 @@ import com.spotify.scio.avro.types.AvroType
 import com.spotify.scio.avro.types.AvroType.HasAvroAnnotation
 import com.spotify.scio.bigquery._
 import com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation
-import com.spotify.scio.coders.{AvroBytesUtil, KryoAtomicCoder, KryoOptions}
+import com.spotify.scio.coders.{AvroBytesUtil, KryoAtomicCoder, KryoOptions, Coder}
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.io.Tap
 import com.spotify.scio.metrics.Metrics
 import com.spotify.scio.options.ScioOptions
@@ -61,7 +62,7 @@ import scala.collection.mutable.{Buffer => MBuffer}
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Future, Promise}
 import scala.io.Source
-import scala.reflect.ClassTag
+import scala.reflect.{ClassTag, classTag}
 import scala.reflect.runtime.universe._
 import scala.util.{Failure, Success, Try}
 import scala.util.control.NonFatal
@@ -318,7 +319,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
   private val _counters: MBuffer[Counter] = MBuffer.empty
 
   /** Wrap a [[org.apache.beam.sdk.values.PCollection PCollection]]. */
-  def wrap[T: ClassTag](p: PCollection[T]): SCollection[T] =
+  def wrap[T](p: PCollection[T]): SCollection[T] =
     new SCollectionImpl[T](p, this)
 
   // =======================================================================
@@ -358,6 +359,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
 
     if (_counters.nonEmpty) {
       val counters = _counters.toArray
+      import com.spotify.scio.coders.Implicits._
       this.parallelize(Seq(0)).map { _ =>
         counters.foreach(_.inc(0))
       }
@@ -450,7 +452,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
   private[scio] def testOut: TestOutput = TestDataManager.getOutput(testId.get)
   private[scio] def testDistCache: TestDistCache = TestDataManager.getDistCache(testId.get)
 
-  private[scio] def getTestInput[T: ClassTag](key: TestIO[T]): SCollection[T] =
+  private[scio] def getTestInput[T: Coder](key: TestIO[T]): SCollection[T] =
     this.parallelize(testIn(key).asInstanceOf[Seq[T]])
 
   // =======================================================================
@@ -468,12 +470,13 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * serialization is not guaranteed to be compatible across Scio releases.
    * @group input
    */
-  def objectFile[T: ClassTag](path: String): SCollection[T] = requireNotClosed {
+  def objectFile[T: Coder](path: String): SCollection[T] = requireNotClosed {
     if (this.isTest) {
       this.getTestInput(ObjectFileIO[T](path))
     } else {
-      val coder = pipeline.getCoderRegistry.getScalaCoder[T](options)
-      this.avroFile[GenericRecord](path, AvroBytesUtil.schema)
+      val coder = Coder[T]
+      val recCoder = genericRecordCoder(AvroBytesUtil.schema)
+      this.avroFile[GenericRecord](path, AvroBytesUtil.schema)(classTag[GenericRecord], recCoder)
         .parDo(new DoFn[GenericRecord, T] {
           @ProcessElement
           private[scio] def processElement(c: DoFn[GenericRecord, T]#ProcessContext): Unit = {
@@ -490,7 +493,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    *               [[org.apache.avro.generic.GenericRecord GenericRecord]].
    * @group input
    */
-  def avroFile[T: ClassTag](path: String, schema: Schema = null): SCollection[T] =
+  def avroFile[T: ClassTag : Coder](path: String, schema: Schema = null): SCollection[T] =
   requireNotClosed {
     if (this.isTest) {
       this.getTestInput(AvroIO[T](path))
@@ -515,7 +518,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
     *
     * @group input
     */
-  def typedAvroFile[T <: HasAvroAnnotation : ClassTag : TypeTag](path: String)
+  def typedAvroFile[T <: HasAvroAnnotation : ClassTag : TypeTag : Coder](path: String)
   : SCollection[T] = requireNotClosed {
     if (this.isTest) {
       this.getTestInput(AvroIO[T](path))
@@ -533,7 +536,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * Avro's block file format.
    * @group input
    */
-  def protobufFile[T: ClassTag](path: String)(implicit ev: T <:< Message): SCollection[T] =
+  def protobufFile[T: Coder](path: String)(implicit ev: T <:< Message): SCollection[T] =
     requireNotClosed {
       if (this.isTest) {
         this.getTestInput(ProtobufIO[T](path))
@@ -551,7 +554,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
       .withCoder(new KryoAtomicCoder[T](KryoOptions(this.options)))
   }
 
-  private def bqReadQuery[T: ClassTag](typedRead: bqio.BigQueryIO.TypedRead[T],
+  private def bqReadQuery[T: Coder](typedRead: bqio.BigQueryIO.TypedRead[T],
                                        sqlQuery: String,
                                        flattenResults: Boolean  = false)
   : SCollection[T] = requireNotClosed {
@@ -577,7 +580,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
     }
   }
 
-  private def bqReadTable[T: ClassTag](typedRead: bqio.BigQueryIO.TypedRead[T],
+  private def bqReadTable[T: Coder](typedRead: bqio.BigQueryIO.TypedRead[T],
                                        table: TableReference)
   : SCollection[T] = requireNotClosed {
     val tableSpec: String = bqio.BigQueryHelpers.toTableSpec(table)
@@ -645,7 +648,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * supported. By default the query dialect will be automatically detected. To override this
    * behavior, start the query string with `#legacysql` or `#standardsql`.
    */
-  def typedBigQuery[T <: HasAnnotation : ClassTag : TypeTag](newSource: String = null)
+  def typedBigQuery[T <: HasAnnotation : ClassTag : TypeTag : Coder](newSource: String = null)
   : SCollection[T] = {
     val bqt = BigQueryType[T]
     val typedRead = avroBigQueryRead[T]
@@ -686,7 +689,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
       }
     }
 
-  private def pubsubIn[T: ClassTag](isSubscription: Boolean,
+  private def pubsubIn[T: ClassTag : Coder](isSubscription: Boolean,
                                     name: String,
                                     idAttribute: String,
                                     timestampAttribute: String)
@@ -728,7 +731,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * Get an SCollection for a Pub/Sub subscription.
    * @group input
    */
-  def pubsubSubscription[T: ClassTag](sub: String,
+  def pubsubSubscription[T: ClassTag : Coder](sub: String,
                                       idAttribute: String = null,
                                       timestampAttribute: String = null)
   : SCollection[T] = pubsubIn(isSubscription = true, sub, idAttribute, timestampAttribute)
@@ -737,12 +740,12 @@ class ScioContext private[scio] (val options: PipelineOptions,
     * Get an SCollection for a Pub/Sub topic.
     * @group input
     */
-  def pubsubTopic[T: ClassTag](topic: String,
+  def pubsubTopic[T: ClassTag : Coder](topic: String,
                                idAttribute: String = null,
                                timestampAttribute: String = null)
   : SCollection[T] = pubsubIn(isSubscription = false, topic, idAttribute, timestampAttribute)
 
-  private def pubsubInWithAttributes[T: ClassTag](isSubscription: Boolean,
+  private def pubsubInWithAttributes[T: Coder](isSubscription: Boolean,
                                                   name: String,
                                                   idAttribute: String,
                                                   timestampAttribute: String)
@@ -758,7 +761,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
       if (timestampAttribute != null) {
         t = t.withTimestampAttribute(timestampAttribute)
       }
-      val elementCoder = pipeline.getCoderRegistry.getScalaCoder[T](options)
+      val elementCoder = Coder[T]
       wrap(this.applyInternal(t)).setName(name)
         .map { m =>
           val payload = CoderUtils.decodeFromByteArray(elementCoder, m.getPayload)
@@ -772,7 +775,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
     * Get an SCollection for a Pub/Sub subscription that includes message attributes.
     * @group input
     */
-  def pubsubSubscriptionWithAttributes[T: ClassTag](sub: String,
+  def pubsubSubscriptionWithAttributes[T: Coder](sub: String,
                                                     idAttribute: String = null,
                                                     timestampAttribute: String = null)
   : SCollection[(T, Map[String, String])] =
@@ -782,7 +785,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
     * Get an SCollection for a Pub/Sub topic that includes message attributes.
     * @group input
     */
-  def pubsubTopicWithAttributes[T: ClassTag](topic: String,
+  def pubsubTopicWithAttributes[T: Coder](topic: String,
                                              idAttribute: String = null,
                                              timestampAttribute: String = null)
   : SCollection[(T, Map[String, String])] =
@@ -820,7 +823,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * Get an SCollection with a custom input transform. The transform should have a unique name.
    * @group input
    */
-  def customInput[T : ClassTag, I >: PBegin <: PInput]
+  def customInput[T : Coder, I >: PBegin <: PInput]
   (name: String, transform: PTransform[I, PCollection[T]]): SCollection[T] = requireNotClosed {
     if (this.isTest) {
       this.getTestInput(CustomIO[T](name))
@@ -841,21 +844,20 @@ class ScioContext private[scio] (val options: PipelineOptions,
   }
 
   /** Create a union of multiple SCollections. Supports empty lists. */
-  def unionAll[T: ClassTag](scs: Iterable[SCollection[T]]): SCollection[T] = scs match {
+  def unionAll[T: Coder](scs: Iterable[SCollection[T]]): SCollection[T] = scs match {
     case Nil => empty()
     case contents => SCollection.unionAll(contents)
   }
 
   /** Form an empty SCollection. */
-  def empty[T: ClassTag](): SCollection[T] = parallelize(Seq())
+  def empty[T: Coder](): SCollection[T] = parallelize(Seq())
 
   /**
    * Distribute a local Scala `Iterable` to form an SCollection.
    * @group in_memory
    */
-  def parallelize[T: ClassTag](elems: Iterable[T]): SCollection[T] = requireNotClosed {
-    val coder = pipeline.getCoderRegistry.getScalaCoder[T](options)
-    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(coder)))
+  def parallelize[T: Coder](elems: Iterable[T]): SCollection[T] = requireNotClosed {
+    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(Coder[T])))
       .setName(truncate(elems.toString()))
   }
 
@@ -863,10 +865,11 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * Distribute a local Scala `Map` to form an SCollection.
    * @group in_memory
    */
-  def parallelize[K: ClassTag, V: ClassTag](elems: Map[K, V]): SCollection[(K, V)] =
+  def parallelize[K, V](elems: Map[K, V])(implicit coder: Coder[(K, V)]): SCollection[(K, V)] =
   requireNotClosed {
-    val coder = pipeline.getCoderRegistry.getScalaKvCoder[K, V](options)
-    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(coder)))
+    // TODO: merge Create.of and map
+    val kvCoder: Coder[KV[K, V]] = ???
+    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(kvCoder)))
       .map(kv => (kv.getKey, kv.getValue))
       .setName(truncate(elems.toString()))
   }
