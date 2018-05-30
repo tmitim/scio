@@ -19,7 +19,6 @@ package com.spotify.scio.coders
 
 import com.spotify.scio.avro.TestRecord
 import org.apache.avro.generic.GenericRecord
-import org.apache.beam.sdk.coders.Coder
 import org.apache.beam.sdk.util.CoderUtils
 
 object CoderTestUtils {

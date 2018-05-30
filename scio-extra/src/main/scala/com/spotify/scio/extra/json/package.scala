@@ -19,6 +19,8 @@ package com.spotify.scio.extra
 
 import com.spotify.scio.ScioContext
 import com.spotify.scio.io.{Tap, TextTap}
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.testing.TestIO
 import com.spotify.scio.util.ScioUtil
 import com.spotify.scio.values.SCollection
@@ -62,7 +64,7 @@ package object json extends AutoDerivation {
 
   /** Enhanced version of [[ScioContext]] with JSON methods. */
   implicit class JsonScioContext(@transient val self: ScioContext) extends Serializable {
-    def jsonFile[T: ClassTag : Decoder](path: String)
+    def jsonFile[T: Coder : Decoder](path: String)
     : SCollection[Either[DecodeError, T]] = self.requireNotClosed {
       if (self.isTest) {
         self.getTestInput[T](JsonIO[T](path)).map(Right(_))
@@ -82,7 +84,7 @@ package object json extends AutoDerivation {
   /**
    * Enhanced version of [[com.spotify.scio.values.SCollection SCollection]] with JSON methods.
    */
-  implicit class JsonSCollection[T : Encoder : Decoder]
+  implicit class JsonSCollection[T : Encoder : Decoder : Coder]
   (@transient val self: SCollection[T]) extends Serializable {
     def saveAsJsonFile(path: String,
                        printer: Printer = Printer.noSpaces,
@@ -95,7 +97,6 @@ package object json extends AutoDerivation {
         self
           .map(x => printer.pretty(x.asJson))
           .applyInternal(self.textOut(path, ".json", numShards, compression))
-        implicit val ct = self.ct
         self.context.makeFuture(TextTap(ScioUtil.addPartSuffix(path)).map(decode[T](_).right.get))
       }
     }

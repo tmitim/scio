@@ -30,10 +30,10 @@ private[scio] object CoderUtils {
     val companionType = companionSymbol.typeSignature
     q"""
     new _root_.org.apache.beam.sdk.coders.AtomicCoder[$companioned] {
-      def encode(value: $companioned, os: OutputStream): Unit = {
+      def encode(value: $companioned, os: _root_.java.io.OutputStream): Unit = {
         os.write(value.toByteBuffer().array())
       }
-      def decode(is: InputStream): $companioned = {
+      def decode(is: _root_.java.io.InputStream): $companioned = {
         val bytes = java.nio.ByteBuffer.wrap(org.apache.commons.io.IOUtils.toByteArray(is))
         ${companionType}.fromByteBuffer(bytes)
       }

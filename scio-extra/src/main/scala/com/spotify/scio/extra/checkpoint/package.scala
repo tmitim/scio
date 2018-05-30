@@ -18,6 +18,7 @@
 package com.spotify.scio.extra
 
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Coder
 import com.spotify.scio.io.FileStorage
 import com.spotify.scio.testing.ObjectFileIO
 import com.spotify.scio.util.ScioUtil
@@ -55,7 +56,7 @@ package object checkpoint {
      * @param fn result of this arbitrary => [[com.spotify.scio.values.SCollection SCollection]]
      *           flow is what is checkpointed
      */
-    def checkpoint[T: ClassTag](fileOrPath: String)
+    def checkpoint[T: Coder](fileOrPath: String)
                                (fn: => SCollection[T]): SCollection[T] = {
       FileSystems.setDefaultPipelineOptions(self.options)
       val path = if (self.isTest) {

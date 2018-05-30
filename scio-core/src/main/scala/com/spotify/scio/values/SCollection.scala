@@ -90,7 +90,7 @@ object SCollection {
     new DoubleSCollectionFunctions(s.map(num.toDouble))
 
   /** Implicit conversion from SCollection to PairSCollectionFunctions. */
-  implicit def makePairSCollectionFunctions[K: Coder, V: Coder](s: SCollection[(K, V)])
+  implicit def makePairSCollectionFunctions[K, V](s: SCollection[(K, V)])
   : PairSCollectionFunctions[K, V] =
     new PairSCollectionFunctions(s)
 

@@ -18,6 +18,7 @@
 package com.spotify.scio.values
 
 import com.spotify.scio.testing.PipelineSpec
+import com.spotify.scio.coders.Implicits._
 
 class MutationTest extends PipelineSpec {
   "BigDecimal serialization" should "not cause mutation exceptions" in {

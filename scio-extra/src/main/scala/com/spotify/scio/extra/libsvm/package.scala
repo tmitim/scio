@@ -19,6 +19,8 @@ package com.spotify.scio.extra
 
 import breeze.linalg.SparseVector
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.values.SCollection
 import com.twitter.algebird.Max
 
@@ -74,7 +76,7 @@ package object libsvm {
     } else {
       data.map { case (_, indices, _) =>
         indices.lastOption.getOrElse(0)
-      }.sum(Max.maxSemigroup).map(_ + 1)
+      }.sum(Max.maxSemigroup, Coder[Int]).map(_ + 1)
     }
 
     data.cross(featureCntCol).map { case ((label, indicies, values), featureCount) =>

@@ -61,11 +61,13 @@ val scalacheckShapelessVersion = "1.1.8"
 val scalacheckVersion = "1.13.5"
 val scalaMacrosVersion = "2.1.1"
 val scalatestVersion = "3.0.5"
+val shapelessVersion = "2.3.3"
 val shapelessDatatypeVersion = "0.1.9"
 val slf4jVersion = "1.7.25"
 val sparkeyVersion = "2.3.0"
 val tensorFlowVersion = "1.8.0"
 val zoltarVersion = "0.3.1"
+val bijectionVersion = "0.9.5"
 
 lazy val mimaSettings = Seq(
   mimaPreviousArtifacts :=
@@ -295,10 +297,11 @@ lazy val scioCore: Project = Project(
     "org.apache.xbean" % "xbean-asm5-shaded" % asmVersion,
     "org.apache.commons" % "commons-pool2" %  commonsPoolVersion,
     // -- used to test Safe codders
+    "com.chuusai" %% "shapeless" % "2.3.3",
     "com.propensive" %% "magnolia" % "0.7.1",
     directRunnerDependency % "test",
     "org.scalatest" %% "scalatest" % scalatestVersion % "test",
-    "com.twitter" %% "bijection-core" % "0.9.5",
+    "com.twitter" %% "bijection-core" % bijectionVersion,
     "org.hamcrest" % "hamcrest-all" % hamcrestVersion % "test"
   )
 ).dependsOn(

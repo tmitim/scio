@@ -865,11 +865,11 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * Distribute a local Scala `Map` to form an SCollection.
    * @group in_memory
    */
-  def parallelize[K, V](elems: Map[K, V])(implicit coder: Coder[(K, V)]): SCollection[(K, V)] =
+  def parallelize[K, V](elems: Map[K, V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
   requireNotClosed {
-    // TODO: merge Create.of and map
-    val kvCoder: Coder[KV[K, V]] = ???
-    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(kvCoder)))
+    // TODO: merge Create.of and map ?
+    val kvc = kvCoder[K, V]
+    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(kvc)))
       .map(kv => (kv.getKey, kv.getValue))
       .setName(truncate(elems.toString()))
   }

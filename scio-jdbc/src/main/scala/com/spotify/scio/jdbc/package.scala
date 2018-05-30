@@ -21,6 +21,8 @@ import java.sql.{Driver, PreparedStatement, ResultSet}
 
 import com.spotify.scio.Implicits._
 import com.spotify.scio.io.Tap
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.testing.TestIO
 import com.spotify.scio.values.SCollection
 import org.apache.beam.sdk.io.jdbc.JdbcIO.DataSourceConfiguration
@@ -116,12 +118,12 @@ package object jdbc {
   /** Enhanced version of [[ScioContext]] with JDBC methods. */
   implicit class JdbcScioContext(@transient val self: ScioContext) extends Serializable {
     /** Get an SCollection for a JDBC query. */
-    def jdbcSelect[T: ClassTag](readOptions: JdbcReadOptions[T])
+    def jdbcSelect[T: Coder](readOptions: JdbcReadOptions[T])
     : SCollection[T] = self.requireNotClosed {
       if (self.isTest) {
         self.getTestInput(JdbcIO[T](readOptions))
       } else {
-        val coder = self.pipeline.getCoderRegistry.getScalaCoder[T](self.options)
+        val coder = Coder[T]
         val connOpts = readOptions.connectionOptions
         var transform = jio.JdbcIO.read[T]()
           .withCoder(coder)

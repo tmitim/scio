@@ -20,6 +20,8 @@ package com.spotify.scio.extra
 import java.util.UUID
 
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.values.{SCollection, SideInput}
 import com.spotify.sparkey.SparkeyReader
 import org.apache.beam.sdk.transforms.{DoFn, View}
@@ -95,7 +97,7 @@ package object sparkey {
   /**
    * Enhanced version of [[com.spotify.scio.values.SCollection SCollection]] with Sparkey methods.
    */
-  implicit class SparkeyPairSCollection[K, V](val self: SCollection[(K, V)]) {
+  implicit class SparkeyPairSCollection[K: Coder, V: Coder](val self: SCollection[(K, V)]) {
 
     private val logger = LoggerFactory.getLogger(this.getClass)
 

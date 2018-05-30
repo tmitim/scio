@@ -21,6 +21,8 @@ import com.spotify.scio.testing.PipelineSpec
 import com.twitter.algebird.{Aggregator, Semigroup}
 
 import scala.reflect.ClassTag
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 
 class SCollectionWithFanoutTest extends PipelineSpec {
 
@@ -62,7 +64,7 @@ class SCollectionWithFanoutTest extends PipelineSpec {
 
   it should "support sum()" in {
     runWithContext { sc =>
-      def sum[T: ClassTag : Semigroup](elems: T*): SCollection[T] =
+      def sum[T: Coder : Semigroup](elems: T*): SCollection[T] =
         sc.parallelize(elems).withFanout(10).sum
       sum(1, 2, 3) should containSingleValue (6)
       sum(1L, 2L, 3L) should containSingleValue (6L)

@@ -28,6 +28,7 @@ import com.spotify.scio.util.MockedPrintStream
 import org.apache.avro.generic.GenericRecord
 import org.apache.beam.sdk.{io => gio}
 import org.scalatest.exceptions.TestFailedException
+import com.spotify.scio.coders.Implicits._
 
 import scala.io.Source
 
@@ -55,6 +56,7 @@ object SpecificAvroFileJob {
 object GenericAvroFileJob {
   def main(cmdlineArgs: Array[String]): Unit = {
     val (sc, args) = ContextAndArgs(cmdlineArgs)
+    implicit val coder = genericRecordCoder(AvroUtils.schema)
     sc.avroFile[GenericRecord](args("input"), AvroUtils.schema)
       .saveAsAvroFile(args("output"))
     sc.close()
@@ -246,6 +248,7 @@ class JobTestTest extends PipelineSpec {
   }
 
   def testGenericAvroFileJob(xs: Seq[GenericRecord]): Unit = {
+    implicit val coder = slowGenericRecordCoder
     JobTest[GenericAvroFileJob.type]
       .args("--input=in.avro", "--output=out.avro")
       .input(AvroIO("in.avro"), (1 to 3).map(newGenericRecord))

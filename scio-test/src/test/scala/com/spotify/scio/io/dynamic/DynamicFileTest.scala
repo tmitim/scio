@@ -30,6 +30,7 @@ import org.apache.commons.io.FileUtils
 import org.joda.time.{Duration, Instant}
 
 import scala.collection.JavaConverters._
+import com.spotify.scio.coders.Implicits._
 
 class DynamicFileTest extends PipelineSpec {
 
@@ -103,6 +104,7 @@ class DynamicFileTest extends PipelineSpec {
   it should "support generic Avro files" in {
     val tmpDir = Files.createTempDirectory("dynamic-io-")
     val sc1 = ScioContext()
+    implicit val coder = genericRecordCoder(schema)
     sc1.parallelize(1 to 10).map(newGenericRecord)
       .saveAsAvroFile(FileDestinations(tmpDir.toString), schema) { r =>
         (r.get("int_field").toString.toInt % 2).toString

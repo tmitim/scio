@@ -67,7 +67,7 @@ class SCollectionWithHotKeyFanout[K: Coder, V: Coder] private[values]
   : SCollection[(K, U)] =
     self.self.context.wrap(self.self.internal).transform { in =>
       val a = aggregator  // defeat closure
-      in.mapValues(a.prepare).sumByKey(a.semigroup).mapValues(a.present)
+      in.mapValues(a.prepare).sumByKey(a.semigroup, Coder[K], Coder[A]).mapValues(a.present)
     }
 
   /** [[PairSCollectionFunctions.combineByKey]] with hot key fanout. */
