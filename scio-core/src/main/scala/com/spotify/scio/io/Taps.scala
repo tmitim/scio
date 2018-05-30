@@ -20,6 +20,8 @@ package com.spotify.scio.io
 import com.google.api.services.bigquery.model.TableReference
 import com.google.protobuf.Message
 import com.spotify.scio.avro.types.AvroType
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.avro.types.AvroType.HasAvroAnnotation
 import com.spotify.scio.bigquery.types.BigQueryType
 import com.spotify.scio.bigquery.types.BigQueryType.HasAnnotation
@@ -44,14 +46,15 @@ trait Taps {
   private lazy val bqc = BigQueryClient.defaultInstance()
 
   /** Get a `Future[Tap[T]]` for an Avro file. */
-  def avroFile[T: ClassTag](path: String, schema: Schema = null): Future[Tap[T]] =
+  def avroFile[T: ClassTag : Coder](path: String, schema: Schema = null): Future[Tap[T]] =
     mkTap(s"Avro: $path", () => isPathDone(path), () => AvroTap[T](path, schema))
 
   /** Get a `Future[Tap[T]]` for typed Avro source. */
-  def typedAvroFile[T <: HasAvroAnnotation : TypeTag: ClassTag](path: String): Future[Tap[T]] = {
+  def typedAvroFile[T <: HasAvroAnnotation : TypeTag: ClassTag : Coder](path: String): Future[Tap[T]] = {
     val avroT = AvroType[T]
 
     import scala.concurrent.ExecutionContext.Implicits.global
+    implicit val coder = genericRecordCoder(avroT.schema)
     avroFile[GenericRecord](path, avroT.schema)
       .map(_.map(avroT.fromGenericRecord))
   }
@@ -72,7 +75,7 @@ trait Taps {
     bigQueryTable(BigQueryHelpers.parseTableSpec(tableSpec))
 
   /** Get a `Future[Tap[T]]` for typed BigQuery source. */
-  def typedBigQuery[T <: HasAnnotation : TypeTag : ClassTag](newSource: String = null)
+  def typedBigQuery[T <: HasAnnotation : TypeTag : ClassTag : Coder](newSource: String = null)
   : Future[Tap[T]] = {
     val bqt = BigQueryType[T]
     val rows = if (newSource == null) {
@@ -106,11 +109,11 @@ trait Taps {
     mkTap(s"Text: $path", () => isPathDone(path), () => TextTap(path))
 
   /** Get a `Future[Tap[T]]` of a Protobuf file. */
-  def protobufFile[T: ClassTag](path: String)(implicit ev: T <:< Message): Future[Tap[T]] =
+  def protobufFile[T: Coder](path: String)(implicit ev: T <:< Message): Future[Tap[T]] =
     mkTap(s"Protobuf: $path", () => isPathDone(path), () => ObjectFileTap[T](path))
 
   /** Get a `Future[Tap[T]]` of an object file. */
-  def objectFile[T: ClassTag](path: String): Future[Tap[T]] =
+  def objectFile[T: Coder](path: String): Future[Tap[T]] =
     mkTap(s"Protobuf: $path", () => isPathDone(path), () => ObjectFileTap[T](path))
 
   private def isPathDone(path: String): Boolean = FileStorage(path).isDone

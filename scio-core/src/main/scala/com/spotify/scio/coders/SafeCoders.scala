@@ -88,9 +88,9 @@ trait LowPriorityCoderDerivation extends FromBijection {
 
 private[scio] object fallback {
   import scala.reflect.ClassTag
-  def apply[V: ClassTag](p: com.spotify.scio.values.SCollection[_]): Coder[V] =
-    ???
-    // p.getCoder[V]
+  def apply[T: ClassTag](p: com.spotify.scio.values.SCollection[_]): Coder[T] =
+    com.spotify.scio.Implicits.RichCoderRegistry(p.internal.getPipeline.getCoderRegistry)
+      .getScalaCoder[T](p.context.options)
 }
 
 object Implicits extends LowPriorityCoderDerivation {
@@ -116,11 +116,13 @@ object Implicits extends LowPriorityCoderDerivation {
       def encode(value: Unit, os: OutputStream): Unit = ()
       def decode(is: InputStream): Unit = ()
     }
-  implicit def longCoder: Coder[Long] = ???
+  implicit def longCoder: Coder[Long] = BigEndianLongCoder.of().asInstanceOf[Coder[Long]]
   implicit def iterableCoder[T](implicit c: Coder[T]): Coder[Iterable[T]] = ???
+  implicit def traversableCoder[T](implicit c: Coder[T]): Coder[TraversableOnce[T]] = ???
   implicit def optionCoder[T](implicit c: Coder[T]): Coder[Option[T]] = ???
   // Could be derived from Bijection but since it's a very common one let's just support it.
-  implicit def jlistCoder[T](implicit c: Coder[T]): Coder[java.util.List[T]] = ???
+  implicit def jlistCoder[T](implicit c: Coder[T]): Coder[java.util.List[T]] =
+    collectionfromBijection[T, java.util.List[T]]
 
   implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
 
@@ -130,6 +132,8 @@ object Implicits extends LowPriorityCoderDerivation {
   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] = ???
   implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
   implicit def entityCoder: Coder[com.google.datastore.v1.Entity] = ???
+  implicit def throwableCoder: Coder[Throwable] = ???
+  implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
 
   def genericRecordCoder(schema: org.apache.avro.Schema) = AvroCoder.of(schema)
 
@@ -149,6 +153,10 @@ object Implicits extends LowPriorityCoderDerivation {
         ts.foreach { v => Coder[T].encode(v, out) }
       }
     }
+
+  implicit def arraybufferCoder[T: Coder]: Coder[scala.collection.mutable.ArrayBuffer[T]] = ???
+  implicit def arrayCoder[T: Coder]: Coder[Array[T]] = ???
+  implicit def mutablemapCoder[K: Coder, V: Coder]: Coder[scala.collection.mutable.Map[K, V]] = ???
 
   implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] =
     new AtomicCoder[Map[K, V]] {

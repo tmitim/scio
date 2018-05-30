@@ -22,7 +22,7 @@ import java.util.UUID
 import com.google.api.services.bigquery.model.TableReference
 import com.spotify.scio.ScioContext
 import com.spotify.scio.bigquery.{BigQueryClient, TableRow}
-import com.spotify.scio.coders.AvroBytesUtil
+import com.spotify.scio.coders.{AvroBytesUtil, Coder}
 import com.spotify.scio.util.ScioUtil
 import com.spotify.scio.values.SCollection
 import com.twitter.chill.Externalizer
@@ -47,7 +47,7 @@ trait Tap[T] extends Serializable { self =>
   def open(sc: ScioContext): SCollection[T]
 
   /** Map items from `T` to `U`. */
-  def map[U: ClassTag](f: T => U): Tap[U] = new Tap[U] {
+  def map[U: Coder](f: T => U): Tap[U] = new Tap[U] {
 
     /** Parent of this Tap before [[map]]. */
     override val parent: Option[Tap[_]] = Option(self)
@@ -72,7 +72,7 @@ case class TextTap(path: String) extends Tap[String] {
  * @param schema must be not null if `T` is of type
  *               [[org.apache.avro.generic.GenericRecord GenericRecord]].
  */
-case class AvroTap[T: ClassTag](path: String,
+case class AvroTap[T: ClassTag : Coder](path: String,
                                 @transient private val schema: Schema = null) extends Tap[T] {
   private lazy val s = Externalizer(schema)
   override def value: Iterator[T] = FileStorage(path).avroFile(s.get)
@@ -95,9 +95,9 @@ case class BigQueryTap(table: TableReference) extends Tap[TableRow] {
  * Tap for object files on local file system or GCS. Note that serialization is not guaranteed to
  * be compatible across Scio releases.
  */
-case class ObjectFileTap[T: ClassTag](path: String) extends Tap[T] {
+case class ObjectFileTap[T: Coder](path: String) extends Tap[T] {
   override def value: Iterator[T] = {
-    val elemCoder = ScioUtil.getScalaCoder[T]
+    val elemCoder = Coder[T]
     FileStorage(path).avroFile[GenericRecord](AvroBytesUtil.schema).map { r =>
       AvroBytesUtil.decode(elemCoder, r)
     }
@@ -107,7 +107,7 @@ case class ObjectFileTap[T: ClassTag](path: String) extends Tap[T] {
 
 
 
-private[scio] class InMemoryTap[T: ClassTag] extends Tap[T] {
+private[scio] class InMemoryTap[T: Coder] extends Tap[T] {
   private[scio] val id: String = UUID.randomUUID().toString
   override def value: Iterator[T] = InMemorySink.get(id).iterator
   override def open(sc: ScioContext): SCollection[T] =

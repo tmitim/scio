@@ -39,18 +39,24 @@ private[scio] object Functions {
   private val BUFFER_SIZE = 20
 
   // TODO: rename
-  private abstract class KryoCombineFn[VI, VA: Coder, VO: Coder] extends CombineFn[VI, VA, VO] with NamedFn {
+  private abstract class KryoCombineFn[VI, VA, VO] extends CombineFn[VI, VA, VO] with NamedFn {
+    // TODO: should those coder be transient ?
+    val vacoder: Coder[VA]
+    val vocoder: Coder[VO]
 
     override def getAccumulatorCoder(registry: CoderRegistry, inputCoder: Coder[VI]): Coder[VA] =
-      Coder[VA]
+      vacoder
 
     override def getDefaultOutputCoder(registry: CoderRegistry, inputCoder: Coder[VI]): Coder[VO] =
-      Coder[VO]
+      vocoder
 
   }
 
   def aggregateFn[T: Coder, U: Coder](zeroValue: U)(seqOp: (U, T) => U, combOp: (U, U) => U)
   : CombineFn[T, (U, JList[T]), U] = new KryoCombineFn[T, (U, JList[T]), U] {
+
+    val vacoder = Coder[(U, JList[T])]
+    val vocoder = Coder[U]
 
     // defeat closure
     val s = ClosureCleaner(seqOp)
@@ -87,6 +93,9 @@ private[scio] object Functions {
                                 mergeValue: (C, T) => C,
                                 mergeCombiners: (C, C) => C)
   : CombineFn[T, (Option[C], JList[T]), C] = new KryoCombineFn[T, (Option[C], JList[T]), C] {
+
+    val vacoder = Coder[(Option[C], JList[T])]
+    val vocoder = Coder[C]
 
     // defeat closure
     val cc = ClosureCleaner(createCombiner)
@@ -179,11 +188,15 @@ private[scio] object Functions {
   }
 
   def reduceFn[T: Coder](f: (T, T) => T): CombineFn[T, JList[T], T] = new ReduceFn[T] {
+    val vacoder = Coder[JList[T]]
+    val vocoder = Coder[T]
     val g = ClosureCleaner(f)  // defeat closure
     override def reduceOption(accumulator: Iterable[T]): Option[T] = accumulator.reduceOption(g)
   }
 
   def reduceFn[T: Coder](sg: Semigroup[T]): CombineFn[T, JList[T], T] = new ReduceFn[T] {
+    val vacoder = Coder[JList[T]]
+    val vocoder = Coder[T]
     val _sg = ClosureCleaner(sg)  // defeat closure
     override def mergeAccumulators(accumulators: JIterable[JList[T]]): JList[T] = {
       val partial = accumulators.asScala.flatMap(a => _sg.sumOption(a.asScala))
@@ -194,6 +207,8 @@ private[scio] object Functions {
   }
 
   def reduceFn[T: Coder](mon: Monoid[T]): CombineFn[T, JList[T], T] = new ReduceFn[T] {
+    val vacoder = Coder[JList[T]]
+    val vocoder = Coder[T]
     val _mon = ClosureCleaner(mon)  // defeat closure
     override def reduceOption(accumulator: Iterable[T]): Option[T] =
       _mon.sumOption(accumulator).orElse(Some(_mon.zero))

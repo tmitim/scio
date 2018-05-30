@@ -18,6 +18,8 @@
 package com.spotify.scio.values
 
 import com.spotify.scio._
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.util.StatCounter
 
 /**
@@ -112,6 +114,17 @@ class DoubleSCollectionFunctions(self: SCollection[Double]) {
   // scalastyle:off method.length
   private def histogramImpl(buckets: SCollection[Array[Double]],
                             evenBuckets: Boolean = false): SCollection[Array[Long]] = {
+
+    import org.apache.beam.sdk.coders.AtomicCoder
+    import java.io.{InputStream, OutputStream, ObjectInputStream, ObjectOutputStream}
+    implicit val localFunctionCoder: Coder[Double => Option[Int]] =
+      new AtomicCoder[Double => Option[Int]] {
+        def decode(in: InputStream): Double => Option[Int] =
+          new ObjectInputStream(in).readObject().asInstanceOf[Double => Option[Int]]
+        def encode(ts: Double => Option[Int], out: OutputStream): Unit =
+          new ObjectOutputStream(out).writeObject(ts)
+      }
+
     // Map buckets into a side input of bucket function
     val side = buckets.map { b =>
       require(b.length >= 2, "buckets array must have at least two elements")

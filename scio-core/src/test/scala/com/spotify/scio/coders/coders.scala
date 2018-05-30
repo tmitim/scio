@@ -35,6 +35,8 @@ sealed trait Top
 case class TA(anInt: Int, aString: String) extends Top
 case class TB(anDouble: Double) extends Top
 
+case class DummyCC(s: String)
+
 class CodersTest extends FlatSpec with Matchers {
   import com.spotify.scio.coders.Implicits._
 
@@ -55,8 +57,10 @@ class CodersTest extends FlatSpec with Matchers {
   }
 
   it should "support Scala collections" in {
+    val nil: Seq[String] = Nil
     val s: Seq[String] = (1 to 10).toSeq.map(_.toString)
     val m = s.map{ v => v.toString -> v }.toMap
+    check(nil)
     check(s)
     check(s.toList)
     check(m)
@@ -99,6 +103,7 @@ class CodersTest extends FlatSpec with Matchers {
   }
 
   it should "derive coders for product types" in {
+    check(DummyCC("dummy"))
     check(user)
   }
 
@@ -128,7 +133,7 @@ class CodersTest extends FlatSpec with Matchers {
     ???
   }
 
-  private def withSCollection[T: scala.reflect.ClassTag](fn: SCollection[T] => Assertion): Assertion = {
+  private def withSCollection[T: Coder](fn: SCollection[T] => Assertion): Assertion = {
     val sc = ScioContext.forTest()
     val coll = sc.parallelize(Nil: List[T])
     val res = fn(coll)
@@ -137,7 +142,7 @@ class CodersTest extends FlatSpec with Matchers {
   }
 
   it should "provide a fallback if no safe coder is available" in
-    withSCollection[Nothing] {
+    withSCollection[Unit] {
       scoll =>
         import org.apache.avro.generic.GenericRecord
         val schema = avro.user.getSchema
@@ -150,9 +155,8 @@ class CodersTest extends FlatSpec with Matchers {
         }
     }
 
-  case class DummyCC(s: String)
   it should "not use a fallback if a safe coder is available" in
-    withSCollection[DummyCC] { scoll =>
+    withSCollection[Unit] { scoll =>
       import scoll.coders.fallback
       illTyped("SCoder[DummyCC]") // ambiguous implicit values
       succeed

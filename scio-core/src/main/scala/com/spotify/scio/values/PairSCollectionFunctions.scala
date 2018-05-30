@@ -241,6 +241,9 @@ class PairSCollectionFunctions[K: Coder, V: Coder](val self: SCollection[(K, V)]
    */
   def hashJoin[W: Coder](that: SCollection[(K, W)])
   : SCollection[(K, (V, W))] = self.transform { in =>
+    implicitly[Coder[K]]
+    implicitly[Coder[ArrayBuffer[W]]]
+    implicitly[Coder[MMap[K, ArrayBuffer[W]]]]
     val side = that.combine { case (k, v) =>
       MMap(k -> ArrayBuffer(v))
     } { case (combiner, (k, v)) =>
