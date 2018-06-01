@@ -20,6 +20,18 @@ package com.spotify.scio.avro.types
 import org.apache.avro.specific.SpecificRecordBase
 import scala.reflect.macros._
 
+import org.apache.beam.sdk.coders.{Coder, AtomicCoder}
+import java.io.{InputStream, OutputStream}
+
+private[scio] abstract class WrappedCoder[T] extends AtomicCoder[T] {
+  val underlying: Coder[T]
+
+  def encode(value: T, os: OutputStream): Unit =
+    underlying.encode(value, os)
+  def decode(is: InputStream): T =
+    underlying.decode(is)
+}
+
 private[scio] object CoderUtils {
 
   def staticInvokeCoder[T <: SpecificRecordBase : c.WeakTypeTag](c: blackbox.Context): c.Tree = {
@@ -29,14 +41,23 @@ private[scio] object CoderUtils {
     val companionSymbol = companioned.companion
     val companionType = companionSymbol.typeSignature
     q"""
-    new _root_.org.apache.beam.sdk.coders.AtomicCoder[$companioned] {
-      def encode(value: $companioned, os: _root_.java.io.OutputStream): Unit = {
+    _root_.com.spotify.scio.coders.MkCoder[$companioned] {
+      (value: $companioned, os: _root_.java.io.OutputStream) =>
         os.write(value.toByteBuffer().array())
-      }
-      def decode(is: _root_.java.io.InputStream): $companioned = {
+      }{ is =>
         val bytes = java.nio.ByteBuffer.wrap(org.apache.commons.io.IOUtils.toByteArray(is))
         ${companionType}.fromByteBuffer(bytes)
       }
+    """
+  }
+
+  def wrappedCoder[T: c.WeakTypeTag](c: whitebox.Context): c.Tree = {
+    import c.universe._
+    val wtt = weakTypeOf[T]
+    val companioned = wtt.typeSymbol
+    q"""
+    new _root_.com.spotify.scio.avro.types.WrappedCoder[$wtt] {
+      val underlying: com.spotify.scio.coders.Coder[$wtt] = ${magnolia.Magnolia.gen[T](c)}
     }
     """
   }

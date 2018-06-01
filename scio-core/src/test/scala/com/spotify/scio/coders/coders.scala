@@ -27,18 +27,18 @@ import org.scalatest.{FlatSpec, Matchers, Assertion}
 import shapeless.test.illTyped
 import com.spotify.scio.values.SCollection
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Implicits._
 
 final case class UserId(bytes: Seq[Byte])
 final case class User(id: UserId, username: String, email: String)
 
 sealed trait Top
-case class TA(anInt: Int, aString: String) extends Top
-case class TB(anDouble: Double) extends Top
+final case class TA(anInt: Int, aString: String) extends Top
+final case class TB(anDouble: Double) extends Top
 
 case class DummyCC(s: String)
 
 class CodersTest extends FlatSpec with Matchers {
-  import com.spotify.scio.coders.Implicits._
 
   val userId = UserId(Array[Byte](1, 2, 3, 4))
   val user = User(userId, "johndoe", "johndoe@spotify.com")
@@ -105,9 +105,11 @@ class CodersTest extends FlatSpec with Matchers {
   it should "derive coders for product types" in {
     check(DummyCC("dummy"))
     check(user)
+    val ds = (1 to 10).map{ _ => DummyCC("dummy") }.toList
+    check(ds)
   }
 
-  it should "support sealed class hierarchies" in {
+  it should "derive coders for sealed class hierarchies" in {
     val ta: Top = TA(1, "test")
     val tb: Top = TB(4.2)
     check(ta)

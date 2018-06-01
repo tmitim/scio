@@ -857,7 +857,8 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * @group in_memory
    */
   def parallelize[T: Coder](elems: Iterable[T]): SCollection[T] = requireNotClosed {
-    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(Coder[T])))
+    val coder = Coder[T]
+    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(coder)))
       .setName(truncate(elems.toString()))
   }
 

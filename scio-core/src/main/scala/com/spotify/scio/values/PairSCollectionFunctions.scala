@@ -240,23 +240,23 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * @group join
    */
   def hashJoin[W: Coder](that: SCollection[(K, W)])(implicit koder: Coder[K], voder: Coder[V])
-  : SCollection[(K, (V, W))] = self.transform { in =>
-    implicitly[Coder[K]]
-    implicitly[Coder[ArrayBuffer[W]]]
-    implicitly[Coder[MMap[K, ArrayBuffer[W]]]]
-    val side = that.combine { case (k, v) =>
-      MMap(k -> ArrayBuffer(v))
-    } { case (combiner, (k, v)) =>
-      combiner.getOrElseUpdate(k, ArrayBuffer.empty[W]) += v
-      combiner
-    } { case (left, right) =>
-        right.foreach { case (k, vs) => left.getOrElseUpdate(k, ArrayBuffer.empty[W]) ++= vs }
-        left
-    }.asSingletonSideInput(MMap.empty[K, ArrayBuffer[W]])
+  : SCollection[(K, (V, W))] = {
+    implicit val kvw = Coder[(V, W)] // XXX: help scalac
+    self.transform { in =>
+      val side = that.combine { case (k, v) =>
+        MMap(k -> ArrayBuffer(v))
+      } { case (combiner, (k, v)) =>
+        combiner.getOrElseUpdate(k, ArrayBuffer.empty[W]) += v
+        combiner
+      } { case (left, right) =>
+          right.foreach { case (k, vs) => left.getOrElseUpdate(k, ArrayBuffer.empty[W]) ++= vs }
+          left
+      }.asSingletonSideInput(MMap.empty[K, ArrayBuffer[W]])
 
-    in.withSideInputs(side).flatMap[(K, (V, W))] { (kv, s) =>
-      s(side).getOrElse(kv._1, ArrayBuffer.empty[W]).iterator.map(w => (kv._1, (kv._2, w)))
-    }.toSCollection
+      in.withSideInputs(side).flatMap[(K, (V, W))] { (kv, s) =>
+        s(side).getOrElse(kv._1, ArrayBuffer.empty[W]).iterator.map(w => (kv._1, (kv._2, w)))
+      }.toSCollection
+    }
   }
 
   /**
@@ -266,22 +266,25 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * @group join
    */
   def hashLeftJoin[W: Coder](that: SCollection[(K, W)])(implicit koder: Coder[K], voder: Coder[V])
-  : SCollection[(K, (V, Option[W]))] = self.transform { in =>
-    val side = that.combine { case (k, v) =>
-      MMap(k -> ArrayBuffer(v))
-    } { case (combiner, (k, v)) =>
-      combiner.getOrElseUpdate(k, ArrayBuffer.empty[W]) += v
-      combiner
-    } { case (left, right) =>
-      right.foreach { case (k, vs) => left.getOrElseUpdate(k, ArrayBuffer.empty[W]) ++= vs }
-      left
-    }.asSingletonSideInput(MMap.empty[K, ArrayBuffer[W]])
+  : SCollection[(K, (V, Option[W]))] = {
+      implicit val kvw = Coder[(V, Option[W])] // XXX: help scalac
+      self.transform { in =>
+        val side = that.combine { case (k, v) =>
+          MMap(k -> ArrayBuffer(v))
+        } { case (combiner, (k, v)) =>
+          combiner.getOrElseUpdate(k, ArrayBuffer.empty[W]) += v
+          combiner
+        } { case (left, right) =>
+          right.foreach { case (k, vs) => left.getOrElseUpdate(k, ArrayBuffer.empty[W]) ++= vs }
+          left
+        }.asSingletonSideInput(MMap.empty[K, ArrayBuffer[W]])
 
-    in.withSideInputs(side).flatMap[(K, (V, Option[W]))] { (kv, s) =>
-      val (k, v) = kv
-      val m = s(side)
-      if (m.contains(k)) m(k).iterator.map(w => (k, (v, Some(w)))) else Iterator((k, (v, None)))
-    }.toSCollection
+        in.withSideInputs(side).flatMap[(K, (V, Option[W]))] { (kv, s) =>
+          val (k, v) = kv
+          val m = s(side)
+          if (m.contains(k)) m(k).iterator.map(w => (k, (v, Some(w)))) else Iterator((k, (v, None)))
+        }.toSCollection
+      }
   }
 
   // scalastyle:off parameter.number
@@ -632,7 +635,7 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * the keys.
    * @group transform
    */
-  def mapValues[U: Coder](f: V => U): SCollection[(K, U)] = self.map(kv => (kv._1, f(kv._2)))
+  def mapValues[U: Coder](f: V => U)(implicit koder: Coder[K]): SCollection[(K, U)] = self.map(kv => (kv._1, f(kv._2)))
 
   /**
    * Return the max of values for each key as defined by the implicit `Ordering[T]`.

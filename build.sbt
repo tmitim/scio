@@ -68,6 +68,7 @@ val sparkeyVersion = "2.3.0"
 val tensorFlowVersion = "1.8.0"
 val zoltarVersion = "0.3.1"
 val bijectionVersion = "0.9.5"
+val magnoliaVersion = "0.7.1-ser"
 
 lazy val mimaSettings = Seq(
   mimaPreviousArtifacts :=
@@ -298,7 +299,7 @@ lazy val scioCore: Project = Project(
     "org.apache.commons" % "commons-pool2" %  commonsPoolVersion,
     // -- used to test Safe codders
     "com.chuusai" %% "shapeless" % "2.3.3",
-    "com.propensive" %% "magnolia" % "0.7.1",
+    "com.propensive" %% "magnolia" % magnoliaVersion,
     directRunnerDependency % "test",
     "org.scalatest" %% "scalatest" % scalatestVersion % "test",
     "com.twitter" %% "bijection-core" % bijectionVersion,
@@ -355,7 +356,8 @@ lazy val scioAvro: Project = Project(
     "org.slf4j" % "slf4j-simple" % slf4jVersion % "test,it",
     "org.scalatest" %% "scalatest" % scalatestVersion % "test,it",
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.13" % scalacheckShapelessVersion % "test",
-    "me.lyh" %% "shapeless-datatype-core" % shapelessDatatypeVersion % "test"
+    "me.lyh" %% "shapeless-datatype-core" % shapelessDatatypeVersion % "test",
+    "com.propensive" %% "magnolia" % magnoliaVersion
   )
 ).configs(IntegrationTest)
 
