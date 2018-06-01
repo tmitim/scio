@@ -147,8 +147,16 @@
                         <a href="MockDistCache$.html" title="">MockDistCache</a>
                       </li><li class="current-entities indented4">
                         <span class="separator"></span>
+                        <a class="class" href="PairHashSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs for hash based joins through an implicit conversion."></a>
+                        <a href="PairHashSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs for hash based joins through an implicit conversion.">PairHashSCollectionFunctions</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
                         <a class="class" href="PairSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs through an implicit conversion."></a>
                         <a href="PairSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs through an implicit conversion.">PairSCollectionFunctions</a>
+                      </li><li class="current-entities indented4">
+                        <span class="separator"></span>
+                        <a class="class" href="PairSkewedSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs for skwed joins through an implicit conversion."></a>
+                        <a href="PairSkewedSCollectionFunctions.html" title="Extra functions available on SCollections of (key, value) pairs for skwed joins through an implicit conversion.">PairSkewedSCollectionFunctions</a>
                       </li><li class="current-entities indented4">
                         <a class="object" href="SCollection$.html" title="Convenience functions for creating SCollections."></a>
                         <a class="trait" href="" title="A Scala wrapper for PCollection."></a>
@@ -418,9 +426,9 @@ multiple times (use <a href="#distinct:com.spotify.scio.values.SCollection[T]" c
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#aggregate" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
-      <a id="aggregate[A,U](aggregator:com.twitter.algebird.Aggregator[T,A,U])(implicitevidence$9:scala.reflect.ClassTag[A],implicitevidence$10:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="aggregate[A,U](Aggregator[T,A,U])(ClassTag[A],ClassTag[U]):SCollection[U]"></a>
+      <a id="aggregate[A,U](aggregator:com.twitter.algebird.Aggregator[T,A,U])(implicitevidence$13:scala.reflect.ClassTag[A],implicitevidence$14:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="aggregate[A,U](Aggregator[T,A,U])(ClassTag[A],ClassTag[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#aggregate[A,U](aggregator:com.twitter.algebird.Aggregator[T,A,U])(implicitevidence$9:scala.reflect.ClassTag[A],implicitevidence$10:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#aggregate[A,U](aggregator:com.twitter.algebird.Aggregator[T,A,U])(implicitevidence$13:scala.reflect.ClassTag[A],implicitevidence$14:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -437,9 +445,9 @@ to <code>A</code>, then we reduce with a <a href="https://twitter.github.io/alge
 finally we present the results as <code>U</code>. This could be more powerful and better optimized in
 some cases.</p></div></div>
     </li><li name="com.spotify.scio.values.SCollection#aggregate" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
-      <a id="aggregate[U](zeroValue:U)(seqOp:(U,T)=&gt;U,combOp:(U,U)=&gt;U)(implicitevidence$8:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="aggregate[U](U)((U,T)⇒U,(U,U)⇒U)(ClassTag[U]):SCollection[U]"></a>
+      <a id="aggregate[U](zeroValue:U)(seqOp:(U,T)=&gt;U,combOp:(U,U)=&gt;U)(implicitevidence$12:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="aggregate[U](U)((U,T)⇒U,(U,U)⇒U)(ClassTag[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#aggregate[U](zeroValue:U)(seqOp:(U,T)=&gt;U,combOp:(U,U)=&gt;U)(implicitevidence$8:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#aggregate[U](zeroValue:U)(seqOp:(U,T)=&gt;U,combOp:(U,U)=&gt;U)(implicitevidence$12:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -457,9 +465,9 @@ Thus, we need one operation for merging a <code>T</code> into an <code>U</code> 
 <code>U</code>'s. Both of these functions are allowed to modify and return their first argument instead
 of creating a new <code>U</code> to avoid memory allocation.</p></div></div>
     </li><li name="com.spotify.scio.values.SCollection#applyKvTransform" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="applyKvTransform[K,V](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[org.apache.beam.sdk.values.KV[K,V]]])(implicitevidence$5:scala.reflect.ClassTag[K],implicitevidence$6:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[org.apache.beam.sdk.values.KV[K,V]]"></a><a id="applyKvTransform[K,V](PTransform[_&gt;:PCollection[T],PCollection[KV[K,V]]])(ClassTag[K],ClassTag[V]):SCollection[KV[K,V]]"></a>
+      <a id="applyKvTransform[K,V](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[org.apache.beam.sdk.values.KV[K,V]]])(implicitevidence$9:scala.reflect.ClassTag[K],implicitevidence$10:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[org.apache.beam.sdk.values.KV[K,V]]"></a><a id="applyKvTransform[K,V](PTransform[_&gt;:PCollection[T],PCollection[KV[K,V]]])(ClassTag[K],ClassTag[V]):SCollection[KV[K,V]]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#applyKvTransform[K,V](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[org.apache.beam.sdk.values.KV[K,V]]])(implicitevidence$5:scala.reflect.ClassTag[K],implicitevidence$6:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[org.apache.beam.sdk.values.KV[K,V]]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#applyKvTransform[K,V](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[org.apache.beam.sdk.values.KV[K,V]]])(implicitevidence$9:scala.reflect.ClassTag[K],implicitevidence$10:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[org.apache.beam.sdk.values.KV[K,V]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -473,13 +481,13 @@ of creating a new <code>U</code> to avoid memory allocation.</p></div></div>
       
       <p class="shortcomment cmt">Apply a <a href="https://beam.apache.org/documentation/sdks/javadoc/2.4.0/org/apache/beam/sdk/transforms/PTransform.html" class="extype" name="org.apache.beam.sdk.transforms.PTransform">PTransform</a> and wrap the output in an
 <a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Apply a <a href="https://beam.apache.org/documentation/sdks/javadoc/2.4.0/org/apache/beam/sdk/transforms/PTransform.html" class="extype" name="org.apache.beam.sdk.transforms.PTransform">PTransform</a> and wrap the output in an
-<a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>. This is a special case of <a href="#applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$4:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" class="extmbr" name="com.spotify.scio.values.SCollection#applyTransform">applyTransform</a> for transforms with <span class="extype" name="KV">KV</span>
+<a href="" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>. This is a special case of <a href="#applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$8:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" class="extmbr" name="com.spotify.scio.values.SCollection#applyTransform">applyTransform</a> for transforms with <span class="extype" name="KV">KV</span>
 output.
 </p></div></div>
     </li><li name="com.spotify.scio.values.SCollection#applyTransform" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$4:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="applyTransform[U](PTransform[_&gt;:PCollection[T],PCollection[U]])(ClassTag[U]):SCollection[U]"></a>
+      <a id="applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$8:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="applyTransform[U](PTransform[_&gt;:PCollection[T],PCollection[U]])(ClassTag[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$4:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#applyTransform[U](transform:org.apache.beam.sdk.transforms.PTransform[_&gt;:org.apache.beam.sdk.values.PCollection[T],org.apache.beam.sdk.values.PCollection[U]])(implicitevidence$8:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -606,9 +614,9 @@ to be used with <a href="#withSideInputs(sides:com.spotify.scio.values.SideInput
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#collect" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="transform">
-      <a id="collect[U](pfn:PartialFunction[T,U])(implicitevidence$11:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="collect[U](PartialFunction[T,U])(ClassTag[U]):SCollection[U]"></a>
+      <a id="collect[U](pfn:PartialFunction[T,U])(implicitevidence$15:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="collect[U](PartialFunction[T,U])(ClassTag[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#collect[U](pfn:PartialFunction[T,U])(implicitevidence$11:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#collect[U](pfn:PartialFunction[T,U])(implicitevidence$15:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -622,9 +630,9 @@ to be used with <a href="#withSideInputs(sides:com.spotify.scio.values.SideInput
       
       <p class="shortcomment cmt">Filter the elements for which the given <code>PartialFunction</code> is defined, and then map.</p>
     </li><li name="com.spotify.scio.values.SCollection#combine" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
-      <a id="combine[C](createCombiner:T=&gt;C)(mergeValue:(C,T)=&gt;C)(mergeCombiners:(C,C)=&gt;C)(implicitevidence$12:scala.reflect.ClassTag[C]):com.spotify.scio.values.SCollection[C]"></a><a id="combine[C]((T)⇒C)((C,T)⇒C)((C,C)⇒C)(ClassTag[C]):SCollection[C]"></a>
+      <a id="combine[C](createCombiner:T=&gt;C)(mergeValue:(C,T)=&gt;C)(mergeCombiners:(C,C)=&gt;C)(implicitevidence$16:scala.reflect.ClassTag[C]):com.spotify.scio.values.SCollection[C]"></a><a id="combine[C]((T)⇒C)((C,T)⇒C)((C,C)⇒C)(ClassTag[C]):SCollection[C]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#combine[C](createCombiner:T=&gt;C)(mergeValue:(C,T)=&gt;C)(mergeCombiners:(C,C)=&gt;C)(implicitevidence$12:scala.reflect.ClassTag[C]):com.spotify.scio.values.SCollection[C]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#combine[C](createCombiner:T=&gt;C)(mergeValue:(C,T)=&gt;C)(mergeCombiners:(C,C)=&gt;C)(implicitevidence$16:scala.reflect.ClassTag[C]):com.spotify.scio.values.SCollection[C]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -707,9 +715,9 @@ more accurate the estimate will be; should be <code>&gt;= 16</code></p></dd></dl
       
       <p class="shortcomment cmt">Count of each unique value in this SCollection as an SCollection of (value, count) pairs.</p>
     </li><li name="com.spotify.scio.values.SCollection#cross" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="hash">
-      <a id="cross[U](that:com.spotify.scio.values.SCollection[U])(implicitevidence$18:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[(T,U)]"></a><a id="cross[U](SCollection[U])(ClassTag[U]):SCollection[(T,U)]"></a>
+      <a id="cross[U](that:com.spotify.scio.values.SCollection[U])(implicitevidence$22:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[(T,U)]"></a><a id="cross[U](SCollection[U])(ClassTag[U]):SCollection[(T,U)]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#cross[U](that:com.spotify.scio.values.SCollection[U])(implicitevidence$18:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[(T,U)]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#cross[U](that:com.spotify.scio.values.SCollection[U])(implicitevidence$22:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[(T,U)]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -828,9 +836,9 @@ right side should be tiny and fit in memory.</p></div></div>
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#flatMap" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="transform">
-      <a id="flatMap[U](f:T=&gt;TraversableOnce[U])(implicitevidence$13:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="flatMap[U]((T)⇒TraversableOnce[U])(ClassTag[U]):SCollection[U]"></a>
+      <a id="flatMap[U](f:T=&gt;TraversableOnce[U])(implicitevidence$17:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="flatMap[U]((T)⇒TraversableOnce[U])(ClassTag[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#flatMap[U](f:T=&gt;TraversableOnce[U])(implicitevidence$13:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#flatMap[U](f:T=&gt;TraversableOnce[U])(implicitevidence$17:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -845,9 +853,9 @@ right side should be tiny and fit in memory.</p></div></div>
       <p class="shortcomment cmt">Return a new SCollection by first applying a function to all elements of
 this SCollection, and then flattening the results.</p>
     </li><li name="com.spotify.scio.values.SCollection#flatten" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="transform">
-      <a id="flatten[U](implicitevidence$14:scala.reflect.ClassTag[U],implicitev:T=&gt;TraversableOnce[U]):com.spotify.scio.values.SCollection[U]"></a><a id="flatten[U](ClassTag[U],(T)⇒TraversableOnce[U]):SCollection[U]"></a>
+      <a id="flatten[U](implicitevidence$18:scala.reflect.ClassTag[U],implicitev:T=&gt;TraversableOnce[U]):com.spotify.scio.values.SCollection[U]"></a><a id="flatten[U](ClassTag[U],(T)⇒TraversableOnce[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#flatten[U](implicitevidence$14:scala.reflect.ClassTag[U],implicitev:T=&gt;TraversableOnce[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#flatten[U](implicitevidence$18:scala.reflect.ClassTag[U],implicitev:T=&gt;TraversableOnce[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -916,9 +924,9 @@ allocation; however, it should not modify t2.</p></div></div>
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#groupBy" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="transform">
-      <a id="groupBy[K](f:T=&gt;K)(implicitevidence$15:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,Iterable[T])]"></a><a id="groupBy[K]((T)⇒K)(ClassTag[K]):SCollection[(K,Iterable[T])]"></a>
+      <a id="groupBy[K](f:T=&gt;K)(implicitevidence$19:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,Iterable[T])]"></a><a id="groupBy[K]((T)⇒K)(ClassTag[K]):SCollection[(K,Iterable[T])]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#groupBy[K](f:T=&gt;K)(implicitevidence$15:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,Iterable[T])]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#groupBy[K](f:T=&gt;K)(implicitevidence$19:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,Iterable[T])]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -934,7 +942,7 @@ allocation; however, it should not modify t2.</p></div></div>
 elements mapping to that key. The ordering of elements within each group is not guaranteed,
 and may even differ each time the resulting SCollection is evaluated.</p><p>Note: This operation may be very expensive. If you are grouping in order to perform an
 aggregation (such as a sum or average) over each key, using
-<a href="PairSCollectionFunctions.html#aggregateByKey[U](zeroValue:U)(seqOp:(U,V)=&gt;U,combOp:(U,U)=&gt;U)(implicitevidence$25:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[(K,U)]" class="extmbr" name="com.spotify.scio.values.PairSCollectionFunctions#aggregateByKey">PairSCollectionFunctions.aggregateByKey</a> or
+<a href="PairSCollectionFunctions.html#aggregateByKey[U](zeroValue:U)(seqOp:(U,V)=&gt;U,combOp:(U,U)=&gt;U)(implicitevidence$21:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[(K,U)]" class="extmbr" name="com.spotify.scio.values.PairSCollectionFunctions#aggregateByKey">PairSCollectionFunctions.aggregateByKey</a> or
 <a href="PairSCollectionFunctions.html#reduceByKey(op:(V,V)=&gt;V):com.spotify.scio.values.SCollection[(K,V)]" class="extmbr" name="com.spotify.scio.values.PairSCollectionFunctions#reduceByKey">PairSCollectionFunctions.reduceByKey</a> will provide much better performance.</p></div></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
@@ -956,9 +964,9 @@ aggregation (such as a sum or average) over each key, using
               
         </dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#hashLookup" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="hash">
-      <a id="hashLookup[V](that:com.spotify.scio.values.SCollection[(T,V)])(implicitevidence$19:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(T,Iterable[V])]"></a><a id="hashLookup[V](SCollection[(T,V)])(ClassTag[V]):SCollection[(T,Iterable[V])]"></a>
+      <a id="hashLookup[V](that:com.spotify.scio.values.SCollection[(T,V)])(implicitevidence$23:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(T,Iterable[V])]"></a><a id="hashLookup[V](SCollection[(T,V)])(ClassTag[V]):SCollection[(T,Iterable[V])]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#hashLookup[V](that:com.spotify.scio.values.SCollection[(T,V)])(implicitevidence$19:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(T,Iterable[V])]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#hashLookup[V](that:com.spotify.scio.values.SCollection[(T,V)])(implicitevidence$23:scala.reflect.ClassTag[V]):com.spotify.scio.values.SCollection[(T,Iterable[V])]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1007,9 +1015,9 @@ duplicate elements, even if the input SCollections did.</p><p>Note that this met
       
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.spotify.scio.values.SCollection#keyBy" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="transform">
-      <a id="keyBy[K](f:T=&gt;K)(implicitevidence$16:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,T)]"></a><a id="keyBy[K]((T)⇒K)(ClassTag[K]):SCollection[(K,T)]"></a>
+      <a id="keyBy[K](f:T=&gt;K)(implicitevidence$20:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,T)]"></a><a id="keyBy[K]((T)⇒K)(ClassTag[K]):SCollection[(K,T)]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#keyBy[K](f:T=&gt;K)(implicitevidence$16:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,T)]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#keyBy[K](f:T=&gt;K)(implicitevidence$20:scala.reflect.ClassTag[K]):com.spotify.scio.values.SCollection[(K,T)]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1023,9 +1031,9 @@ duplicate elements, even if the input SCollections did.</p><p>Note that this met
       
       <p class="shortcomment cmt">Create tuples of the elements in this SCollection by applying <code>f</code>.</p>
     </li><li name="com.spotify.scio.values.SCollection#map" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="transform">
-      <a id="map[U](f:T=&gt;U)(implicitevidence$17:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="map[U]((T)⇒U)(ClassTag[U]):SCollection[U]"></a>
+      <a id="map[U](f:T=&gt;U)(implicitevidence$21:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]"></a><a id="map[U]((T)⇒U)(ClassTag[U]):SCollection[U]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#map[U](f:T=&gt;U)(implicitevidence$17:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#map[U](f:T=&gt;U)(implicitevidence$21:scala.reflect.ClassTag[U]):com.spotify.scio.values.SCollection[U]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
@@ -1477,9 +1485,9 @@ Avro's block file format.</p></div></div>
       
       <p class="shortcomment cmt">Save this SCollection as a Pub/Sub topic.</p>
     </li><li name="com.spotify.scio.values.SCollection#saveAsPubsubWithAttributes" visbl="pub" class="indented0 " data-isabs="false" fullComment="no" group="output">
-      <a id="saveAsPubsubWithAttributes[V](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$20:scala.reflect.ClassTag[V],implicitev:T&lt;:&lt;(V,Map[String,String])):scala.concurrent.Future[com.spotify.scio.io.Tap[V]]"></a><a id="saveAsPubsubWithAttributes[V](String,String,String)(ClassTag[V],&lt;:&lt;[T,(V,Map[String,String])]):Future[Tap[V]]"></a>
+      <a id="saveAsPubsubWithAttributes[V](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$24:scala.reflect.ClassTag[V],implicitev:T&lt;:&lt;(V,Map[String,String])):scala.concurrent.Future[com.spotify.scio.io.Tap[V]]"></a><a id="saveAsPubsubWithAttributes[V](String,String,String)(ClassTag[V],&lt;:&lt;[T,(V,Map[String,String])]):Future[Tap[V]]"></a>
       <span class="permalink">
-      <a href="../../../../com/spotify/scio/values/SCollection.html#saveAsPubsubWithAttributes[V](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$20:scala.reflect.ClassTag[V],implicitev:T&lt;:&lt;(V,Map[String,String])):scala.concurrent.Future[com.spotify.scio.io.Tap[V]]" title="Permalink">
+      <a href="../../../../com/spotify/scio/values/SCollection.html#saveAsPubsubWithAttributes[V](topic:String,idAttribute:String,timestampAttribute:String)(implicitevidence$24:scala.reflect.ClassTag[V],implicitev:T&lt;:&lt;(V,Map[String,String])):scala.concurrent.Future[com.spotify.scio.io.Tap[V]]" title="Permalink">
         <i class="material-icons"></i>
       </a>
     </span>
