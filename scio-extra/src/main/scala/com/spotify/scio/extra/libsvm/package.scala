@@ -79,9 +79,10 @@ package object libsvm {
       }.sum(Max.maxSemigroup, Coder[Int]).map(_ + 1)
     }
 
-    data.cross(featureCntCol).map { case ((label, indicies, values), featureCount) =>
-      (label, SparseVector[Double](featureCount)(indicies.zip(values): _*))
-    }
+    data.cross(featureCntCol)
+      .map { case ((label, indicies, values), featureCount) =>
+        (label, SparseVector[Double](featureCount)(indicies.zip(values): _*))
+      }
   }
 
   implicit class SVMReader(@transient val self: ScioContext) extends Serializable {

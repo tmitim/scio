@@ -23,43 +23,90 @@ import scala.reflect.macros._
 import org.apache.beam.sdk.coders.{Coder, AtomicCoder}
 import java.io.{InputStream, OutputStream}
 
-private[scio] abstract class WrappedCoder[T] extends AtomicCoder[T] {
-  val underlying: Coder[T]
-
+trait WrappedCoder[T] extends AtomicCoder[T] with Serializable {
+  def underlying: Coder[T] = ???
   def encode(value: T, os: OutputStream): Unit =
     underlying.encode(value, os)
   def decode(is: InputStream): T =
     underlying.decode(is)
 }
 
+final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
+
+  // makes the schema scerializable
+  private val schemaString = schema.toString
+
+  if(schema == null) {
+    schema = new org.apache.avro.Schema.Parser().parse(schemaString)
+  }
+
+  @transient lazy val model = new org.apache.avro.specific.SpecificData()
+  @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, schema)
+  @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, schema)
+
+  def encode(value: T, os: OutputStream): Unit =
+    encoder.encode(value, os)
+
+  def decode(is: InputStream): T =
+    decoder.decode(is)
+}
+
 private[scio] object CoderUtils {
 
+
+  /**
+  * Generate a coder which does not serializa the schema and relies exclusively on type.
+  */
   def staticInvokeCoder[T <: SpecificRecordBase : c.WeakTypeTag](c: blackbox.Context): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
     val companioned = wtt.typeSymbol
     val companionSymbol = companioned.companion
     val companionType = companionSymbol.typeSignature
+
     q"""
-    _root_.com.spotify.scio.coders.MkCoder[$companioned] {
-      (value: $companioned, os: _root_.java.io.OutputStream) =>
-        os.write(value.toByteBuffer().array())
-      }{ is =>
-        val bytes = java.nio.ByteBuffer.wrap(org.apache.commons.io.IOUtils.toByteArray(is))
-        ${companionType}.fromByteBuffer(bytes)
-      }
+    new _root_.com.spotify.scio.avro.types.AvroRawCoder[$companioned](${companionType}.getClassSchema())
     """
   }
 
+  // Add a level of indirection to prevent the macro from capturing
+  // $outer which would make the Coder serialization fail
   def wrappedCoder[T: c.WeakTypeTag](c: whitebox.Context): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
     val companioned = wtt.typeSymbol
-    q"""
-    new _root_.com.spotify.scio.avro.types.WrappedCoder[$wtt] {
-      val underlying: com.spotify.scio.coders.Coder[$wtt] = ${magnolia.Magnolia.gen[T](c)}
-    }
-    """
+    val magTree = magnolia.Magnolia.gen[T](c)
+
+    def getLazyVal =
+        magTree match {
+          case q"lazy val $name = $body; $rest" =>
+            body
+        }
+
+    val name = c.freshName(s"DerivedCoder")
+    val className = TypeName(name)
+    val termName = TermName(name)
+
+    //TODO: customize serialization to only keep underlying and get rid of $outer references
+    val tree: c.Tree =
+      q"""{
+      class $className extends _root_.org.apache.beam.sdk.coders.AtomicCoder[$wtt] with java.io.Externalizable {
+        var underlying: com.spotify.scio.coders.Coder[$wtt] = $getLazyVal
+        def encode(value: $wtt, os: java.io.OutputStream): Unit =
+          underlying.encode(value, os)
+        def decode(is: java.io.InputStream): $wtt =
+          underlying.decode(is)
+        override def writeExternal(oss: _root_.java.io.ObjectOutput): Unit = {
+          oss.writeObject(underlying)
+        }
+        override def readExternal(ois: _root_.java.io.ObjectInput): Unit = {
+          underlying = ois.readObject().asInstanceOf[Coder[$wtt]]
+        }
+      }
+      new $className
+      }"""
+    // println(tree)
+    tree
   }
 
 }

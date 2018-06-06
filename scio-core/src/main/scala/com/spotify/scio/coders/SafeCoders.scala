@@ -86,18 +86,27 @@ private object Help {
     }
 }
 
-private class CombineCoder[T](ctx: magnolia.CaseClass[Coder, T]) extends AtomicCoder[T] {
+final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT) {
+  type PType = PT
+}
+
+/**
+* Create a serializable coder by trashing all references to magnolia classes
+*/
+private class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends AtomicCoder[T] {
   def encode(value: T, os: OutputStream): Unit =
-    ctx.parameters.foreach { p =>
-      Help.onErrorMsg(s"Exception while trying to `encode` field ${p.label}") {
-        p.typeclass.encode(p.dereference(value), os)
+    ps.foreach { case Param(label, tc, deref) =>
+      Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
+        tc.encode(deref(value), os)
       }
     }
 
   def decode(is: InputStream): T =
-    ctx.construct { p =>
-      Help.onErrorMsg(s"Exception while trying to `encode` field ${p.label}") {
-        p.typeclass.decode(is)
+    rawConstruct {
+      ps.map { case Param(label, typeclass, _) =>
+        Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
+          typeclass.decode(is)
+        }
       }
     }
 }
@@ -130,8 +139,13 @@ trait LowPriorityCoderDerivation {
 
   type Typeclass[T] = Coder[T]
 
-  def combine[T](ctx: CaseClass[Coder, T]): Coder[T] =
-    new CombineCoder[T](ctx)
+  def combine[T](ctx: CaseClass[Coder, T]): Coder[T] = {
+    val ps =
+      ctx.parameters.map { p =>
+        Param[T, p.PType](p.label, p.typeclass, p.dereference _)
+      }.toList
+    new CombineCoder[T](ps, ctx.rawConstruct _)
+  }
 
   def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] =
     new DispatchCoder[T](sealedTrait)
@@ -203,6 +217,8 @@ trait ProtobufCoders {
 //
 // Java Coders
 //
+
+
 trait JavaCoders {
   self: BaseCoders with FromBijection =>
 
@@ -224,7 +240,10 @@ trait JavaCoders {
   implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
   implicit def mutationCoder: Coder[com.google.bigtable.v2.Mutation] = ???
   implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
-  implicit def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): Coder[org.apache.beam.sdk.values.KV[K, V]] = ???
+
+  import org.apache.beam.sdk.values.KV
+  implicit def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): Coder[KV[K, V]] =
+    KvCoder.of(Coder[K], Coder[V])
 
   implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
   implicit def instantCoder: Coder[org.joda.time.Instant] = ???
@@ -379,7 +398,7 @@ trait BaseCoders {
 object Implicits
   extends LowPriorityCoderDerivation
   with FromSerializable
-  with TupleCoders
+  // with TupleCoders
   with FromBijection
   with BaseCoders
   with AvroCoders

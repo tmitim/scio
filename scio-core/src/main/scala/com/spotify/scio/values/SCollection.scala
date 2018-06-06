@@ -138,11 +138,12 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
     Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
     If a type is not supported, consider implementing your own implicit Coder for this type:
 
+      class MyTypeCoder extends AtomicCoder[MyType] {
+        def decode(in: InputStream): MyType = ???
+        def encode(ts: MyType, out: OutputStream): Unit = ???
+      }
       implicit def myTypeCoder: Coder[MyType] =
-        new AtomicCoder[MyType] {
-          def decode(in: InputStream): MyType = ???
-          def encode(ts: MyType, out: OutputStream): Unit = ???
-        }
+        new MyTypeCoder
     """, since="0.6.0")
     implicit def fallback[V: ClassTag]: Coder[V] =
       com.spotify.scio.coders.fallback.apply[V](self)
@@ -155,11 +156,14 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   def applyTransform[U: Coder](transform: PTransform[_ >: PCollection[T], PCollection[U]])
   : SCollection[U] = {
     // TODO: restore that test
-    ???
+    // ???
     // val uCls = implicitly[ClassTag[U]].runtimeClass
     // require(
     //   !(classOf[KV[_, _]] isAssignableFrom uCls),
     //   "Applying a transform with KV[K, V] output, use applyKvTransform instead")
+    if (context.isTest) {
+      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[U])
+    }
     this.pApply(transform).setCoder(Coder[U])
   }
 
@@ -170,8 +174,12 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    */
   def applyKvTransform[K, V]
   (transform: PTransform[_ >: PCollection[T], PCollection[KV[K, V]]])(implicit kvCoder: Coder[KV[K, V]])
-  : SCollection[KV[K, V]] =
+  : SCollection[KV[K, V]] = {
+    if (context.isTest) {
+      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[KV[K, V]])
+    }
     this.pApply(transform).setCoder(Coder[KV[K, V]])
+  }
 
   /** Apply a transform. */
   private[scio] def transform[U](f: SCollection[T] => SCollection[U])

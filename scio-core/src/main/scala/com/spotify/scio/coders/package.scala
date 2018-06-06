@@ -24,10 +24,4 @@ package object coders {
   // Avoid having to explicitly import beam coder everywhere
   type Coder[T] = org.apache.beam.sdk.coders.Coder[T]
   def Coder[T](implicit c: Coder[T]): Coder[T] = c
-
-  def MkCoder[T](encoder: (T, OutputStream) => Unit)(decoder: InputStream => T) =
-    new AtomicCoder[T] {
-      def decode(in: InputStream): T = decoder(in)
-      def encode(ts: T, out: OutputStream): Unit = encoder(ts, out)
-    }
 }

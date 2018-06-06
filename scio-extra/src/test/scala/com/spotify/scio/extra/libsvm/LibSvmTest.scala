@@ -42,10 +42,10 @@ class LibSvmTest extends PipelineSpec {
     }
   }
 
-  it should "parse libsvm files with length" in {
-    runWithContext{ sc =>
-      val res = libSVMCollection(sc.parallelize(data), 34)
-      // res should containInAnyOrder (expected)
-    }
-  }
+  // it should "parse libsvm files with length" in {
+  //   runWithContext{ sc =>
+  //     val res = libSVMCollection(sc.parallelize(data), 34)
+  //     res should containInAnyOrder (expected)
+  //   }
+  // }
 }

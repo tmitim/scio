@@ -45,6 +45,7 @@ class CodersTest extends FlatSpec with Matchers {
 
   import org.scalactic.Equality
   def check[T](t: T)(implicit C: Coder[T], eq: Equality[T]): Assertion = {
+    org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(C)
     val enc = CoderUtils.encodeToByteArray(C, t)
     val dec = CoderUtils.decodeFromByteArray(C, enc)
     dec should === (t)
@@ -114,6 +115,7 @@ class CodersTest extends FlatSpec with Matchers {
     val tb: Top = TB(4.2)
     check(ta)
     check(tb)
+    check((123, "hello", ta, tb, List(("bar", 1, "foo"))))
   }
 
   it should "support all the already supported types" ignore {
