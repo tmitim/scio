@@ -24,7 +24,7 @@ import org.apache.beam.sdk.coders.{Coder, AtomicCoder}
 import java.io.{InputStream, OutputStream}
 
 trait WrappedCoder[T] extends AtomicCoder[T] with Serializable {
-  def underlying: Coder[T] = ???
+  def underlying: Coder[T]
   def encode(value: T, os: OutputStream): Unit =
     underlying.encode(value, os)
   def decode(is: InputStream): T =
@@ -83,28 +83,20 @@ private[scio] object CoderUtils {
             body
         }
 
-    val name = c.freshName(s"DerivedCoder")
+    val name = c.freshName(s"$$DerivedCoder")
     val className = TypeName(name)
+    // println(className)
     val termName = TermName(name)
 
-    //TODO: customize serialization to only keep underlying and get rid of $outer references
+    //TODO: find a way to get rid of $outer references
     val tree: c.Tree =
       q"""{
-      class $className extends _root_.org.apache.beam.sdk.coders.AtomicCoder[$wtt] with java.io.Externalizable {
+      final class $className extends com.spotify.scio.avro.types.WrappedCoder[$wtt] {
         var underlying: com.spotify.scio.coders.Coder[$wtt] = $getLazyVal
-        def encode(value: $wtt, os: java.io.OutputStream): Unit =
-          underlying.encode(value, os)
-        def decode(is: java.io.InputStream): $wtt =
-          underlying.decode(is)
-        override def writeExternal(oss: _root_.java.io.ObjectOutput): Unit = {
-          oss.writeObject(underlying)
-        }
-        override def readExternal(ois: _root_.java.io.ObjectInput): Unit = {
-          underlying = ois.readObject().asInstanceOf[Coder[$wtt]]
-        }
       }
-      new $className
-      }"""
+      com.spotify.scio.util.ClosureCleaner.clean(new $className).asInstanceOf[$className]
+      }
+      """
     // println(tree)
     tree
   }

@@ -93,7 +93,7 @@ final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT
 /**
 * Create a serializable coder by trashing all references to magnolia classes
 */
-private class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends AtomicCoder[T] {
+private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends AtomicCoder[T] {
   def encode(value: T, os: OutputStream): Unit =
     ps.foreach { case Param(label, tc, deref) =>
       Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
@@ -111,7 +111,7 @@ private class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T
     }
 }
 
-private class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends AtomicCoder[T] {
+private final class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends AtomicCoder[T] {
   val idx: Map[magnolia.TypeName, Int] =
     sealedTrait.subtypes.map(_.typeName).zipWithIndex.toMap
   val idc = VarIntCoder.of()
@@ -398,7 +398,7 @@ trait BaseCoders {
 object Implicits
   extends LowPriorityCoderDerivation
   with FromSerializable
-  // with TupleCoders
+  with TupleCoders
   with FromBijection
   with BaseCoders
   with AvroCoders
