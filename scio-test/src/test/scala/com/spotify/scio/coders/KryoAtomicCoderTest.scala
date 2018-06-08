@@ -26,7 +26,7 @@ import com.spotify.scio.avro.AvroUtils._
 import com.spotify.scio.coders.CoderTestUtils._
 import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.testing.PipelineSpec
-import com.twitter.chill._
+import com.twitter.chill.{java => _, _}
 import org.apache.beam.sdk.Pipeline.PipelineExecutionException
 import org.apache.beam.sdk.coders.Coder
 import org.apache.beam.sdk.options.PipelineOptionsFactory
@@ -37,6 +37,9 @@ import org.scalatest.matchers.{MatchResult, Matcher}
 
 import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
+
+case class RecordA(name: String, value: Int)
+case class RecordB(name: String, value: Int)
 
 class KryoAtomicCoderTest extends PipelineSpec {
 
@@ -146,6 +149,7 @@ class KryoAtomicCoderTest extends PipelineSpec {
   it should "support kryo registration required option" in {
     val options = PipelineOptionsFactory.fromArgs("--kryoRegistrationRequired=true").create()
     val sc = ScioContext(options)
+
     sc.parallelize(1 to 10).map(x => RecordB(x.toString, x))
 
     // scalastyle:off no.whitespace.before.left.bracket
@@ -157,9 +161,6 @@ class KryoAtomicCoderTest extends PipelineSpec {
   }
 
 }
-
-case class RecordA(name: String, value: Int)
-case class RecordB(name: String, value: Int)
 
 @KryoRegistrar
 class RecordAKryoRegistrar extends IKryoRegistrar {

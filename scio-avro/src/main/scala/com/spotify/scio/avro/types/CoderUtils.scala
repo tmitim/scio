@@ -34,15 +34,13 @@ trait WrappedCoder[T] extends AtomicCoder[T] with Serializable {
 final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
 
   // makes the schema scerializable
-  private val schemaString = schema.toString
+  val schemaString = schema.toString
 
-  if(schema == null) {
-    schema = new org.apache.avro.Schema.Parser().parse(schemaString)
-  }
+  @transient lazy val _schema = new org.apache.avro.Schema.Parser().parse(schemaString)
 
   @transient lazy val model = new org.apache.avro.specific.SpecificData()
-  @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, schema)
-  @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, schema)
+  @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, _schema)
+  @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, _schema)
 
   def encode(value: T, os: OutputStream): Unit =
     encoder.encode(value, os)
@@ -85,16 +83,29 @@ private[scio] object CoderUtils {
 
     val name = c.freshName(s"$$DerivedCoder")
     val className = TypeName(name)
-    // println(className)
-    val termName = TermName(name)
 
-    //TODO: find a way to get rid of $outer references
+    // Remove annotations from magnolia since they are not serialiazable and we don't use them anyway
+    // TODO: do the same with sealedtrait
+    val removeAnnotations =
+      new Transformer {
+        override def transform(tree: Tree) =
+          tree match {
+            case Apply(TypeApply(Select(Select(_, TermName("Magnolia")), TermName("caseClass")), _), params @ List(name, isObj, isVal, ps, _, construct)) =>
+              q"_root_.magnolia.Magnolia.caseClass($name, $isObj, $isVal, $ps, scala.Array(), $construct)"
+            case t =>
+              super.transform(tree)
+          }
+      }
+
+    val coder = removeAnnotations.transform(getLazyVal)
+
+    //XXX: find a way to get rid of $outer references at compile time
     val tree: c.Tree =
       q"""{
-      final class $className extends com.spotify.scio.avro.types.WrappedCoder[$wtt] {
-        var underlying: com.spotify.scio.coders.Coder[$wtt] = $getLazyVal
+      final class $className extends _root_.com.spotify.scio.avro.types.WrappedCoder[$wtt] {
+        var underlying: _root_.com.spotify.scio.coders.Coder[$wtt] = $coder
       }
-      com.spotify.scio.util.ClosureCleaner.clean(new $className).asInstanceOf[$className]
+      _root_.com.spotify.scio.coders.clean(new $className)
       }
       """
     // println(tree)

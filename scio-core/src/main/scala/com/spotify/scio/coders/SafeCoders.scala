@@ -36,8 +36,8 @@ private class SerializableCoder[T] extends AtomicCoder[T] {
 
 trait FromSerializable {
   // XXX: probably a bad idea...
-  implicit def serializableCoder[T <: Serializable](implicit l: shapeless.LowPriority): Coder[T] =
-    new SerializableCoder[T]
+  // implicit def serializableCoder[T <: Serializable](implicit l: shapeless.LowPriority): Coder[T] =
+  //   new SerializableCoder[T]
 
   private[scio] implicit def function1Coder[I, O]: Coder[I => O] =
     new SerializableCoder[I => O]
@@ -245,6 +245,7 @@ trait JavaCoders {
   implicit def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): Coder[KV[K, V]] =
     KvCoder.of(Coder[K], Coder[V])
 
+  implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
   implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
   implicit def instantCoder: Coder[org.joda.time.Instant] = ???
   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] = ???
@@ -257,8 +258,8 @@ trait AlgebirdCoders {
   self: LowPriorityCoderDerivation with BaseCoders =>
 
   import com.twitter.algebird._
-  // implicit def cmsHashCoder[K: Coder : CMSHasher] = gen[CMSHash[K]]
-  // implicit def cmsCoder[K: Coder : CMSHash] = gen[CMS[K]]
+  implicit def cmsHashCoder[K: Coder : CMSHasher] = gen[CMSHash[K]]
+  implicit def cmsCoder[K: Coder](implicit hcoder: Coder[CMSHash[K]]) = gen[CMS[K]]
 }
 
 private object UnitCoder extends AtomicCoder[Unit] {
@@ -375,6 +376,7 @@ trait BaseCoders {
   implicit def nothingCoder: Coder[Nothing] = NothingCoder
   implicit def booleanCoder: Coder[Boolean] = BooleanCoder.of().asInstanceOf[Coder[Boolean]]
   implicit def longCoder: Coder[Long] = BigEndianLongCoder.of().asInstanceOf[Coder[Long]]
+  implicit def bigdecimalCoder: Coder[BigDecimal] = ???
 
   implicit def traversableCoder[T](implicit c: Coder[T]): Coder[TraversableOnce[T]] = ???
   implicit def optionCoder[T](implicit c: Coder[T]): Coder[Option[T]] = new OptionCoder[T]

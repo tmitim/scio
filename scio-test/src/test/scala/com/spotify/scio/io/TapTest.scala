@@ -67,6 +67,9 @@ trait TapSpec extends PipelineSpec {
 
 class TapTest extends TapSpec {
 
+  val schema = newGenericRecord(1).getSchema
+  implicit val coder = genericRecordCoder(schema)
+
   private def makeRecords(sc: ScioContext) =
     sc.parallelize(Seq(1, 2, 3))
       .map(i => (newSpecificRecord(i), newGenericRecord(i)))
@@ -119,8 +122,6 @@ class TapTest extends TapSpec {
 
   it should "support saveAsAvroFile with GenericRecord" in {
     val dir = tmpDir
-    val schema = newGenericRecord(1).getSchema
-    implicit val coder = genericRecordCoder(schema)
     val t = runWithFileFuture {
       _
         .parallelize(Seq(1, 2, 3))

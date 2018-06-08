@@ -24,4 +24,7 @@ package object coders {
   // Avoid having to explicitly import beam coder everywhere
   type Coder[T] = org.apache.beam.sdk.coders.Coder[T]
   def Coder[T](implicit c: Coder[T]): Coder[T] = c
+
+  def clean[T](w: com.spotify.scio.avro.types.WrappedCoder[T]) =
+    com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[com.spotify.scio.avro.types.WrappedCoder[T]]
 }

@@ -38,7 +38,7 @@ trait BigTableMatchers extends SCollectionMatchers {
   type BTCollection = SCollection[BTRow]
 
   // Needed because scalac is an idiot
-  implicit val btCollCoder: Coder[BTRow] = Coder[(ByteString, Iterable[Mutation])]
+  implicit def btCollCoder: Coder[BTRow] = gen[(ByteString, Iterable[Mutation])]
 
   /** Provide an implicit BT serializer for common cell value type String. */
   implicit def stringBTSerializer(s: String): ByteString = ByteString.copyFromUtf8(s)
