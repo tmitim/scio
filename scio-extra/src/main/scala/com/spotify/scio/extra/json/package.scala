@@ -34,6 +34,7 @@ import org.apache.beam.sdk.{io => gio}
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 import scala.util.{Left, Right}
+import com.spotify.scio.extra.coders.Implicits._
 
 /**
  * Main package for JSON APIs. Import all.
@@ -67,7 +68,7 @@ package object json extends AutoDerivation {
     def jsonFile[T: Coder : Decoder](path: String)
     : SCollection[Either[DecodeError, T]] = self.requireNotClosed {
       if (self.isTest) {
-        self.getTestInput[T](JsonIO[T](path)).map(Right(_))
+        self.getTestInput[T](JsonIO[T](path)).map[Either[DecodeError, T]](Right(_))
       } else {
         self
           .wrap(self.applyInternal(gio.TextIO.read().from(path))).setName(path)

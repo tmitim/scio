@@ -26,6 +26,7 @@ import com.spotify.scio.testing._
 import com.spotify.sparkey._
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
+import com.spotify.scio.extra.coders.Implicits._
 
 class SparkeyTest extends PipelineSpec {
 

@@ -27,7 +27,7 @@ import scala.reflect.ClassTag
 //
 // Derive Coder from Serializable values
 //
-private class SerializableCoder[T] extends AtomicCoder[T] {
+private[scio] class SerializableCoder[T] extends AtomicCoder[T] {
   def decode(in: InputStream): T =
     new ObjectInputStream(in).readObject().asInstanceOf[T]
   def encode(ts: T, out: OutputStream): Unit =
@@ -217,8 +217,6 @@ trait ProtobufCoders {
 //
 // Java Coders
 //
-
-
 trait JavaCoders {
   self: BaseCoders with FromBijection =>
 
@@ -248,7 +246,8 @@ trait JavaCoders {
   implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
   implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
   implicit def instantCoder: Coder[org.joda.time.Instant] = ???
-  implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] = ???
+  implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
+    org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of()
   implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
   implicit def entityCoder: Coder[com.google.datastore.v1.Entity] = ???
   implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???

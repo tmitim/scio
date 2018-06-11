@@ -21,6 +21,7 @@ import breeze.linalg.SparseVector
 import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
+import com.spotify.scio.extra.coders.Implicits._
 import com.spotify.scio.values.SCollection
 import com.twitter.algebird.Max
 

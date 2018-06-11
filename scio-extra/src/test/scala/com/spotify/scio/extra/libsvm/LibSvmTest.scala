@@ -21,6 +21,7 @@ import breeze.linalg.SparseVector
 import com.spotify.scio.testing.PipelineSpec
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
+import com.spotify.scio.extra.coders.Implicits._
 
 class LibSvmTest extends PipelineSpec {
   val expected = List(
@@ -42,10 +43,10 @@ class LibSvmTest extends PipelineSpec {
     }
   }
 
-  // it should "parse libsvm files with length" in {
-  //   runWithContext{ sc =>
-  //     val res = libSVMCollection(sc.parallelize(data), 34)
-  //     res should containInAnyOrder (expected)
-  //   }
-  // }
+  it should "parse libsvm files with length" in {
+    runWithContext{ sc =>
+      val res = libSVMCollection(sc.parallelize(data), 34)
+      res should containInAnyOrder (expected)
+    }
+  }
 }
