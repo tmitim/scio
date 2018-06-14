@@ -23,6 +23,7 @@ import org.apache.beam.sdk.util.CoderUtils
 import com.twitter.bijection._
 import java.io.{ ObjectInputStream, ObjectOutputStream }
 import scala.reflect.ClassTag
+import scala.collection.{ mutable => m }
 
 //
 // Derive Coder from Serializable values
@@ -162,9 +163,9 @@ trait LowPriorityCoderDerivation {
 // Avro Coders
 //
 private[scio] object fallback {
-  def apply[T: scala.reflect.ClassTag](p: com.spotify.scio.values.SCollection[_]): Coder[T] =
-    com.spotify.scio.Implicits.RichCoderRegistry(p.internal.getPipeline.getCoderRegistry)
-      .getScalaCoder[T](p.context.options)
+  def apply[T: scala.reflect.ClassTag](sc: com.spotify.scio.ScioContext): Coder[T] =
+    com.spotify.scio.Implicits.RichCoderRegistry(sc.pipeline.getCoderRegistry)
+      .getScalaCoder[T](sc.options)
 }
 
 import org.apache.avro.generic.GenericRecord
@@ -331,6 +332,14 @@ private class ArrayCoder[T: Coder : ClassTag] extends AtomicCoder[Array[T]] {
     seqCoder.decode(is).toArray
 }
 
+private class ArrayBufferCoder[T: Coder] extends AtomicCoder[m.ArrayBuffer[T]] {
+  val seqCoder = new SeqCoder[T]
+  def encode(value: m.ArrayBuffer[T], os: OutputStream): Unit =
+    seqCoder.encode(value.toSeq, os)
+  def decode(is: InputStream): m.ArrayBuffer[T] =
+    m.ArrayBuffer(seqCoder.decode(is):_*)
+}
+
 private class MapCoder[K: Coder, V: Coder] extends AtomicCoder[Map[K, V]] {
   val lc = VarIntCoder.of()
   def decode(in: InputStream): Map[K, V] = {
@@ -343,6 +352,26 @@ private class MapCoder[K: Coder, V: Coder] extends AtomicCoder[Map[K, V]] {
   }
 
   def encode(ts: Map[K, V], out: OutputStream): Unit = {
+    lc.encode(ts.size, out)
+    ts.foreach { case (k, v) =>
+      Coder[K].encode(k, out)
+      Coder[V].encode(v, out)
+    }
+  }
+}
+
+private class MutableMapCoder[K: Coder, V: Coder] extends AtomicCoder[m.Map[K, V]] {
+  val lc = VarIntCoder.of()
+  def decode(in: InputStream): m.Map[K, V] = {
+    val l = lc.decode(in)
+    m.Map((1 to l).map { _ =>
+      val k = Coder[K].decode(in)
+      val v = Coder[V].decode(in)
+      (k, v)
+    }:_*)
+  }
+
+  def encode(ts: m.Map[K, V], out: OutputStream): Unit = {
     lc.encode(ts.size, out)
     ts.foreach { case (k, v) =>
       Coder[K].encode(k, out)
@@ -389,10 +418,12 @@ trait BaseCoders {
   implicit def listCoder[T: Coder]: Coder[List[T]] = new ListCoder[T]
   implicit def vectorCoder[T: Coder]: Coder[Vector[T]] = new VectorCoder[T]
   implicit def seqCoder[T: Coder]: Coder[Seq[T]] = new SeqCoder[T]
-  implicit def arraybufferCoder[T: Coder]: Coder[scala.collection.mutable.ArrayBuffer[T]] = ???
+  implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] =
+    new ArrayBufferCoder[T]
   implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
   implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] = new ArrayCoder[T]
-  implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[scala.collection.mutable.Map[K, V]] = ???
+  implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] =
+    new MutableMapCoder[K, V]
   implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] = new MapCoder[K, V]
 }
 

@@ -131,24 +131,6 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   /** Assign a name to this SCollection. */
   def setName(name: String): SCollection[T] = context.wrap(internal.setName(name))
 
-  object coders {
-    @deprecated("""
-    Coders in fallback coders are very slow and unsafe.
-    They are only provided for compatibility reasons.
-    Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
-    If a type is not supported, consider implementing your own implicit Coder for this type:
-
-      class MyTypeCoder extends AtomicCoder[MyType] {
-        def decode(in: InputStream): MyType = ???
-        def encode(ts: MyType, out: OutputStream): Unit = ???
-      }
-      implicit def myTypeCoder: Coder[MyType] =
-        new MyTypeCoder
-    """, since="0.6.0")
-    implicit def fallback[V: ClassTag]: Coder[V] =
-      com.spotify.scio.coders.fallback.apply[V](self)
-  }
-
   /**
    * Apply a [[org.apache.beam.sdk.transforms.PTransform PTransform]] and wrap the output in an
    * [[SCollection]].

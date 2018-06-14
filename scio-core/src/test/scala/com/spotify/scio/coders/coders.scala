@@ -154,14 +154,14 @@ class CodersTest extends FlatSpec with Matchers {
         illTyped("""check(record)""")
 
         {
-          import scoll.coders.fallback
+          import scoll.context.coders.fallback
           check(record)
         }
     }
 
   it should "not use a fallback if a safe coder is available" in
     withSCollection[Unit] { scoll =>
-      import scoll.coders.fallback
+      import scoll.context.coders.fallback
       illTyped("SCoder[DummyCC]") // ambiguous implicit values
       succeed
     }
