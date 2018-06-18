@@ -198,8 +198,9 @@ private class SlowGenericRecordCoder extends AtomicCoder[GenericRecord] {
 
 trait AvroCoders {
   self: BaseCoders =>
+  // TODO: Use a coder that does not serialize the schema
   def genericRecordCoder(schema: Schema): Coder[GenericRecord] =
-    AvroCoder.of(schema)
+    new com.spotify.scio.avro.types.AvroRawCoder(schema)
 
   // XXX: similar to GenericAvroSerializer
   def slowGenericRecordCoder: Coder[GenericRecord] =
@@ -234,7 +235,8 @@ trait JavaCoders {
 
   implicit val jIntegerCoder: Coder[java.lang.Integer] = fromScalaCoder(intCoder)
   implicit val jLongCoder: Coder[java.lang.Long] = fromScalaCoder(longCoder)
-  // TODO: Byte, Double, Float, Short
+  implicit val jDoubleCoder: Coder[java.lang.Double] = fromScalaCoder(doubleCoder)
+  // TODO: Byte, Float, Short
 
   implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
   implicit def mutationCoder: Coder[com.google.bigtable.v2.Mutation] = ???
@@ -245,6 +247,7 @@ trait JavaCoders {
     KvCoder.of(Coder[K], Coder[V])
 
   implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
+  implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
   implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
   implicit def instantCoder: Coder[org.joda.time.Instant] = ???
   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
@@ -418,13 +421,14 @@ trait BaseCoders {
   implicit def listCoder[T: Coder]: Coder[List[T]] = new ListCoder[T]
   implicit def vectorCoder[T: Coder]: Coder[Vector[T]] = new VectorCoder[T]
   implicit def seqCoder[T: Coder]: Coder[Seq[T]] = new SeqCoder[T]
-  implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] =
-    new ArrayBufferCoder[T]
+  implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] = new ArrayBufferCoder[T]
   implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
   implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] = new ArrayCoder[T]
-  implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] =
-    new MutableMapCoder[K, V]
+  implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] = new MutableMapCoder[K, V]
   implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] = new MapCoder[K, V]
+  implicit def sortedSetCoder[T: Coder]: Coder[scala.collection.SortedSet[T]] = ???
+
+  implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
 }
 
 object Implicits

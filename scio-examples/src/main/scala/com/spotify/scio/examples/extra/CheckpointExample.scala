@@ -19,6 +19,7 @@ package com.spotify.scio.examples.extra
 
 import com.spotify.scio.ContextAndArgs
 import com.spotify.scio.extra.checkpoint._
+import com.spotify.scio.coders.Implicits._
 
 object CheckpointExample {
   def main(cmdlineArgs: Array[String]): Unit = {
@@ -38,7 +39,7 @@ object CheckpointExample {
     )
 
     words.saveAsTextFile(args("output") + "-words")
-    count.max(Ordering.by(_._2)).saveAsTextFile(args("output") + "-max")
+    count.max(Ordering.by(_._2), implicitly).saveAsTextFile(args("output") + "-max")
     count.map(t => t._1 + ": " + t._2).saveAsTextFile(args("output"))
     sc.close()
   }

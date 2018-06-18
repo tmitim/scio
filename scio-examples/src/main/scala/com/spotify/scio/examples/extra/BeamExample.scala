@@ -30,6 +30,8 @@ import org.apache.beam.sdk.transforms.{PTransform, Sum}
 import org.apache.beam.sdk.values._
 import org.apache.beam.sdk.{Pipeline, PipelineResult}
 import org.joda.time.Duration
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 
 object BeamExample {
 

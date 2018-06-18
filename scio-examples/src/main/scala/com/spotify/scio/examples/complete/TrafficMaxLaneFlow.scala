@@ -25,6 +25,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.{Duration, Instant}
 
 import scala.util.control.NonFatal
+import com.spotify.scio.coders.Implicits._
 
 /*
 SBT
@@ -83,7 +84,7 @@ object TrafficMaxLaneFlow {
       .withSlidingWindows(
         Duration.standardMinutes(windowDuration),
         Duration.standardMinutes(windowSlideEvery))
-      .maxByKey(Ordering.by(_.flow))
+      .maxByKey(Ordering.by(_.flow), implicitly, implicitly)
       .values
       .withTimestamp
       .map { case (l, ts) =>  // (lane flow, timestamp)

@@ -22,6 +22,8 @@ import com.spotify.scio.values.SCollection
 import org.apache.beam.sdk.io.Compression
 import org.apache.beam.sdk.{io => gio}
 
+import com.spotify.scio.coders.Implicits._
+
 class TFScioContextFunctions(val self: ScioContext) extends AnyVal {
 
   /**

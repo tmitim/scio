@@ -30,6 +30,7 @@ import com.spotify.scio.examples.common.ExampleData
 import com.spotify.scio.values.SCollection
 import org.apache.beam.sdk.transforms.windowing.IntervalWindow
 import org.joda.time.{Duration, Instant}
+import com.spotify.scio.coders.Implicits._
 
 object TopWikipediaSessions {
   def main(cmdlineArgs: Array[String]): Unit = {
@@ -74,7 +75,7 @@ object TopWikipediaSessions {
       // Apply fixed windows
       .windowByMonths(1)
       // Compute top `(username, count)` per month
-      .top(1)(Ordering.by(_._2))
+      .top(1)(Ordering.by(_._2), implicitly)
       // Convert to a `WindowedSCollection` to expose window information
       .toWindowed
       .flatMap { wv =>

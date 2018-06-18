@@ -20,6 +20,8 @@ package com.spotify.scio.tensorflow
 import com.spotify.scio.values.SCollection
 
 import org.apache.beam.sdk.io.Compression
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
 
 /** Contains metadata about TFRecords. Useful to read the records later on. */
 sealed trait TFRecordSpec {

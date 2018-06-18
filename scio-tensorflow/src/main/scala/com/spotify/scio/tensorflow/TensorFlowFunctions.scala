@@ -47,6 +47,9 @@ import scala.concurrent.Future
 import scala.reflect.ClassTag
 import scala.collection.JavaConverters._
 
+import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders.Implicits._
+
 private[this] abstract class PredictDoFn[T, V, M <: Model[_]](
   fetchOp: Seq[String],
   inFn: T => Map[String, Tensor[_]],
@@ -159,7 +162,7 @@ private[tensorflow] class PredictSCollectionFunctions[T: ClassTag](
    *                 [[org.tensorflow.Tensor Tensor]], to elements of V. This method takes
    *                 ownership of the [[org.tensorflow.Tensor Tensor]]s.
    */
-  def predict[V: ClassTag, W](savedModelUri: String,
+  def predict[V: Coder, W](savedModelUri: String,
                               fetchOps: Seq[String],
                               options: TensorFlowModel.Options)(inFn: T => Map[String, Tensor[_]])(
     outFn: (T, Map[String, Tensor[_]]) => V): SCollection[V] =
@@ -181,7 +184,7 @@ private[tensorflow] class PredictSCollectionFunctions[T: ClassTag](
    */
   @deprecated("TensorFlow Graph model support will be removed. Use Saved Model predict.",
               "scio-tensorflow 0.5.4")
-  def predict[V: ClassTag, W](graphUri: String, fetchOps: Seq[String], config: Array[Byte] = null)(
+  def predict[V: Coder, W](graphUri: String, fetchOps: Seq[String], config: Array[Byte] = null)(
     inFn: T => Map[String, Tensor[_]])(outFn: (T, Map[String, Tensor[_]]) => V): SCollection[V] =
     self.parDo(new GraphPredictDoFn[T, V](graphUri, fetchOps, config, inFn, outFn))
 
@@ -326,8 +329,9 @@ class TFRecordSCollectionFunctions[T <: Array[Byte]](val self: SCollection[T]) {
     compression: Compression = Compression.UNCOMPRESSED,
     numShards: Int = 0)(implicit ev: T <:< Array[Byte]): Future[Tap[Array[Byte]]] = {
     if (self.context.isTest) {
-      self.context.testOut(TFRecordIO(path))(self.asInstanceOf[SCollection[Array[Byte]]])
-      self.saveAsInMemoryTap.asInstanceOf[Future[Tap[Array[Byte]]]]
+      val s = self.asInstanceOf[SCollection[Array[Byte]]]
+      self.context.testOut(TFRecordIO(path))(s)
+      s.saveAsInMemoryTap
     } else {
       self
         .asInstanceOf[SCollection[Array[Byte]]]
