@@ -68,7 +68,7 @@ val sparkeyVersion = "2.3.0"
 val tensorFlowVersion = "1.8.0"
 val zoltarVersion = "0.3.1"
 val bijectionVersion = "0.9.5"
-val magnoliaVersion = "0.7.3-ser"
+val magnoliaVersion = "0.8.0"
 
 lazy val mimaSettings = Seq(
   mimaPreviousArtifacts :=

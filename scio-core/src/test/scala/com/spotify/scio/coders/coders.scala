@@ -148,20 +148,22 @@ class CodersTest extends FlatSpec with Matchers {
   it should "provide a fallback if no safe coder is available" in
     withSCollection[Unit] {
       scoll =>
+        val coders = scoll.context.coders
         import org.apache.avro.generic.GenericRecord
         val schema = avro.user.getSchema
         val record: GenericRecord = avro.user
         illTyped("""check(record)""")
 
         {
-          import scoll.context.coders.fallback
+          import coders.fallback
           check(record)
         }
     }
 
   it should "not use a fallback if a safe coder is available" in
     withSCollection[Unit] { scoll =>
-      import scoll.context.coders.fallback
+      val coders =  scoll.context.coders
+      import coders.fallback
       illTyped("SCoder[DummyCC]") // ambiguous implicit values
       succeed
     }
