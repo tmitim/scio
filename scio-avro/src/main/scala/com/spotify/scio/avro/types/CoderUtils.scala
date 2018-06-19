@@ -23,32 +23,6 @@ import scala.reflect.macros._
 import org.apache.beam.sdk.coders.{Coder, AtomicCoder}
 import java.io.{InputStream, OutputStream}
 
-trait WrappedCoder[T] extends AtomicCoder[T] with Serializable {
-  def underlying: Coder[T]
-  def encode(value: T, os: OutputStream): Unit =
-    underlying.encode(value, os)
-  def decode(is: InputStream): T =
-    underlying.decode(is)
-}
-
-final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
-
-  // makes the schema scerializable
-  val schemaString = schema.toString
-
-  @transient lazy val _schema = new org.apache.avro.Schema.Parser().parse(schemaString)
-
-  @transient lazy val model = new org.apache.avro.specific.SpecificData()
-  @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, _schema)
-  @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, _schema)
-
-  def encode(value: T, os: OutputStream): Unit =
-    encoder.encode(value, os)
-
-  def decode(is: InputStream): T =
-    decoder.decode(is)
-}
-
 private[scio] object CoderUtils {
 
 
@@ -63,7 +37,7 @@ private[scio] object CoderUtils {
     val companionType = companionSymbol.typeSignature
 
     q"""
-    new _root_.com.spotify.scio.avro.types.AvroRawCoder[$companioned](${companionType}.getClassSchema())
+    new _root_.com.spotify.scio.coders.AvroRawCoder[$companioned](${companionType}.getClassSchema())
     """
   }
 
@@ -102,10 +76,10 @@ private[scio] object CoderUtils {
     //XXX: find a way to get rid of $outer references at compile time
     val tree: c.Tree =
       q"""{
-      final class $className extends _root_.com.spotify.scio.avro.types.WrappedCoder[$wtt] {
+      final class $className extends _root_.com.spotify.scio.coders.WrappedCoder[$wtt] {
         var underlying: _root_.com.spotify.scio.coders.Coder[$wtt] = $coder
       }
-      _root_.com.spotify.scio.coders.clean(new $className)
+      _root_.com.spotify.scio.coders.Coder.clean(new $className)
       }
       """
     // println(tree)

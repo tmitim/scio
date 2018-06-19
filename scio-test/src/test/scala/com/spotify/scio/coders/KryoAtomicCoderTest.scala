@@ -28,7 +28,7 @@ import com.spotify.scio.coders.Implicits._
 import com.spotify.scio.testing.PipelineSpec
 import com.twitter.chill.{java => _, _}
 import org.apache.beam.sdk.Pipeline.PipelineExecutionException
-import org.apache.beam.sdk.coders.Coder
+import org.apache.beam.sdk.coders.{Coder => BCoder}
 import org.apache.beam.sdk.options.PipelineOptionsFactory
 import org.apache.beam.sdk.util.CoderUtils
 import org.apache.beam.sdk.values.KV
@@ -45,7 +45,7 @@ class KryoAtomicCoderTest extends PipelineSpec {
 
   import com.spotify.scio.testing.TestingUtils._
 
-  type CoderFactory = () => Coder[Any]
+  type CoderFactory = () => BCoder[Any]
   val cf = () => new KryoAtomicCoder[Any](KryoOptions())
 
   private def roundTrip[T: ClassTag](value: T) = new Matcher[CoderFactory] {

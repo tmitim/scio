@@ -432,7 +432,7 @@ class SCollectionTest extends PipelineSpec {
     runWithContext { sc =>
       val p = sc.parallelize(Seq(1, 2, 3, 4, 5))
       val r1 = p.top(3)
-      val r2 = p.top(3)(Ordering.by(-_), Coder)
+      val r2 = p.top(3)(Ordering.by(-_), implicitly)
       r1 should containSingleValue (iterable(5, 4, 3))
       r2 should containSingleValue (iterable(1, 2, 3))
     }

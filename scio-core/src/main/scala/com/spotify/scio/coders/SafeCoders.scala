@@ -18,17 +18,45 @@
 package com.spotify.scio.coders
 
 import java.io.{InputStream, OutputStream}
-import org.apache.beam.sdk.coders._
+import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 import org.apache.beam.sdk.util.CoderUtils
 import com.twitter.bijection._
 import java.io.{ ObjectInputStream, ObjectOutputStream }
 import scala.reflect.ClassTag
 import scala.collection.{ mutable => m }
 
+import com.spotify.scio.coders.Coder.from
+
+trait WrappedCoder[T] extends Coder[T] with Serializable {
+  def underlying: Coder[T]
+  def encode(value: T, os: OutputStream): Unit =
+    underlying.encode(value, os)
+  def decode(is: InputStream): T =
+    underlying.decode(is)
+}
+
+final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends Coder[T] {
+
+  // makes the schema scerializable
+  val schemaString = schema.toString
+
+  @transient lazy val _schema = new org.apache.avro.Schema.Parser().parse(schemaString)
+
+  @transient lazy val model = new org.apache.avro.specific.SpecificData()
+  @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, _schema)
+  @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, _schema)
+
+  def encode(value: T, os: OutputStream): Unit =
+    encoder.encode(value, os)
+
+  def decode(is: InputStream): T =
+    decoder.decode(is)
+}
+
 //
 // Derive Coder from Serializable values
 //
-private[scio] class SerializableCoder[T] extends AtomicCoder[T] {
+private[scio] class SerializableCoder[T] extends Coder[T] {
   def decode(in: InputStream): T =
     new ObjectInputStream(in).readObject().asInstanceOf[T]
   def encode(ts: T, out: OutputStream): Unit =
@@ -48,7 +76,7 @@ trait FromSerializable {
 // Derive Coder from twitter Bijection
 //
 class CollectionfromBijection[A, B](
-  implicit b: Bijection[Seq[A], B], c: Coder[Seq[A]]) extends AtomicCoder[B] {
+  implicit b: Bijection[Seq[A], B], c: Coder[Seq[A]]) extends Coder[B] {
     def encode(ts: B, out: OutputStream): Unit =
       c.encode(b.invert(ts), out)
     def decode(in: InputStream): B =
@@ -56,7 +84,7 @@ class CollectionfromBijection[A, B](
 }
 
 class MapfromBijection[K, A, B](
-  implicit b: Bijection[Map[K, A], B], c: Coder[Map[K, A]]) extends AtomicCoder[B] {
+  implicit b: Bijection[Map[K, A], B], c: Coder[Map[K, A]]) extends Coder[B] {
     def encode(ts: B, out: OutputStream): Unit =
       c.encode(b.invert(ts), out)
     def decode(in: InputStream): B =
@@ -94,7 +122,7 @@ final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT
 /**
 * Create a serializable coder by trashing all references to magnolia classes
 */
-private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends AtomicCoder[T] {
+private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends Coder[T] {
   def encode(value: T, os: OutputStream): Unit =
     ps.foreach { case Param(label, tc, deref) =>
       Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
@@ -112,7 +140,7 @@ private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any
     }
 }
 
-private final class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends AtomicCoder[T] {
+private final class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends Coder[T] {
   val idx: Map[magnolia.TypeName, Int] =
     sealedTrait.subtypes.map(_.typeName).zipWithIndex.toMap
   val idc = VarIntCoder.of()
@@ -164,14 +192,14 @@ trait LowPriorityCoderDerivation {
 //
 private[scio] object fallback {
   def apply[T: scala.reflect.ClassTag](sc: com.spotify.scio.ScioContext): Coder[T] =
-    com.spotify.scio.Implicits.RichCoderRegistry(sc.pipeline.getCoderRegistry)
-      .getScalaCoder[T](sc.options)
+    from(com.spotify.scio.Implicits.RichCoderRegistry(sc.pipeline.getCoderRegistry)
+      .getScalaCoder[T](sc.options))
 }
 
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.Schema
 
-private class SlowGenericRecordCoder extends AtomicCoder[GenericRecord] {
+private class SlowGenericRecordCoder extends Coder[GenericRecord] {
 
   var coder: Coder[GenericRecord] = _
   // TODO: can we find something more efficient than String ?
@@ -180,7 +208,7 @@ private class SlowGenericRecordCoder extends AtomicCoder[GenericRecord] {
   def encode(value: GenericRecord, os: OutputStream): Unit = {
     val schema = value.getSchema
     if(coder == null) {
-      coder = AvroCoder.of(schema)
+      coder = from(AvroCoder.of(schema))
     }
     sc.encode(schema.toString, os)
     coder.encode(value, os)
@@ -190,7 +218,7 @@ private class SlowGenericRecordCoder extends AtomicCoder[GenericRecord] {
     val schemaStr = sc.decode(is)
     if(coder == null) {
       val schema = new Schema.Parser().parse(schemaStr)
-      coder = AvroCoder.of(schema)
+      coder = from(AvroCoder.of(schema))
     }
     coder.decode(is)
   }
@@ -200,7 +228,7 @@ trait AvroCoders {
   self: BaseCoders =>
   // TODO: Use a coder that does not serialize the schema
   def genericRecordCoder(schema: Schema): Coder[GenericRecord] =
-    new com.spotify.scio.avro.types.AvroRawCoder(schema)
+    new AvroRawCoder(schema)
 
   // XXX: similar to GenericAvroSerializer
   def slowGenericRecordCoder: Coder[GenericRecord] =
@@ -244,14 +272,14 @@ trait JavaCoders {
 
   import org.apache.beam.sdk.values.KV
   implicit def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): Coder[KV[K, V]] =
-    KvCoder.of(Coder[K], Coder[V])
+    from(KvCoder.of(Coder[K], Coder[V]))
 
   implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
   implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
   implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
   implicit def instantCoder: Coder[org.joda.time.Instant] = ???
   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
-    org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of()
+    from(org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of())
   implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
   implicit def entityCoder: Coder[com.google.datastore.v1.Entity] = ???
   implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
@@ -265,18 +293,18 @@ trait AlgebirdCoders {
   implicit def cmsCoder[K: Coder](implicit hcoder: Coder[CMSHash[K]]) = gen[CMS[K]]
 }
 
-private object UnitCoder extends AtomicCoder[Unit] {
+private object UnitCoder extends Coder[Unit] {
   def encode(value: Unit, os: OutputStream): Unit = ()
   def decode(is: InputStream): Unit = ()
 }
 
-private object NothingCoder extends AtomicCoder[Nothing] {
+private object NothingCoder extends Coder[Nothing] {
   def encode(value: Nothing, os: OutputStream): Unit = ()
   def decode(is: InputStream): Nothing = ??? // can't possibly happen
 }
 
-private class OptionCoder[T: Coder] extends AtomicCoder[Option[T]] {
-  val bcoder = BooleanCoder.of().asInstanceOf[Coder[Boolean]]
+private class OptionCoder[T: Coder] extends Coder[Option[T]] {
+  val bcoder = BooleanCoder.of().asInstanceOf[BCoder[Boolean]]
   def encode(value: Option[T], os: OutputStream): Unit = {
     bcoder.encode(value.isDefined, os)
     value.foreach { Coder[T].encode(_, os) }
@@ -288,7 +316,7 @@ private class OptionCoder[T: Coder] extends AtomicCoder[Option[T]] {
     }
 }
 
-private class SeqCoder[T: Coder] extends AtomicCoder[Seq[T]] {
+private class SeqCoder[T: Coder] extends Coder[Seq[T]] {
   val lc = VarIntCoder.of()
   def decode(in: InputStream): Seq[T] = {
     val l = lc.decode(in)
@@ -303,7 +331,7 @@ private class SeqCoder[T: Coder] extends AtomicCoder[Seq[T]] {
   }
 }
 
-private class ListCoder[T: Coder] extends AtomicCoder[List[T]] {
+private class ListCoder[T: Coder] extends Coder[List[T]] {
   val seqCoder = new SeqCoder[T]
   def encode(value: List[T], os: OutputStream): Unit =
     seqCoder.encode(value.toSeq, os)
@@ -311,7 +339,7 @@ private class ListCoder[T: Coder] extends AtomicCoder[List[T]] {
     seqCoder.decode(is).toList
 }
 
-private class IterableCoder[T: Coder] extends AtomicCoder[Iterable[T]] {
+private class IterableCoder[T: Coder] extends Coder[Iterable[T]] {
   val seqCoder = new SeqCoder[T]
   def encode(value: Iterable[T], os: OutputStream): Unit =
     seqCoder.encode(value.toSeq, os)
@@ -319,7 +347,7 @@ private class IterableCoder[T: Coder] extends AtomicCoder[Iterable[T]] {
     seqCoder.decode(is)
 }
 
-private class VectorCoder[T: Coder] extends AtomicCoder[Vector[T]] {
+private class VectorCoder[T: Coder] extends Coder[Vector[T]] {
   val seqCoder = new SeqCoder[T]
   def encode(value: Vector[T], os: OutputStream): Unit =
     seqCoder.encode(value.toSeq, os)
@@ -327,7 +355,7 @@ private class VectorCoder[T: Coder] extends AtomicCoder[Vector[T]] {
     seqCoder.decode(is).toVector
 }
 
-private class ArrayCoder[T: Coder : ClassTag] extends AtomicCoder[Array[T]] {
+private class ArrayCoder[T: Coder : ClassTag] extends Coder[Array[T]] {
   val seqCoder = new SeqCoder[T]
   def encode(value: Array[T], os: OutputStream): Unit =
     seqCoder.encode(value.toSeq, os)
@@ -335,7 +363,7 @@ private class ArrayCoder[T: Coder : ClassTag] extends AtomicCoder[Array[T]] {
     seqCoder.decode(is).toArray
 }
 
-private class ArrayBufferCoder[T: Coder] extends AtomicCoder[m.ArrayBuffer[T]] {
+private class ArrayBufferCoder[T: Coder] extends Coder[m.ArrayBuffer[T]] {
   val seqCoder = new SeqCoder[T]
   def encode(value: m.ArrayBuffer[T], os: OutputStream): Unit =
     seqCoder.encode(value.toSeq, os)
@@ -343,7 +371,7 @@ private class ArrayBufferCoder[T: Coder] extends AtomicCoder[m.ArrayBuffer[T]] {
     m.ArrayBuffer(seqCoder.decode(is):_*)
 }
 
-private class MapCoder[K: Coder, V: Coder] extends AtomicCoder[Map[K, V]] {
+private class MapCoder[K: Coder, V: Coder] extends Coder[Map[K, V]] {
   val lc = VarIntCoder.of()
   def decode(in: InputStream): Map[K, V] = {
     val l = lc.decode(in)
@@ -363,7 +391,7 @@ private class MapCoder[K: Coder, V: Coder] extends AtomicCoder[Map[K, V]] {
   }
 }
 
-private class MutableMapCoder[K: Coder, V: Coder] extends AtomicCoder[m.Map[K, V]] {
+private class MutableMapCoder[K: Coder, V: Coder] extends Coder[m.Map[K, V]] {
   val lc = VarIntCoder.of()
   def decode(in: InputStream): m.Map[K, V] = {
     val l = lc.decode(in)
@@ -383,8 +411,22 @@ private class MutableMapCoder[K: Coder, V: Coder] extends AtomicCoder[m.Map[K, V
   }
 }
 
-trait BaseCoders {
-  self: LowPriorityCoderDerivation =>
+trait AtomCoders {
+  implicit def byteCoder: Coder[Byte] = from(ByteCoder.of().asInstanceOf[BCoder[Byte]])
+  implicit def byteArrayCoder: Coder[Array[Byte]] = from(ByteArrayCoder.of())
+  implicit def bytebufferCoder: Coder[java.nio.ByteBuffer] = from(???)
+  implicit def stringCoder: Coder[String] = from(StringUtf8Coder.of())
+  implicit def intCoder: Coder[Int] = from(VarIntCoder.of().asInstanceOf[BCoder[Int]])
+  implicit def doubleCoder: Coder[Double] = from(DoubleCoder.of().asInstanceOf[BCoder[Double]])
+  implicit def floatCoder: Coder[Float] = from(FloatCoder.of().asInstanceOf[BCoder[Float]])
+  implicit def unitCoder: Coder[Unit] = from(UnitCoder)
+  implicit def nothingCoder: Coder[Nothing] = NothingCoder
+  implicit def booleanCoder: Coder[Boolean] = from(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
+  implicit def longCoder: Coder[Long] = from(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
+  implicit def bigdecimalCoder: Coder[BigDecimal] = ???
+}
+
+trait BaseCoders extends AtomCoders {
   // TODO: support all primitive types
   // BigDecimalCoder
   // BigIntegerCoder
@@ -396,18 +438,6 @@ trait BaseCoders {
   // InstantCoder
 
   // TableRowJsonCoder
-  implicit def byteCoder: Coder[Byte] = ByteCoder.of().asInstanceOf[Coder[Byte]]
-  implicit def byteArrayCoder: Coder[Array[Byte]] = ByteArrayCoder.of()
-  implicit def bytebufferCoder: Coder[java.nio.ByteBuffer] = ???
-  implicit def stringCoder: Coder[String] = StringUtf8Coder.of()
-  implicit def intCoder: Coder[Int] = VarIntCoder.of().asInstanceOf[Coder[Int]]
-  implicit def doubleCoder: Coder[Double] = DoubleCoder.of().asInstanceOf[Coder[Double]]
-  implicit def floatCoder: Coder[Float] = FloatCoder.of().asInstanceOf[Coder[Float]]
-  implicit def unitCoder: Coder[Unit] = UnitCoder
-  implicit def nothingCoder: Coder[Nothing] = NothingCoder
-  implicit def booleanCoder: Coder[Boolean] = BooleanCoder.of().asInstanceOf[Coder[Boolean]]
-  implicit def longCoder: Coder[Long] = BigEndianLongCoder.of().asInstanceOf[Coder[Long]]
-  implicit def bigdecimalCoder: Coder[BigDecimal] = ???
 
   implicit def traversableCoder[T](implicit c: Coder[T]): Coder[TraversableOnce[T]] = ???
   implicit def optionCoder[T](implicit c: Coder[T]): Coder[Option[T]] = new OptionCoder[T]

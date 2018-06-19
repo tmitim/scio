@@ -24,7 +24,7 @@ import com.google.common.collect.Lists
 import com.spotify.scio.coders.{KryoAtomicCoder, KryoOptions}
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
-import org.apache.beam.sdk.coders.CoderRegistry
+import org.apache.beam.sdk.coders.{CoderRegistry, Coder => BCoder}
 import org.apache.beam.sdk.transforms.Combine.CombineFn
 import org.apache.beam.sdk.transforms.DoFn.ProcessElement
 import org.apache.beam.sdk.transforms.Partition.PartitionFn
@@ -44,10 +44,10 @@ private[scio] object Functions {
     val vacoder: Coder[VA]
     val vocoder: Coder[VO]
 
-    override def getAccumulatorCoder(registry: CoderRegistry, inputCoder: Coder[VI]): Coder[VA] =
+    override def getAccumulatorCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VA] =
       vacoder
 
-    override def getDefaultOutputCoder(registry: CoderRegistry, inputCoder: Coder[VI]): Coder[VO] =
+    override def getDefaultOutputCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VO] =
       vocoder
 
   }
