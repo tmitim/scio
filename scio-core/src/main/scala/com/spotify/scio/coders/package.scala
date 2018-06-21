@@ -64,13 +64,13 @@ trait Coder[T] extends Serializable {
   //   }
 }
 
-object Coder extends AtomCoders with TupleCoders {
-  def from[T](a: BCoder[T]): Coder[T] =
-    new Coder[T] {
-      def decode(in: InputStream): T = a.decode(in)
-      def encode(ts: T, out: OutputStream): Unit = a.encode(ts, out)
-    }
+class FromBCoder[T](a: BCoder[T]) extends Coder[T] {
+  def decode(in: InputStream): T = a.decode(in)
+  def encode(ts: T, out: OutputStream): Unit = a.encode(ts, out)
+}
 
+object Coder extends AtomCoders with TupleCoders {
+  def from[T](a: BCoder[T]): Coder[T] = new FromBCoder(a)
   def apply[T](implicit c: Coder[T]): Coder[T] = c
   def clean[T](w: WrappedCoder[T]) =
     com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[WrappedCoder[T]]

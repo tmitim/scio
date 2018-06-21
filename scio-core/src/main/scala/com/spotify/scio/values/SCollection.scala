@@ -137,12 +137,6 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    */
   def applyTransform[U: Coder](transform: PTransform[_ >: PCollection[T], PCollection[U]])
   : SCollection[U] = {
-    // TODO: restore that test
-    // ???
-    // val uCls = implicitly[ClassTag[U]].runtimeClass
-    // require(
-    //   !(classOf[KV[_, _]] isAssignableFrom uCls),
-    //   "Applying a transform with KV[K, V] output, use applyKvTransform instead")
     if (context.isTest) {
       org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[U].toBeam)
     }

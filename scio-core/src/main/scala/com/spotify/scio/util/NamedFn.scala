@@ -22,8 +22,11 @@ import org.apache.beam.sdk.transforms.{DoFn, SerializableFunction, SimpleFunctio
 
 /** Helper trait to decorate anonymous functions with a meaningful toString. */
 private[util] trait NamedFn {
-  private val callSite: String = CallSites.getCurrent
-  override def toString: String = s"anonymous function $callSite"
+  protected val callSite: String = CallSites.getCurrent
+  // callSite = CallSites.getCurrent
+  //  TODO: figure out init issue
+  override def toString: String = s"anonymous function NamedFn"
+  // override def toString: String = s"anonymous function $callSite"
 }
 
 private[util] trait NamedSerializableFn[T, U] extends SerializableFunction[T, U] with NamedFn
