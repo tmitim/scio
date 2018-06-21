@@ -39,16 +39,16 @@ private[scio] object Functions {
   private val BUFFER_SIZE = 20
 
   // TODO: rename
-  private abstract class KryoCombineFn[VI, VA, VO] extends CombineFn[VI, VA, VO] with NamedFn {
+  private trait KryoCombineFn[VI, VA, VO] extends CombineFn[VI, VA, VO] with NamedFn {
     // TODO: should those coder be transient ?
     val vacoder: Coder[VA]
     val vocoder: Coder[VO]
 
     override def getAccumulatorCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VA] =
-      vacoder
+      vacoder.toBeam
 
     override def getDefaultOutputCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VO] =
-      vocoder
+      vocoder.toBeam
 
   }
 

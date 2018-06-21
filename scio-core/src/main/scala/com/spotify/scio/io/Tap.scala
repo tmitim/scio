@@ -99,7 +99,7 @@ case class ObjectFileTap[T: Coder](path: String) extends Tap[T] {
   override def value: Iterator[T] = {
     val elemCoder = Coder[T]
     FileStorage(path).avroFile[GenericRecord](AvroBytesUtil.schema).map { r =>
-      AvroBytesUtil.decode(elemCoder, r)
+      AvroBytesUtil.decode(elemCoder.toBeam, r)
     }
   }
   override def open(sc: ScioContext): SCollection[T] = sc.objectFile(path)

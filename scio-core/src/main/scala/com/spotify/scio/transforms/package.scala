@@ -230,8 +230,8 @@ package object transforms {
       }
       val tuple = self.applyInternal(
         ParDo.of(doFn).withOutputTags(mainTag, TupleTagList.of(errorTag)))
-      val main = tuple.get(mainTag).setCoder(Coder[U])
-      val errorPipe = tuple.get(errorTag).setCoder(Coder[(T, Throwable)])
+      val main = tuple.get(mainTag).setCoder(Coder[U].toBeam)
+      val errorPipe = tuple.get(errorTag).setCoder(Coder[(T, Throwable)].toBeam)
       (self.context.wrap(main), self.context.wrap(errorPipe))
     }
 

@@ -480,7 +480,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
         .parDo(new DoFn[GenericRecord, T] {
           @ProcessElement
           private[scio] def processElement(c: DoFn[GenericRecord, T]#ProcessContext): Unit = {
-            c.output(AvroBytesUtil.decode(coder, c.element()))
+            c.output(AvroBytesUtil.decode(coder.toBeam, c.element()))
           }
         })
         .setName(path)
@@ -764,7 +764,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
       val elementCoder = Coder[T]
       wrap(this.applyInternal(t)).setName(name)
         .map { m =>
-          val payload = CoderUtils.decodeFromByteArray(elementCoder, m.getPayload)
+          val payload = CoderUtils.decodeFromByteArray(elementCoder.toBeam, m.getPayload)
           val attributes = JMapWrapper.of(m.getAttributeMap)
           (payload, attributes)
         }
@@ -857,7 +857,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * @group in_memory
    */
   def parallelize[T: Coder](elems: Iterable[T]): SCollection[T] = requireNotClosed {
-    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(Coder[T])))
+    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(Coder[T].toBeam)))
       .setName(truncate(elems.toString()))
   }
 

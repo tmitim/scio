@@ -46,7 +46,7 @@ class SCollectionWithSideInput[T: Coder] private[values] (val internal: PCollect
   def filter(f: (T, SideInputContext[T]) => Boolean): SCollectionWithSideInput[T] = {
     val o = this
       .pApply(parDo(FunctionsWithSideInput.filterFn(f)))
-      .internal.setCoder(Coder[T])
+      .internal.setCoder(Coder[T].toBeam)
     new SCollectionWithSideInput[T](o, context, sides)
   }
 
@@ -55,7 +55,7 @@ class SCollectionWithSideInput[T: Coder] private[values] (val internal: PCollect
   : SCollectionWithSideInput[U] = {
     val o = this
       .pApply(parDo(FunctionsWithSideInput.flatMapFn(f)))
-      .internal.setCoder(Coder[U])
+      .internal.setCoder(Coder[U].toBeam)
     new SCollectionWithSideInput[U](o, context, sides)
   }
 
@@ -67,7 +67,7 @@ class SCollectionWithSideInput[T: Coder] private[values] (val internal: PCollect
   def map[U: Coder](f: (T, SideInputContext[T]) => U): SCollectionWithSideInput[U] = {
     val o = this
       .pApply(parDo(FunctionsWithSideInput.mapFn(f)))
-      .internal.setCoder(Coder[U])
+      .internal.setCoder(Coder[U].toBeam)
     new SCollectionWithSideInput[U](o, context, sides)
   }
 

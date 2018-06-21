@@ -45,9 +45,9 @@ class CodersTest extends FlatSpec with Matchers {
 
   import org.scalactic.Equality
   def check[T](t: T)(implicit C: Coder[T], eq: Equality[T]): Assertion = {
-    org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(C)
-    val enc = CoderUtils.encodeToByteArray(C, t)
-    val dec = CoderUtils.decodeFromByteArray(C, enc)
+    org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(C.toBeam)
+    val enc = CoderUtils.encodeToByteArray(C.toBeam, t)
+    val dec = CoderUtils.decodeFromByteArray(C.toBeam, enc)
     dec should === (t)
   }
 

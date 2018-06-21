@@ -103,7 +103,7 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
           .setCoder(kvCoder[K, V])
           .apply(t)
           .apply("KvToTuple", ParDo.of(Functions.mapFn[KV[K, UI], (K, UO)](f)))
-          .setCoder(Coder[(K, UO)])
+          .setCoder(Coder[(K, UO)].toBeam)
     })
     context.wrap(o)
   }
@@ -518,11 +518,15 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * the elements.
    * @group per_key
    */
-  def approxQuantilesByKey(numQuantiles: Int)(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V])
+  def approxQuantilesByKey(numQuantiles: Int, ord: Ordering[V])(implicit koder: Coder[K], voder: Coder[V])
   : SCollection[(K, Iterable[V])] =
     this.applyPerKey(
       ApproximateQuantiles.perKey(numQuantiles, ord),
       kvListToTuple[K, V])
+
+  def approxQuantilesByKey(numQuantiles: Int)(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V], dummy: DummyImplicit)
+  : SCollection[(K, Iterable[V])] =
+    approxQuantilesByKey(numQuantiles, ord)(koder, voder)
 
   /**
    * Generic function to combine the elements for each key using a custom set of aggregation
@@ -643,7 +647,9 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * @group per_key
    */
   // Scala lambda is simpler and more powerful than transforms.Max
-  def maxByKey(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] = this.reduceByKey(ord.max)
+  def maxByKey(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V], dummy: DummyImplicit): SCollection[(K, V)] = this.reduceByKey(ord.max)
+  def maxByKey(ord: Ordering[V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
+    maxByKey(ord)(koder, voder)
 
   /**
    * Return the min of values for each key as defined by the implicit `Ordering[T]`.
@@ -651,7 +657,10 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * @group per_key
    */
   // Scala lambda is simpler and more powerful than transforms.Min
-  def minByKey(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] = this.reduceByKey(ord.min)
+  def minByKey(implicit koder: Coder[K], voder: Coder[V], ord: Ordering[V]): SCollection[(K, V)] = this.reduceByKey(ord.min)
+
+  def minByKey(ord: Ordering[V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
+    minByKey(koder, voder, ord)
 
   /**
    * Merge the values for each key using an associative reduce function. This will also perform
@@ -722,7 +731,10 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
    * @return a new SCollection of (key, top k) pairs
    * @group per_key
    */
-  def topByKey(num: Int)(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V]): SCollection[(K, Iterable[V])] =
+  def topByKey(num: Int)(implicit ord: Ordering[V], koder: Coder[K], voder: Coder[V], dummy:DummyImplicit): SCollection[(K, Iterable[V])] =
+    topByKey(num, ord)(koder, voder)
+
+  def topByKey(num: Int, ord: Ordering[V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, Iterable[V])] =
     this.applyPerKey(Top.perKey[K, V, Ordering[V]](num, ord), kvListToTuple[K, V])
 
   /**

@@ -37,7 +37,7 @@ def mkBounds(n):
 
 def tupleFns(out, n):
     types = mkTypes(n)
-    print >> out, '  implicit def tuple%sCoder[%s]: Coder[(%s)] = self.gen[(%s)]' % (n, mkBounds(n), types, types)
+    print >> out, '  implicit def tuple%sCoder[%s]: Coder[(%s)] = gen[(%s)]' % (n, mkBounds(n), types, types)
 
 
 def main(out):
@@ -71,7 +71,7 @@ def main(out):
         package com.spotify.scio.coders
 
         trait TupleCoders {
-          self: LowPriorityCoderDerivation =>
+          import Implicits.gen
         ''').replace('  # NOQA', '').lstrip('\n')
 
     N = 22

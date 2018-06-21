@@ -65,6 +65,8 @@ class SCollectionTest extends PipelineSpec {
     }
   }
 
+  // Wont xompile anymore
+  /*
   it should "fail applyTransform() with KV output" in {
     // scalastyle:off no.whitespace.before.left.bracket
     val e = the [IllegalArgumentException] thrownBy {
@@ -77,6 +79,7 @@ class SCollectionTest extends PipelineSpec {
     e.getMessage shouldBe msg
     // scalastyle:on no.whitespace.before.left.bracket
   }
+  */
 
   it should "support applyKvTransform()" in {
     runWithContext { sc =>
@@ -432,7 +435,7 @@ class SCollectionTest extends PipelineSpec {
     runWithContext { sc =>
       val p = sc.parallelize(Seq(1, 2, 3, 4, 5))
       val r1 = p.top(3)
-      val r2 = p.top(3)(Ordering.by(-_), implicitly)
+      val r2 = p.top(3, Ordering.by(-_))
       r1 should containSingleValue (iterable(5, 4, 3))
       r2 should containSingleValue (iterable(1, 2, 3))
     }

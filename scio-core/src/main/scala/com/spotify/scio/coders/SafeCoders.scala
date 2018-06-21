@@ -122,7 +122,7 @@ final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT
 /**
 * Create a serializable coder by trashing all references to magnolia classes
 */
-private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends Coder[T] {
+private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends Coder[T]{
   def encode(value: T, os: OutputStream): Unit =
     ps.foreach { case Param(label, tc, deref) =>
       Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
@@ -140,7 +140,7 @@ private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any
     }
 }
 
-private final class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends Coder[T] {
+private final class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends Coder[T]{
   val idx: Map[magnolia.TypeName, Int] =
     sealedTrait.subtypes.map(_.typeName).zipWithIndex.toMap
   val idc = VarIntCoder.of()
@@ -181,10 +181,6 @@ trait LowPriorityCoderDerivation {
 
   // TODO: can we provide magnolia nice error message when gen is used implicitly ?
   implicit def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
-
-  import org.apache.avro.specific.SpecificRecordBase
-  implicit def genAvro[T <: SpecificRecordBase]: Coder[T] =
-    macro CoderUtils.staticInvokeCoder[T]
 }
 
 //
@@ -199,7 +195,7 @@ private[scio] object fallback {
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.Schema
 
-private class SlowGenericRecordCoder extends Coder[GenericRecord] {
+private class SlowGenericRecordCoder extends Coder[GenericRecord]{
 
   var coder: Coder[GenericRecord] = _
   // TODO: can we find something more efficient than String ?
@@ -226,6 +222,7 @@ private class SlowGenericRecordCoder extends Coder[GenericRecord] {
 
 trait AvroCoders {
   self: BaseCoders =>
+  import language.experimental.macros
   // TODO: Use a coder that does not serialize the schema
   def genericRecordCoder(schema: Schema): Coder[GenericRecord] =
     new AvroRawCoder(schema)
@@ -233,6 +230,10 @@ trait AvroCoders {
   // XXX: similar to GenericAvroSerializer
   def slowGenericRecordCoder: Coder[GenericRecord] =
     new SlowGenericRecordCoder
+
+  import org.apache.avro.specific.SpecificRecordBase
+  implicit def genAvro[T <: SpecificRecordBase]: Coder[T] =
+    macro com.spotify.scio.avro.types.CoderUtils.staticInvokeCoder[T]
 }
 
 //
@@ -261,9 +262,9 @@ trait JavaCoders {
   private def fromScalaCoder[J <: java.lang.Number, S <: AnyVal](coder: Coder[S]): Coder[J] =
     coder.asInstanceOf[Coder[J]]
 
-  implicit val jIntegerCoder: Coder[java.lang.Integer] = fromScalaCoder(intCoder)
-  implicit val jLongCoder: Coder[java.lang.Long] = fromScalaCoder(longCoder)
-  implicit val jDoubleCoder: Coder[java.lang.Double] = fromScalaCoder(doubleCoder)
+  implicit val jIntegerCoder: Coder[java.lang.Integer] = fromScalaCoder(Coder.intCoder)
+  implicit val jLongCoder: Coder[java.lang.Long] = fromScalaCoder(Coder.longCoder)
+  implicit val jDoubleCoder: Coder[java.lang.Double] = fromScalaCoder(Coder.doubleCoder)
   // TODO: Byte, Float, Short
 
   implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
@@ -271,8 +272,8 @@ trait JavaCoders {
   implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
 
   import org.apache.beam.sdk.values.KV
-  implicit def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): Coder[KV[K, V]] =
-    from(KvCoder.of(Coder[K], Coder[V]))
+  def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): KvCoder[K, V] =
+    KvCoder.of(Coder[K].toBeam, Coder[V].toBeam)
 
   implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
   implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
@@ -293,7 +294,7 @@ trait AlgebirdCoders {
   implicit def cmsCoder[K: Coder](implicit hcoder: Coder[CMSHash[K]]) = gen[CMS[K]]
 }
 
-private object UnitCoder extends Coder[Unit] {
+private object UnitCoder extends Coder[Unit]{
   def encode(value: Unit, os: OutputStream): Unit = ()
   def decode(is: InputStream): Unit = ()
 }
@@ -419,14 +420,14 @@ trait AtomCoders {
   implicit def intCoder: Coder[Int] = from(VarIntCoder.of().asInstanceOf[BCoder[Int]])
   implicit def doubleCoder: Coder[Double] = from(DoubleCoder.of().asInstanceOf[BCoder[Double]])
   implicit def floatCoder: Coder[Float] = from(FloatCoder.of().asInstanceOf[BCoder[Float]])
-  implicit def unitCoder: Coder[Unit] = from(UnitCoder)
+  implicit def unitCoder: Coder[Unit] = UnitCoder
   implicit def nothingCoder: Coder[Nothing] = NothingCoder
   implicit def booleanCoder: Coder[Boolean] = from(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
   implicit def longCoder: Coder[Long] = from(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
   implicit def bigdecimalCoder: Coder[BigDecimal] = ???
 }
 
-trait BaseCoders extends AtomCoders {
+trait BaseCoders {
   // TODO: support all primitive types
   // BigDecimalCoder
   // BigIntegerCoder
@@ -464,7 +465,6 @@ trait BaseCoders extends AtomCoders {
 object Implicits
   extends LowPriorityCoderDerivation
   with FromSerializable
-  with TupleCoders
   with FromBijection
   with BaseCoders
   with AvroCoders

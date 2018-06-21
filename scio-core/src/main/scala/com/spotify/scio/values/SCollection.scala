@@ -144,9 +144,9 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
     //   !(classOf[KV[_, _]] isAssignableFrom uCls),
     //   "Applying a transform with KV[K, V] output, use applyKvTransform instead")
     if (context.isTest) {
-      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[U])
+      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[U].toBeam)
     }
-    this.pApply(transform).setCoder(Coder[U])
+    this.pApply(transform).setCoder(Coder[U].toBeam)
   }
 
   /**
@@ -155,12 +155,12 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * output.
    */
   def applyKvTransform[K, V]
-  (transform: PTransform[_ >: PCollection[T], PCollection[KV[K, V]]])(implicit kvCoder: Coder[KV[K, V]])
+  (transform: PTransform[_ >: PCollection[T], PCollection[KV[K, V]]])(implicit koder: Coder[K], voder: Coder[V])
   : SCollection[KV[K, V]] = {
     if (context.isTest) {
-      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[KV[K, V]])
+      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(kvCoder[K, V])
     }
-    this.pApply(transform).setCoder(Coder[KV[K, V]])
+    this.pApply(transform).setCoder(kvCoder[K, V])
   }
 
   /** Apply a transform. */
@@ -419,7 +419,8 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   // Scala lambda is simpler and more powerful than transforms.Max
-  def max(implicit ord: Ordering[T], coder: Coder[T]): SCollection[T] = this.reduce(ord.max)
+  def max(implicit ord: Ordering[T], coder: Coder[T], dummy: DummyImplicit): SCollection[T] = max(ord)(coder)
+  def max(ord: Ordering[T])(implicit coder: Coder[T]): SCollection[T] = this.reduce(ord.max)
 
   /**
    * Return the mean of this SCollection as defined by the implicit `Numeric[T]`.
@@ -439,7 +440,8 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   // Scala lambda is simpler and more powerful than transforms.Min
-  def min(implicit ord: Ordering[T], coder: Coder[T]): SCollection[T] = this.reduce(ord.min)
+  def min(implicit ord: Ordering[T], coder: Coder[T], dummy: DummyImplicit): SCollection[T] = min(ord)(coder)
+  def min(ord: Ordering[T])(implicit coder: Coder[T]): SCollection[T] = this.reduce(ord.min)
 
   /**
    * Compute the SCollection's data distribution using approximate `N`-tiles.
@@ -448,7 +450,11 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   def quantilesApprox(numQuantiles: Int)
-                     (implicit ord: Ordering[T], coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
+                     (implicit ord: Ordering[T], coder: Coder[Iterable[T]], dummy: DummyImplicit): SCollection[Iterable[T]] =
+                     quantilesApprox(numQuantiles, ord)(coder)
+
+  def quantilesApprox(numQuantiles: Int, ord: Ordering[T])
+                     (implicit coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
     _
       .pApply(ApproximateQuantiles.globally(numQuantiles, ord))
       .map(_.asInstanceOf[JIterable[T]].asScala)
@@ -567,9 +573,13 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @return a new SCollection whose single value is an `Iterable` of the top k
    * @group transform
    */
-  def top(num: Int)(implicit ord: Ordering[T], coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
+  def top(num: Int)(implicit ord: Ordering[T], coder: Coder[Iterable[T]], d: DummyImplicit): SCollection[Iterable[T]] =
+    top(num, ord)(coder)
+
+  def top(num: Int, ord: Ordering[T])(implicit coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
     _.pApply(Top.of(num, ord)).map(_.asInstanceOf[JIterable[T]].asScala)
   }
+
 
   // =======================================================================
   // Hash operations
@@ -923,7 +933,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
         .parDo(new DoFn[T, GenericRecord] {
           @ProcessElement
           private[scio] def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
-            c.output(AvroBytesUtil.encode(elemCoder, c.element()))
+            c.output(AvroBytesUtil.encode(elemCoder.toBeam, c.element()))
         })
         .saveAsAvroFile(path, numShards, AvroBytesUtil.schema, suffix, metadata = metadata)
       context.makeFuture(ObjectFileTap[T](ScioUtil.addPartSuffix(path)))
@@ -1212,7 +1222,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
       } else {
         val t = setup(psio.PubsubIO.writeMessages())
         this.map { t =>
-          val payload = CoderUtils.encodeToByteArray(coder, t)
+          val payload = CoderUtils.encodeToByteArray(coder.toBeam, t)
           new PubsubMessage(payload, Map.empty[String, String].asJava)
         }.applyInternal(t)
       }

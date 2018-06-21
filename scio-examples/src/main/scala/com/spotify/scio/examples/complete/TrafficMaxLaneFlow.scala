@@ -84,7 +84,7 @@ object TrafficMaxLaneFlow {
       .withSlidingWindows(
         Duration.standardMinutes(windowDuration),
         Duration.standardMinutes(windowSlideEvery))
-      .maxByKey(Ordering.by(_.flow), implicitly, implicitly)
+      .maxByKey(Ordering.by(_.flow))
       .values
       .withTimestamp
       .map { case (l, ts) =>  // (lane flow, timestamp)
