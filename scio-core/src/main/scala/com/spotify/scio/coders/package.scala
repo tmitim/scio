@@ -32,7 +32,7 @@ Cannot find or construct a Coder instance for type:
   This can happen for a few reasons, but the most common case is that a data
   member somewhere within this type doesn't have a Coder instance in scope. Here are
   some debugging hints:
-    - Make sure you imported com.spotify.scio.coders.Implicits._
+    - ** Make sure you imported com.spotify.scio.coders.Implicits._ **
     - For Option types, ensure that a Coder instance is in scope for the non-Option version.
     - For List and Seq types, ensure that a Coder instance is in scope for a single element.
     - For case classes ensure that each element has a Coder instance in scope.

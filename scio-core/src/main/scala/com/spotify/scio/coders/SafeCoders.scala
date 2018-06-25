@@ -122,7 +122,7 @@ final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT
 /**
 * Create a serializable coder by trashing all references to magnolia classes
 */
-private final class CombineCoder[T](ps: List[Param[T, _]], rawConstruct: Seq[Any] => T) extends Coder[T]{
+private final class CombineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any] => T) extends Coder[T]{
   def encode(value: T, os: OutputStream): Unit =
     ps.foreach { case Param(label, tc, deref) =>
       Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
@@ -172,7 +172,7 @@ trait LowPriorityCoderDerivation {
     val ps =
       ctx.parameters.map { p =>
         Param[T, p.PType](p.label, p.typeclass, p.dereference _)
-      }.toList
+      }
     new CombineCoder[T](ps, ctx.rawConstruct _)
   }
 

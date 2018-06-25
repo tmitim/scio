@@ -58,6 +58,9 @@ private[scio] object CoderUtils {
     val name = c.freshName(s"$$DerivedCoder")
     val className = TypeName(name)
 
+    if(wtt <:< typeOf[Seq[_]])
+      c.abort(c.enclosingPosition, s"Automatic coder derivation can't derive a Coder for $wtt <: Seq")
+
     // Remove annotations from magnolia since they are not serialiazable and we don't use them anyway
     // TODO: do the same with sealedtrait
     val removeAnnotations =
