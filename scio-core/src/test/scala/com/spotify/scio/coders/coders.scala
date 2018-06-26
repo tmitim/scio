@@ -29,13 +29,18 @@ import com.spotify.scio.values.SCollection
 import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Implicits._
 
+// @scalaz.deriving(Coder)
 final case class UserId(bytes: Seq[Byte])
+
+@scalaz.deriving(Coder)
 final case class User(id: UserId, username: String, email: String)
 
+@scalaz.deriving(Coder)
 sealed trait Top
 final case class TA(anInt: Int, aString: String) extends Top
 final case class TB(anDouble: Double) extends Top
 
+@scalaz.deriving(Coder)
 case class DummyCC(s: String)
 
 class CodersTest extends FlatSpec with Matchers {

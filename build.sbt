@@ -69,6 +69,7 @@ val tensorFlowVersion = "1.8.0"
 val zoltarVersion = "0.3.1"
 val bijectionVersion = "0.9.5"
 val magnoliaVersion = "0.8.0"
+val derivingVersion = "0.14.0"
 
 lazy val mimaSettings = Seq(
   mimaPreviousArtifacts :=
@@ -86,6 +87,13 @@ def previousVersion(currentVersion: String): Option[String] = {
   if (z == "0") None
   else Some(s"$x.$y.${z.toInt - 1}")
 }
+
+def resourcesOnCompilerCp(config: Configuration): Setting[_] =
+  managedClasspath in config := {
+    val res = (resourceDirectory in config).value
+    val old = (managedClasspath in config).value
+    Attributed.blank(res) +: old
+  }
 
 val commonSettings = Sonatype.sonatypeSettings ++ assemblySettings ++ Seq(
   organization       := "com.spotify",
@@ -163,7 +171,10 @@ val commonSettings = Sonatype.sonatypeSettings ++ assemblySettings ++ Seq(
     val bootClasspath = System.getProperty("sun.boot.class.path").split(sys.props("path.separator")).map(file(_))
     val jdkMapping = Map(bootClasspath.find(_.getPath.endsWith("rt.jar")).get -> url("http://docs.oracle.com/javase/8/docs/api/"))
     docMappings.flatMap((mappingFn _).tupled).toMap ++ jdkMapping
-  }
+  },
+  addCompilerPlugin("com.fommil" %% "deriving-plugin" % derivingVersion),
+  libraryDependencies += "com.fommil" %% "deriving-macro" % derivingVersion % "provided"
+
 ) ++ mimaSettings
 
 lazy val itSettings = Defaults.itSettings ++ Seq(
@@ -304,7 +315,8 @@ lazy val scioCore: Project = Project(
     "org.scalatest" %% "scalatest" % scalatestVersion % "test",
     "com.twitter" %% "bijection-core" % bijectionVersion,
     "org.hamcrest" % "hamcrest-all" % hamcrestVersion % "test"
-  )
+  ),
+  resourcesOnCompilerCp(Compile)
 ).dependsOn(
   scioAvro,
   scioBigQuery % "test->test;compile->compile",

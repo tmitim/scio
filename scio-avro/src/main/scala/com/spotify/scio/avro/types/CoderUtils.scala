@@ -47,8 +47,11 @@ private[scio] object CoderUtils {
     import c.universe._
     val wtt = weakTypeOf[T]
     val companioned = wtt.typeSymbol
-    val magTree = magnolia.Magnolia.gen[T](c)
 
+    if(wtt <:< typeOf[Seq[_]])
+      c.abort(c.enclosingPosition, s"Automatic coder derivation can't derive a Coder for $wtt <: Seq")
+
+    val magTree = magnolia.Magnolia.gen[T](c)
     def getLazyVal =
         magTree match {
           case q"lazy val $name = $body; $rest" =>
@@ -58,9 +61,6 @@ private[scio] object CoderUtils {
     val name = c.freshName(s"$$DerivedCoder")
     val className = TypeName(name)
 
-    if(wtt <:< typeOf[Seq[_]])
-      c.abort(c.enclosingPosition, s"Automatic coder derivation can't derive a Coder for $wtt <: Seq")
-
     // Remove annotations from magnolia since they are not serialiazable and we don't use them anyway
     // TODO: do the same with sealedtrait
     val removeAnnotations =
@@ -69,6 +69,8 @@ private[scio] object CoderUtils {
           tree match {
             case Apply(TypeApply(Select(Select(_, TermName("Magnolia")), TermName("caseClass")), _), params @ List(name, isObj, isVal, ps, _, construct)) =>
               q"_root_.magnolia.Magnolia.caseClass($name, $isObj, $isVal, $ps, scala.Array(), $construct)"
+            case q"com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, $annotations))" =>
+              q"com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, Array()))"
             case t =>
               super.transform(tree)
           }
@@ -85,7 +87,6 @@ private[scio] object CoderUtils {
       _root_.com.spotify.scio.coders.Coder.clean(new $className)
       }
       """
-    // println(tree)
     tree
   }
 

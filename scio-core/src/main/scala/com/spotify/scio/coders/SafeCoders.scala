@@ -180,7 +180,7 @@ trait LowPriorityCoderDerivation {
     new DispatchCoder[T](sealedTrait)
 
   // TODO: can we provide magnolia nice error message when gen is used implicitly ?
-  implicit def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
+  def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
 }
 
 //
