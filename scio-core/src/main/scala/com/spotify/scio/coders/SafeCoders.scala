@@ -132,11 +132,17 @@ private final class CombineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any]
 
   def decode(is: InputStream): T =
     rawConstruct {
-      ps.map { case Param(label, typeclass, _) =>
-        Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
-          typeclass.decode(is)
+      val arr = scala.collection.mutable.ArrayBuffer[Any]()
+      val size = ps.length
+      var i = 0
+      while(i < size) {
+        val Param(label, typeclass, _) = ps(i)
+        Help.onErrorMsg(s"Exception while trying to `decode` field ${label}") {
+          arr += typeclass.decode(is)
+          i = i + 1
         }
       }
+      arr
     }
 }
 
@@ -269,7 +275,7 @@ trait JavaCoders {
 
   implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
   implicit def mutationCoder: Coder[com.google.bigtable.v2.Mutation] = ???
-  implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
+
 
   import org.apache.beam.sdk.values.KV
   def kvCoder[K, V](implicit k: Coder[K], v: Coder[V]): KvCoder[K, V] =
@@ -292,6 +298,8 @@ trait AlgebirdCoders {
   import com.twitter.algebird._
   implicit def cmsHashCoder[K: Coder : CMSHasher] = gen[CMSHash[K]]
   implicit def cmsCoder[K: Coder](implicit hcoder: Coder[CMSHash[K]]) = gen[CMS[K]]
+  implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
+  implicit def topKCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.TopK[K]] = gen[com.twitter.algebird.TopK[K]]
 }
 
 private object UnitCoder extends Coder[Unit]{

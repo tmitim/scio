@@ -27,31 +27,29 @@ import org.apache.beam.sdk.coders.{AtomicCoder, Coder => BCoder, KvCoder}
 @implicitNotFound("""
 Cannot find or construct a Coder instance for type:
 
-  ${T}
+  >> ${T}
 
   This can happen for a few reasons, but the most common case is that a data
   member somewhere within this type doesn't have a Coder instance in scope. Here are
   some debugging hints:
-    - ** Make sure you imported com.spotify.scio.coders.Implicits._ **
+    - Make sure you imported com.spotify.scio.coders.Implicits._
+    - For case classes, annotate your case class definition with @scalaz.deriving(Coder):
+        @scalaz.deriving(Coder)
+        final case class User(id: Long, username: String, email: String)
+    - If you can't annotate the case class definition, you can also generate a Coder using
+        implicit val someCaseClassCoder = com.spotify.scio.coders.Implicits.gen[SomeCaseClass]
     - For Option types, ensure that a Coder instance is in scope for the non-Option version.
     - For List and Seq types, ensure that a Coder instance is in scope for a single element.
-    - For case classes ensure that each element has a Coder instance in scope.
-      You can get a detailed explanation by calling the automatic derivation explicitly:
-      scala> com.spotify.scio.coders.Implicits.gen[Foo]
-      <console>:18: error: magnolia: could not find Coder.Typeclass for type com.spotify.scio.WeirdType
-          in parameter 'x' of product type Foo
-    - For Tuples, use the same method as for case classes.
-    You can check that an instance exists for Coder in the REPL or in your code:
-      scala> Coder[Foo]
+    - You can check that an instance exists for Coder in the REPL or in your code:
+        scala> Coder[Foo]
     And find the missing instance and construct it as needed.
-
 """)
 trait Coder[T] extends Serializable {
   self =>
   def decode(in: InputStream): T
   def encode(ts: T, out: OutputStream): Unit
 
-  def toBeam: BCoder[T] = 
+  def toBeam: BCoder[T] =
     new AtomicCoder[T] {
       def decode(in: InputStream): T = self.decode(in)
       def encode(ts: T, out: OutputStream): Unit = self.encode(ts, out)

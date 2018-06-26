@@ -39,6 +39,7 @@ import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 
 case class RecordA(name: String, value: Int)
+@scalaz.deriving(Coder)
 case class RecordB(name: String, value: Int)
 
 class KryoAtomicCoderTest extends PipelineSpec {

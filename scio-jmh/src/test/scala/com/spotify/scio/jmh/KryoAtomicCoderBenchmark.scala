@@ -31,6 +31,8 @@ import org.openjdk.jmh.annotations._
 final case class UserId(bytes: Array[Byte])
 final case class User(id: UserId, username: String, email: String)
 final case class SpecializedUser(id: UserId, username: String, email: String)
+
+@scalaz.deriving(Coder)
 final case class SpecializedUserForDerived(id: UserId, username: String, email: String)
 
 import com.spotify.scio.coders.Implicits._
@@ -80,12 +82,12 @@ class KryoAtomicCoderBenchmark {
 
   @Benchmark
   def derivedEncode: Array[Byte] = {
-    CoderUtils.encodeToByteArray(derivedCoder, specializedUserForDerived)
+    CoderUtils.encodeToByteArray(derivedCoder.toBeam, specializedUserForDerived)
   }
 
   @Benchmark
   def derivedListEncode: Array[Byte] = {
-    CoderUtils.encodeToByteArray(derivedListCoder, tenTimes)
+    CoderUtils.encodeToByteArray(derivedListCoder.toBeam, tenTimes)
   }
 
 
@@ -118,12 +120,12 @@ class KryoAtomicCoderBenchmark {
 
   @Benchmark
   def derivedDecode: SpecializedUserForDerived = {
-    CoderUtils.decodeFromByteArray(derivedCoder, derivedEncoded)
+    CoderUtils.decodeFromByteArray(derivedCoder.toBeam, derivedEncoded)
   }
 
   @Benchmark
   def derivedListDecode: List[SpecializedUserForDerived] = {
-    CoderUtils.decodeFromByteArray(derivedListCoder, derivedListEncoded)
+    CoderUtils.decodeFromByteArray(derivedListCoder.toBeam, derivedListEncoded)
   }
 }
 
