@@ -26,11 +26,13 @@ import com.spotify.scio.testing.{PipelineSpec, TextIO}
 import org.tensorflow.example.Example
 import org.tensorflow.{example => tf}
 
-import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders._
 import com.spotify.scio.coders.Implicits._
 
-@scalaz.deriving(Coder)
 case class TrainingPoint(x1: Double, label: Double)
+object TrainingPoint {
+  implicit def trainingPointCoder = gen[TrainingPoint]
+}
 
 object FeatureSpecJob {
 

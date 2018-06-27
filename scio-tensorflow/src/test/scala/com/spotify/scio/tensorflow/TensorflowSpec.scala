@@ -32,7 +32,7 @@ import org.tensorflow.example.Example
 
 import scala.io.Source
 
-import com.spotify.scio.coders.Coder
+import com.spotify.scio.coders._
 import com.spotify.scio.coders.Implicits._
 
 private object TFGraphJob {
@@ -67,12 +67,14 @@ private object TFGraphJob2Inputs {
 
 private object TFSavedJob {
 
-  @scalaz.deriving(Coder)
   case class Iris(sepalLength: Option[Double],
                   sepalWidth: Option[Double],
                   petalLength: Option[Double],
                   petalWidth: Option[Double],
                   className: Option[String])
+  object Iris {
+    implicit def irisCoder = gen[Iris]
+  }
 
   val Spec: FeatureSpec[Iris] = FeatureSpec
     .of[Iris]

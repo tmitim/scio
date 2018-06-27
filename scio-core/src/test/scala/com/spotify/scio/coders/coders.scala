@@ -29,19 +29,25 @@ import com.spotify.scio.values.SCollection
 import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Implicits._
 
-// @scalaz.deriving(Coder)
+@deriveCoder
 final case class UserId(bytes: Seq[Byte])
 
-@scalaz.deriving(Coder)
+@deriveCoder
 final case class User(id: UserId, username: String, email: String)
 
-@scalaz.deriving(Coder)
+@deriveCoder
 sealed trait Top
 final case class TA(anInt: Int, aString: String) extends Top
 final case class TB(anDouble: Double) extends Top
 
-@scalaz.deriving(Coder)
+@deriveCoder
 case class DummyCC(s: String)
+
+@deriveCoder
+case class ParameterizedDummy[A](value: A)
+
+@deriveCoder
+case class MultiParameterizedDummy[A, B](valuea: A, valueb: B)
 
 class CodersTest extends FlatSpec with Matchers {
 
@@ -110,6 +116,8 @@ class CodersTest extends FlatSpec with Matchers {
 
   it should "derive coders for product types" in {
     check(DummyCC("dummy"))
+    check(ParameterizedDummy("dummy"))
+    check(MultiParameterizedDummy("dummy", 2))
     check(user)
     val ds = (1 to 10).map{ _ => DummyCC("dummy") }.toList
     check(ds)

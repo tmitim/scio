@@ -32,7 +32,7 @@ final case class UserId(bytes: Array[Byte])
 final case class User(id: UserId, username: String, email: String)
 final case class SpecializedUser(id: UserId, username: String, email: String)
 
-@scalaz.deriving(Coder)
+@deriveCoder
 final case class SpecializedUserForDerived(id: UserId, username: String, email: String)
 
 import com.spotify.scio.coders.Implicits._
