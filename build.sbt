@@ -375,10 +375,6 @@ lazy val scioBigQuery: Project = Project(
   inConfig(PreTest)(Defaults.configSettings),
   commonSettings ++ macroSettings ++ itSettings ++ beamRunnerSettings,
   description := "Scio add-on for Google BigQuery",
-  // necessary to properly test since we need this value at compile time
-  (initialize in Test) ~= { _ =>
-    System.setProperty("OVERRIDE_TYPE_PROVIDER", "com.spotify.scio.bigquery.validation.SampleOverrideTypeProvider")
-  },
   addCompilerPlugin(paradiseDependency),
   (compile in PreTest) := (compile in PreTest).dependsOn(compile in Compile).value,
   (unmanagedClasspath in PreTest) += (classDirectory in Compile).value,
