@@ -25,6 +25,8 @@ import org.apache.beam.sdk.io.Compression
 import scala.reflect.runtime.universe._
 
 /** Information necessary to extract a given feature in TF. */
+import com.spotify.scio.coders.Implicits._
+@scalaz.deriving(com.spotify.scio.coders.Coder)
 private final case class FeatureInfo(name: String, kind: FeatureKind, tags: Map[String, String])
 
 /** Mapping between Scala types and TF types */
