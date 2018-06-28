@@ -52,6 +52,7 @@ private[scio] object CoderUtils {
       c.abort(c.enclosingPosition, s"Automatic coder derivation can't derive a Coder for $wtt <: Seq")
 
     val magTree = magnolia.Magnolia.gen[T](c)
+
     def getLazyVal =
         magTree match {
           case q"lazy val $name = $body; $rest" =>
@@ -78,11 +79,14 @@ private[scio] object CoderUtils {
 
     val coder = removeAnnotations.transform(getLazyVal)
 
+    val typeName = s"Coder[${wtt.toString}]"
+    val toString = s"Automatically derived $name: $typeName"
     //XXX: find a way to get rid of $outer references at compile time
     val tree: c.Tree =
       q"""{
       final class $className extends _root_.com.spotify.scio.coders.WrappedCoder[$wtt] {
         var underlying: _root_.com.spotify.scio.coders.Coder[$wtt] = $coder
+        override def toString = $toString
       }
       _root_.com.spotify.scio.coders.Coder.clean(new $className)
       }

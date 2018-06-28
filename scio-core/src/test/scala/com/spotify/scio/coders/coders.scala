@@ -116,9 +116,11 @@ class CodersTest extends FlatSpec with Matchers {
 
   it should "derive coders for product types" in {
     check(DummyCC("dummy"))
+    check(DummyCC(""))
     check(ParameterizedDummy("dummy"))
     check(MultiParameterizedDummy("dummy", 2))
     check(user)
+    check((1, "String", List[Int]()))
     val ds = (1 to 10).map{ _ => DummyCC("dummy") }.toList
     check(ds)
   }

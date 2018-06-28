@@ -123,12 +123,13 @@ final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT
 * Create a serializable coder by trashing all references to magnolia classes
 */
 private final class CombineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any] => T) extends Coder[T]{
-  def encode(value: T, os: OutputStream): Unit =
+  def encode(value: T, os: OutputStream): Unit = {
     ps.foreach { case Param(label, tc, deref) =>
-      Help.onErrorMsg(s"Exception while trying to `encode` field ${label}") {
+      Help.onErrorMsg(s"Exception while trying to `encode` field ${label} in ${value}") {
         tc.encode(deref(value), os)
       }
     }
+  }
 
   def decode(is: InputStream): T =
     rawConstruct {
@@ -185,9 +186,17 @@ trait LowPriorityCoderDerivation {
   def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] =
     new DispatchCoder[T](sealedTrait)
 
-  // TODO: can we provide magnolia nice error message when gen is used implicitly ?
   def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
 }
+
+trait auto {
+  import language.experimental.macros
+  import com.spotify.scio.avro.types.CoderUtils
+  // TODO: can we provide magnolia nice error message when gen is used implicitly ?
+  implicit def autoCoder[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
+}
+
+object auto extends auto
 
 //
 // Avro Coders
@@ -470,7 +479,7 @@ trait BaseCoders {
   implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
 }
 
-object Implicits
+trait Implicits
   extends LowPriorityCoderDerivation
   with FromSerializable
   with FromBijection
@@ -480,3 +489,5 @@ object Implicits
   with JavaCoders
   with AlgebirdCoders
   with Serializable
+
+object Implicits extends Implicits
