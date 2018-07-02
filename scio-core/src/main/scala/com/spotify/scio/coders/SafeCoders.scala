@@ -94,10 +94,6 @@ final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) exten
 //     new MapfromBijection[K, A, B]
 // }
 
-final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT) {
-  type PType = PT
-}
-
 //
 // Derive Coder using Magnolia
 //
@@ -114,6 +110,7 @@ private final object Help {
 */
 
 private final object Derived extends Serializable {
+  import magnolia._
 
   private def addErrInfo[A](label: String, c: Coder[A]): Coder[A] =
     Coder.transform(c) { bc =>
@@ -144,21 +141,24 @@ private final object Derived extends Serializable {
       }
     }
 
-  private def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] =
-    Transform[A, B](c, bc => Coder.beam(new CustomCoder[B]{
-      def encode(value: B, os: OutputStream): Unit =
-        bc.encode(t(value), os)
-      def decode(is: InputStream): B =
-        f(bc.decode(is))
-    }))
+  private def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] = {
+    def toB(bc: BCoder[A]) =
+      new CustomCoder[B]{
+        def encode(value: B, os: OutputStream): Unit =
+          bc.encode(t(value), os)
+        def decode(is: InputStream): B =
+          f(bc.decode(is))
+      }
+    Transform[A, B](c, bc => Coder.beam(toB(bc)))
+  }
 
   private def toSeq[A](a: Coder[A]): Coder[Seq[A]] =
     xmap(a)(a => Seq(a), _.head)
 
-  def combineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any] => T): Coder[T] = {
+  def combineCoder[T](ps: Seq[Param[Coder, T]], rawConstruct: Seq[Any] => T): Coder[T] = {
     val cs =
-      ps.map { case Param(label, tc, deref) =>
-        addErrInfo[Any](label, tc.asInstanceOf[Coder[Any]])
+      ps.map { case p =>
+        addErrInfo[Any](p.label, p.typeclass.asInstanceOf[Coder[Any]])
       }
     val coderValues =
       cs.tail.foldLeft(toSeq(cs.head)) { case (cs, c) =>
@@ -222,13 +222,8 @@ sealed trait LowPriorityCoderDerivation {
 
   type Typeclass[T] = Coder[T]
 
-  def combine[T](ctx: CaseClass[Coder, T]): Coder[T] = {
-    val ps =
-      ctx.parameters.map { p =>
-        Param[T, p.PType](p.label, p.typeclass, p.dereference _)
-      }
-    Derived.combineCoder(ps, ctx.rawConstruct _)
-  }
+  def combine[T](ctx: CaseClass[Coder, T]): Coder[T] =
+    Derived.combineCoder(ctx.parameters, ctx.rawConstruct _)
 
   def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] = ???
 //     new DispatchCoder[T](sealedTrait)

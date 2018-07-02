@@ -74,7 +74,15 @@ private[scio] object CoderUtils {
             case Apply(TypeApply(Select(Select(_, TermName("Magnolia")), TermName("caseClass")), _), params @ List(name, isObj, isVal, ps, _, construct)) =>
               q"_root_.magnolia.Magnolia.caseClass($name, $isObj, $isVal, $ps, scala.Array(), $construct)"
             case q"com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, $annotations))" =>
-              q"com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, Array()))"
+              q"_root_.com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, Array()))"
+            case q"magnolia.Magnolia.param[$tc, $t, $pt]($name, $isRepeated, $typeclass, $default, $f, $annotations)" =>
+              q"""magnolia.Magnolia.param[$tc, $t, $pt](
+                $name,
+                $isRepeated,
+                $typeclass,
+                $default,
+                $f,
+                Array())"""
             case t =>
               super.transform(tree)
           }
@@ -84,7 +92,8 @@ private[scio] object CoderUtils {
 
     //XXX: find a way to get rid of $outer references at compile time
     val tree: c.Tree = coder
-
+    // if(tree.toString.contains("Tuple"))
+    //   println(tree)
     tree
   }
 
