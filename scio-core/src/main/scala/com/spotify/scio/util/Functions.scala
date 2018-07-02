@@ -45,10 +45,10 @@ private[scio] object Functions {
     val vocoder: Coder[VO]
 
     override def getAccumulatorCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VA] =
-      vacoder.toBeam
+      Coder.beamWithDefault(vacoder, registry)
 
     override def getDefaultOutputCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VO] =
-      vocoder.toBeam
+      Coder.beamWithDefault(vocoder, registry)
   }
 
   def aggregateFn[T: Coder, U: Coder](zeroValue: U)(seqOp: (U, T) => U, combOp: (U, U) => U)

@@ -82,16 +82,17 @@ private[scio] object CoderUtils {
     val typeName = s"Coder[${wtt.toString}]"
     val toString = s"Automatically derived $name: $typeName"
     //XXX: find a way to get rid of $outer references at compile time
-    val tree: c.Tree =
-      q"""{
-      final class $className extends _root_.com.spotify.scio.coders.WrappedCoder[$wtt] {
-        var underlying: _root_.com.spotify.scio.coders.Coder[$wtt] = $coder
-        override def toString = $toString
-      }
-      _root_.com.spotify.scio.coders.Coder.clean(new $className)
-      }
-      """
-    tree
+    // val tree: c.Tree =
+    //   q"""{
+    //   final class $className extends _root_.com.spotify.scio.coders.WrappedCoder[$wtt] {
+    //     var underlying: _root_.com.spotify.scio.coders.Coder[$wtt] = $coder
+    //     override def toString = $toString
+    //   }
+    //   _root_.com.spotify.scio.coders.Coder.clean(new $className)
+    //   }
+    //   """
+    q"""_root_.com.spotify.scio.coders.Coder.clean($coder)"""
+    // tree
   }
 
 }

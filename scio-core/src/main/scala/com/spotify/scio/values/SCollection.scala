@@ -138,9 +138,9 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   def applyTransform[U: Coder](transform: PTransform[_ >: PCollection[T], PCollection[U]])
   : SCollection[U] = {
     if (context.isTest) {
-      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder[U].toBeam)
+      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder.beam(context, Coder[U]))
     }
-    this.pApply(transform).setCoder(Coder[U].toBeam)
+    this.pApply(transform).setCoder(Coder.beam(context, Coder[U]))
   }
 
   /**
@@ -152,9 +152,9 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
   (transform: PTransform[_ >: PCollection[T], PCollection[KV[K, V]]])(implicit koder: Coder[K], voder: Coder[V])
   : SCollection[KV[K, V]] = {
     if (context.isTest) {
-      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(kvCoder[K, V])
+      org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(Coder.kvCoder[K, V](context))
     }
-    this.pApply(transform).setCoder(kvCoder[K, V])
+    this.pApply(transform).setCoder(Coder.kvCoder[K, V](context))
   }
 
   /** Apply a transform. */
@@ -388,7 +388,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   def groupBy[K](f: T => K)(implicit kcoder: Coder[K], vcoder: Coder[T]): SCollection[(K, Iterable[T])] = this.transform {
-    val coder = kvCoder[K, T]
+    val coder = Coder.kvCoder[K, T](context)
     _
       .pApply(WithKeys.of(Functions.serializableFn(f))).setCoder(coder)
       .pApply(GroupByKey.create[K, T]()).map(kvIterableToTuple)
@@ -927,7 +927,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
         .parDo(new DoFn[T, GenericRecord] {
           @ProcessElement
           private[scio] def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
-            c.output(AvroBytesUtil.encode(elemCoder.toBeam, c.element()))
+            c.output(AvroBytesUtil.encode(Coder.beam(context, elemCoder), c.element()))
         })
         .saveAsAvroFile(path, numShards, AvroBytesUtil.schema, suffix, metadata = metadata)
       context.makeFuture(ObjectFileTap[T](ScioUtil.addPartSuffix(path)))
@@ -1216,7 +1216,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
       } else {
         val t = setup(psio.PubsubIO.writeMessages())
         this.map { t =>
-          val payload = CoderUtils.encodeToByteArray(coder.toBeam, t)
+          val payload = CoderUtils.encodeToByteArray(Coder.beam(context, coder), t)
           new PubsubMessage(payload, Map.empty[String, String].asJava)
         }.applyInternal(t)
       }

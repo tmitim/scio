@@ -51,7 +51,7 @@ class SCollectionWithSideOutput[T] private[values]
     val tuple = this.applyInternal(
       ParDo.of(FunctionsWithSideOutput.flatMapFn(f)).withOutputTags(mainTag, sideTags))
 
-    val main = tuple.get(mainTag).setCoder(Coder[U].toBeam)
+    val main = tuple.get(mainTag).setCoder(Coder.beam(context, Coder[U]))
     (context.wrap(main), new SideOutputCollections(tuple, context))
   }
 
@@ -65,7 +65,7 @@ class SCollectionWithSideOutput[T] private[values]
     val tuple = this.applyInternal(
       ParDo.of(FunctionsWithSideOutput.mapFn(f)).withOutputTags(mainTag, sideTags))
 
-    val main = tuple.get(mainTag).setCoder(Coder[U].toBeam)
+    val main = tuple.get(mainTag).setCoder(Coder.beam(context, Coder[U]))
     (context.wrap(main), new SideOutputCollections(tuple, context))
   }
 

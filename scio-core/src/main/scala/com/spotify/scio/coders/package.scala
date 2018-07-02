@@ -19,7 +19,9 @@ package com.spotify.scio.coders
 
 import java.io.{InputStream, OutputStream}
 import scala.annotation.implicitNotFound
-import org.apache.beam.sdk.coders.{AtomicCoder, Coder => BCoder, KvCoder}
+import org.apache.beam.sdk.coders.{CustomCoder, Coder => BCoder, KvCoder}
+import com.spotify.scio.ScioContext
+import scala.reflect.ClassTag
 
 @implicitNotFound("""
 Cannot find a Coder instance for type:
@@ -41,34 +43,79 @@ Cannot find a Coder instance for type:
         scala> Coder[Foo]
     And find the missing instance and construct it as needed.
 """)
-trait Coder[T] extends Serializable {
-  self =>
-  def decode(in: InputStream): T
-  def encode(ts: T, out: OutputStream): Unit
+sealed trait Coder[T]
+final case class Beam[T] private (beam: BCoder[T]) extends Coder[T]
+final case class Fallback[T] private (ct: ClassTag[T]) extends Coder[T]
+final case class Transform[A, B] private (c: Coder[A], f: BCoder[A] => Coder[B]) extends Coder[B]
 
-  def toBeam: BCoder[T] =
-    new AtomicCoder[T] {
-      def decode(in: InputStream): T = self.decode(in)
-      def encode(ts: T, out: OutputStream): Unit = self.encode(ts, out)
+final case class XMapCoder[A, B](bc: BCoder[A], f: A => B, t: B => A) extends CustomCoder[B] {
+  def encode(value: B, os: OutputStream): Unit =
+    bc.encode(t(value), os)
+  def decode(is: InputStream): B =
+    f(bc.decode(is))
+}
+
+trait CoderGrammar {
+  import org.apache.beam.sdk.coders.CoderRegistry
+  import org.apache.beam.sdk.options.PipelineOptions
+  import org.apache.beam.sdk.options.PipelineOptionsFactory
+
+  def beam[T](beam: BCoder[T]) =
+    Beam(beam)
+  def fallback[T](implicit ct: ClassTag[T]) =
+    Fallback[T](ct)
+  def transform[A, B](c: Coder[A])(f: BCoder[A] => Coder[B]) =
+    Transform(c, f)
+  def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] =
+    Transform[A, B](c, bc => beam(XMapCoder(bc, f, t)))
+
+  def beam[T](sc: ScioContext, c: Coder[T]): BCoder[T] =
+    beam(sc.pipeline.getCoderRegistry, sc.options, c)
+
+  def beamWithDefault[T](
+    coder: Coder[T],
+    r: CoderRegistry = CoderRegistry.createDefault(),
+    o: PipelineOptions = PipelineOptionsFactory.create()) =
+      beam(r, o, coder)
+
+  def beam[T](r: CoderRegistry, o: PipelineOptions, c: Coder[T]): BCoder[T] = {
+    c match {
+      case Beam(c) => c
+      case Fallback(ct) =>
+        com.spotify.scio.Implicits.RichCoderRegistry(r)
+          .getScalaCoder[T](o)(ct)
+      case Transform(c, f) =>
+        val u = f(beam(r, o, c))
+        beam(r, o, u)
     }
-
-  // def xmap[A](f: A => T, t: T => A): Coder[A] =
-  //   new Coder[A] {
-  //     def decode(in: InputStream): A = t(self.decode(in))
-  //     def encode(ts: A, out: OutputStream): Unit = self.encode(f(ts), out)
-  //   }
+  }
 }
 
-class FromBCoder[T](a: BCoder[T]) extends Coder[T] {
-  def decode(in: InputStream): T = a.decode(in)
-  def encode(ts: T, out: OutputStream): Unit = a.encode(ts, out)
-}
+object Coder extends CoderGrammar with AtomCoders with TupleCoders {
+  // TODO: better error message
+  @deprecated("""
+    No implicit coder found for type ${T}. Using a fallback coder.
+    Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
+    If a type is not supported, consider implementing your own implicit com.spotify.scio.coders.Coder for this type:
 
-object Coder extends AtomCoders with TupleCoders {
-  def from[T](a: BCoder[T]): Coder[T] = new FromBCoder(a)
+      class MyTypeCoder extends Coder[MyType] {
+        def decode(in: InputStream): MyType = ???
+        def encode(ts: MyType, out: OutputStream): Unit = ???
+      }
+      implicit def myTypeCoder: Coder[MyType] =
+        new MyTypeCoder
+    """, since="0.6.0")
+  implicit def implicitFallback[T: ClassTag](implicit lp: shapeless.LowPriority): Coder[T] =
+    Coder.fallback[T]
+
+  import org.apache.beam.sdk.values.KV
+  def kvCoder[K, V](ctx: ScioContext)(implicit k: Coder[K], v: Coder[V]): KvCoder[K, V] =
+    KvCoder.of(Coder.beam(ctx, Coder[K]), Coder.beam(ctx, Coder[V]))
+
   def apply[T](implicit c: Coder[T]): Coder[T] = c
-  def clean[T](w: WrappedCoder[T]) =
-    com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[WrappedCoder[T]]
+
+  def clean[T](w: Coder[T]) =
+    com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[Coder[T]]
 }
 
 import scala.language.experimental.macros

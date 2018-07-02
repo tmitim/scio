@@ -480,7 +480,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
         .parDo(new DoFn[GenericRecord, T] {
           @ProcessElement
           private[scio] def processElement(c: DoFn[GenericRecord, T]#ProcessContext): Unit = {
-            c.output(AvroBytesUtil.decode(coder.toBeam, c.element()))
+            c.output(AvroBytesUtil.decode(Coder.beam(context, coder), c.element()))
           }
         })
         .setName(path)
@@ -764,7 +764,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
       val elementCoder = Coder[T]
       wrap(this.applyInternal(t)).setName(name)
         .map { m =>
-          val payload = CoderUtils.decodeFromByteArray(elementCoder.toBeam, m.getPayload)
+          val payload = CoderUtils.decodeFromByteArray(Coder.beam(context, elementCoder), m.getPayload)
           val attributes = JMapWrapper.of(m.getAttributeMap)
           (payload, attributes)
         }
@@ -857,7 +857,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * @group in_memory
    */
   def parallelize[T: Coder](elems: Iterable[T]): SCollection[T] = requireNotClosed {
-    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(Coder[T].toBeam)))
+    wrap(this.applyInternal(Create.of(elems.asJava).withCoder(Coder.beam(context, Coder[T]))))
       .setName(truncate(elems.toString()))
   }
 
@@ -868,7 +868,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
   def parallelize[K, V](elems: Map[K, V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
   requireNotClosed {
     // TODO: merge Create.of and map ?
-    val kvc = kvCoder[K, V]
+    val kvc = Coder.kvCoder[K, V](context)
     wrap(this.applyInternal(Create.of(elems.asJava).withCoder(kvc)))
       .map(kv => (kv.getKey, kv.getValue))
       .setName(truncate(elems.toString()))
@@ -969,25 +969,6 @@ class DistCacheScioContext private[scio] (self: ScioContext) {
         new DistCacheMulti(uris.map(new URI(_)), initFn, self.optionsAs[GcsOptions])
       }
     }
-
-  object coders {
-    @deprecated("""
-    Coders in fallback coders are very slow and unsafe.
-    They are only provided for compatibility reasons.
-    Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
-    If a type is not supported, consider implementing your own implicit com.spotify.scio.coders.Coder for this type:
-
-      class MyTypeCoder extends Coder[MyType] {
-        def decode(in: InputStream): MyType = ???
-        def encode(ts: MyType, out: OutputStream): Unit = ???
-      }
-      implicit def myTypeCoder: Coder[MyType] =
-        new MyTypeCoder
-    """, since="0.6.0")
-    implicit def fallback[V: ClassTag]: Coder[V] =
-      com.spotify.scio.coders.fallback.apply[V](self)
-  }
-
 }
 
 // scalastyle:on file.size.limit

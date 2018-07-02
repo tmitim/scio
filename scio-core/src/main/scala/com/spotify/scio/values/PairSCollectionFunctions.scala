@@ -88,7 +88,7 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
   private val toKvTransform = ParDo.of(Functions.mapFn[(K, V), KV[K, V]](kv => KV.of(kv._1, kv._2)))
 
   private[scio] def toKV(implicit koder: Coder[K], voder: Coder[V]): SCollection[KV[K, V]] = {
-    val coder = kvCoder[K, V]
+    val coder = Coder.kvCoder[K, V](context)
     val o = self.applyInternal(toKvTransform).setCoder(coder)
     context.wrap(o)
   }
@@ -100,10 +100,10 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
       override def expand(input: PCollection[(K, V)]): PCollection[(K, UO)] =
         input
           .apply("TupleToKv", toKvTransform)
-          .setCoder(kvCoder[K, V])
+          .setCoder(Coder.kvCoder[K, V](context))
           .apply(t)
           .apply("KvToTuple", ParDo.of(Functions.mapFn[KV[K, UI], (K, UO)](f)))
-          .setCoder(Coder[(K, UO)].toBeam)
+          .setCoder(Coder.beam(context, Coder[(K, UO)]))
     })
     context.wrap(o)
   }
@@ -766,7 +766,7 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
     val o = self.applyInternal(
       new PTransform[PCollection[(K, V)], PCollectionView[JMap[K, V]]]() {
         override def expand(input: PCollection[(K, V)]): PCollectionView[JMap[K, V]] = {
-          input.apply(toKvTransform).setCoder(kvCoder[K, V]).apply(View.asMap())
+          input.apply(toKvTransform).setCoder(Coder.kvCoder[K, V](context)).apply(View.asMap())
         }
       })
     new MapSideInput[K, V](o)
@@ -783,7 +783,7 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
     val o = self.applyInternal(
       new PTransform[PCollection[(K, V)], PCollectionView[JMap[K, JIterable[V]]]]() {
         override def expand(input: PCollection[(K, V)]): PCollectionView[JMap[K, JIterable[V]]] = {
-          input.apply(toKvTransform).setCoder(kvCoder[K, V]).apply(View.asMultimap())
+          input.apply(toKvTransform).setCoder(Coder.kvCoder[K, V](context)).apply(View.asMultimap())
         }
       })
     new MultiMapSideInput[K, V](o)
