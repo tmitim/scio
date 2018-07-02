@@ -32,9 +32,6 @@ Cannot find a Coder instance for type:
   member somewhere within this type doesn't have a Coder instance in scope. Here are
   some debugging hints:
     - Make sure you imported com.spotify.scio.coders.Implicits._
-    - For case classes or sealed traits, annotate the definition with @deriveCoder:
-        @deriveCoder
-        final case class User(id: Long, username: String, email: String)
     - If you can't annotate the definition, you can also generate a Coder using
         implicit val someClassCoder = com.spotify.scio.coders.Implicits.gen[SomeCaseClass]
     - For Option types, ensure that a Coder instance is in scope for the non-Option version.
@@ -43,22 +40,26 @@ Cannot find a Coder instance for type:
         scala> Coder[Foo]
     And find the missing instance and construct it as needed.
 """)
-sealed trait Coder[T]
+sealed trait Coder[T] extends Serializable
 final case class Beam[T] private (beam: BCoder[T]) extends Coder[T]
 final case class Fallback[T] private (ct: ClassTag[T]) extends Coder[T]
 final case class Transform[A, B] private (c: Coder[A], f: BCoder[A] => Coder[B]) extends Coder[B]
 
-final case class XMapCoder[A, B](bc: BCoder[A], f: A => B, t: B => A) extends CustomCoder[B] {
-  def encode(value: B, os: OutputStream): Unit =
-    bc.encode(t(value), os)
-  def decode(is: InputStream): B =
-    f(bc.decode(is))
-}
+// final case class SerializableCoderLocker[A](@transient b: BCoder[A]) extends CustomCoder[A] {
+//   val coder = com.twitter.chill.Externalizer(b)
+//   def encode(value: A, os: OutputStream): Unit =
+//     coder.get.encode(value, os)
+//   def decode(is: InputStream): A =
+//     coder.get.decode(is)
+// }
 
-trait CoderGrammar {
+sealed trait CoderGrammar {
   import org.apache.beam.sdk.coders.CoderRegistry
   import org.apache.beam.sdk.options.PipelineOptions
   import org.apache.beam.sdk.options.PipelineOptionsFactory
+
+  def clean[T](w: BCoder[T]) =
+    com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[BCoder[T]]
 
   def beam[T](beam: BCoder[T]) =
     Beam(beam)
@@ -66,8 +67,6 @@ trait CoderGrammar {
     Fallback[T](ct)
   def transform[A, B](c: Coder[A])(f: BCoder[A] => Coder[B]) =
     Transform(c, f)
-  def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] =
-    Transform[A, B](c, bc => beam(XMapCoder(bc, f, t)))
 
   def beam[T](sc: ScioContext, c: Coder[T]): BCoder[T] =
     beam(sc.pipeline.getCoderRegistry, sc.options, c)
@@ -78,7 +77,7 @@ trait CoderGrammar {
     o: PipelineOptions = PipelineOptionsFactory.create()) =
       beam(r, o, coder)
 
-  def beam[T](r: CoderRegistry, o: PipelineOptions, c: Coder[T]): BCoder[T] = {
+  final def beam[T](r: CoderRegistry, o: PipelineOptions, c: Coder[T]): BCoder[T] = {
     c match {
       case Beam(c) => c
       case Fallback(ct) =>
@@ -91,20 +90,38 @@ trait CoderGrammar {
   }
 }
 
-object Coder extends CoderGrammar with AtomCoders with TupleCoders {
-  // TODO: better error message
-  @deprecated("""
-    No implicit coder found for type ${T}. Using a fallback coder.
-    Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
-    If a type is not supported, consider implementing your own implicit com.spotify.scio.coders.Coder for this type:
+sealed trait AtomCoders {
+  import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
+  import Coder.beam
+  implicit def byteCoder: Coder[Byte] = beam(ByteCoder.of().asInstanceOf[BCoder[Byte]])
+  implicit def byteArrayCoder: Coder[Array[Byte]] = beam(ByteArrayCoder.of())
+  implicit def bytebufferCoder: Coder[java.nio.ByteBuffer] = beam(???)
+  implicit def stringCoder: Coder[String] = beam(StringUtf8Coder.of())
+  implicit def intCoder: Coder[Int] = beam(VarIntCoder.of().asInstanceOf[BCoder[Int]])
+  implicit def doubleCoder: Coder[Double] = beam(DoubleCoder.of().asInstanceOf[BCoder[Double]])
+  implicit def floatCoder: Coder[Float] = beam(FloatCoder.of().asInstanceOf[BCoder[Float]])
+  implicit def unitCoder: Coder[Unit] = beam(UnitCoder)
+  implicit def nothingCoder: Coder[Nothing] = beam[Nothing](NothingCoder)
+  implicit def booleanCoder: Coder[Boolean] = beam(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
+  implicit def longCoder: Coder[Long] = beam(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
+  implicit def bigdecimalCoder: Coder[BigDecimal] = ???
+}
 
-      class MyTypeCoder extends Coder[MyType] {
-        def decode(in: InputStream): MyType = ???
-        def encode(ts: MyType, out: OutputStream): Unit = ???
-      }
-      implicit def myTypeCoder: Coder[MyType] =
-        new MyTypeCoder
-    """, since="0.6.0")
+final object Coder extends CoderGrammar with AtomCoders /*with TupleCoders*/ {
+  // TODO: better error message
+  // @deprecated("""
+  //   No implicit coder found for type ${T}. Using a fallback coder.
+  //   Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
+  //   If a type is not supported, consider implementing your own implicit com.spotify.scio.coders.Coder for this type:
+
+  //     class MyTypeCoder extends Coder[MyType] {
+  //       def decode(in: InputStream): MyType = ???
+  //       def encode(ts: MyType, out: OutputStream): Unit = ???
+  //     }
+  //     implicit def myTypeCoder: Coder[MyType] =
+  //       new MyTypeCoder
+  //   """, since="0.6.0")
+  @deprecated("TODO: message", since="0.6.0")
   implicit def implicitFallback[T: ClassTag](implicit lp: shapeless.LowPriority): Coder[T] =
     Coder.fallback[T]
 
@@ -113,74 +130,4 @@ object Coder extends CoderGrammar with AtomCoders with TupleCoders {
     KvCoder.of(Coder.beam(ctx, Coder[K]), Coder.beam(ctx, Coder[V]))
 
   def apply[T](implicit c: Coder[T]): Coder[T] = c
-
-  def clean[T](w: Coder[T]) =
-    com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[Coder[T]]
-}
-
-import scala.language.experimental.macros
-object Macros {
-  import scala.reflect.macros._
-
-  def addImplicitCoderDerivation(c: blackbox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
-    import c.universe._
-    annottees.map(_.tree) match {
-      case (clazzDef @ q"$mods class $cName[..$tparams] $ctorMods(..$fields) extends { ..$earlydefns } with ..$parents { $self => ..$body }") :: tail if mods.asInstanceOf[Modifiers].hasFlag(Flag.CASE) =>
-        val maybeCompanion = tail.headOption
-        val tree =
-          q"""
-            $clazzDef
-            ${companion(c)(cName, maybeCompanion, tparams)}
-          """
-        c.Expr[Any](tree)
-      case (clazzDef @ q"$mods trait $cName[..$tparams] extends { ..$earlydefns } with ..$parents { $self => ..$body }") :: tail if mods.asInstanceOf[Modifiers].hasFlag(Flag.SEALED) =>
-        val maybeCompanion = tail.headOption
-        val tree =
-          q"""
-            $clazzDef
-            ${companion(c)(cName, maybeCompanion, tparams)}
-          """
-        c.Expr[Any](tree)
-      case t =>
-        c.abort(c.enclosingPosition, s"Invalid annotation $t")
-    }
-  }
-
-  // TODO: check if companion already contains a coder definition
-  private def companion(c: blackbox.Context)
-                       (name: c.TypeName, originalCompanion: Option[c.Tree], typeParams: List[c.universe.TypeDef]): c.Tree = {
-    import c.universe._
-
-    val tyn = TypeName(name.toString)
-    val tn = TermName(name.toString)
-    val coderName = TermName("coder" + name.toString)
-    val typeParamsNames = typeParams.map(_.name)
-    val imps =
-      typeParamsNames.zipWithIndex.map { case (t, i) =>
-        val pn = TermName("coder" + i)
-        q"""$pn: _root_.com.spotify.scio.coders.Coder[$t]"""
-      }
-
-    val m =
-      q"""
-        implicit def $coderName[..$typeParams](implicit ..$imps): _root_.com.spotify.scio.coders.Coder[$tyn[..$typeParamsNames]] =
-          _root_.com.spotify.scio.coders.Implicits.gen[$tyn[..$typeParamsNames]]
-      """
-    val tree =
-      originalCompanion.map { o =>
-        val q"$mods object $cName extends { ..$_ } with ..$parents { $_ => ..$body }" = o
-        // need to filter out Object, otherwise get duplicate Object error
-        // also can't get a FQN of scala.AnyRef which gets erased to java.lang.Object, can't find a
-        // sane way to =:= scala.AnyRef
-        val filteredTraits = parents.toSet.filterNot(_.toString == "scala.AnyRef")
-        q"""$mods object $cName extends ..$filteredTraits {
-            ..${body :+ m}
-          }"""
-      }.getOrElse{ q"object $tn { ..$m }" }
-    tree
-  }
-}
-
-class deriveCoder extends scala.annotation.StaticAnnotation {
-  def macroTransform(annottees: Any*): Any = macro Macros.addImplicitCoderDerivation
 }

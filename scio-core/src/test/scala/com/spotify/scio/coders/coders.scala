@@ -29,30 +29,29 @@ import com.spotify.scio.values.SCollection
 import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Implicits._
 
-@deriveCoder
 final case class UserId(bytes: Seq[Byte])
 
-@deriveCoder
 final case class User(id: UserId, username: String, email: String)
 
-@deriveCoder
 sealed trait Top
 final case class TA(anInt: Int, aString: String) extends Top
 final case class TB(anDouble: Double) extends Top
 
-@deriveCoder
 case class DummyCC(s: String)
 
-@deriveCoder
 case class ParameterizedDummy[A](value: A)
 
-@deriveCoder
 case class MultiParameterizedDummy[A, B](valuea: A, valueb: B)
 
 class CodersTest extends FlatSpec with Matchers {
 
   val userId = UserId(Array[Byte](1, 2, 3, 4))
   val user = User(userId, "johndoe", "johndoe@spotify.com")
+
+  def checkSer[A](implicit c: Coder[A]) = {
+    val beamCoder = Coder.beamWithDefault(c)
+    // org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(beamCoder)
+  }
 
   import org.scalactic.Equality
   def check[T](t: T)(implicit C: Coder[T], eq: Equality[T]): Assertion = {
@@ -103,6 +102,16 @@ class CodersTest extends FlatSpec with Matchers {
       def areEqual(a: GenericRecord, b: Any): Boolean =
         a.toString === b.toString // YOLO
     }
+  }
+
+  it should "Derive serializable coders" in {
+    checkSer[Int]
+    checkSer[String]
+    checkSer[List[Int]]
+    checkSer(Coder.fallback[Int])
+    checkSer(gen[(Int, Int)])
+    checkSer(gen[DummyCC])
+    checkSer[com.spotify.scio.avro.User]
   }
 
   it should "support Avro's SpecificRecordBase" in {

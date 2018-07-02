@@ -25,33 +25,23 @@ import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 // import scala.reflect.ClassTag
 // import scala.collection.{ mutable => m }
 
-// import com.spotify.scio.coders.Coder.from
+final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends CustomCoder[T] {
 
-// trait WrappedCoder[T] extends BCoder[T] with Serializable {
-//   def underlying: BCoder[T]
-//   def encode(value: T, os: OutputStream): Unit =
-//     underlying.encode(value, os)
-//   def decode(is: InputStream): T =
-//     underlying.decode(is)
-// }
+  // makes the schema scerializable
+  val schemaString = schema.toString
 
-// final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends Coder[T] {
+  @transient lazy val _schema = new org.apache.avro.Schema.Parser().parse(schemaString)
 
-//   // makes the schema scerializable
-//   val schemaString = schema.toString
+  @transient lazy val model = new org.apache.avro.specific.SpecificData()
+  @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, _schema)
+  @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, _schema)
 
-//   @transient lazy val _schema = new org.apache.avro.Schema.Parser().parse(schemaString)
+  def encode(value: T, os: OutputStream): Unit =
+    encoder.encode(value, os)
 
-//   @transient lazy val model = new org.apache.avro.specific.SpecificData()
-//   @transient lazy val encoder = new org.apache.avro.message.RawMessageEncoder[T](model, _schema)
-//   @transient lazy val decoder = new org.apache.avro.message.RawMessageDecoder[T](model, _schema)
-
-//   def encode(value: T, os: OutputStream): Unit =
-//     encoder.encode(value, os)
-
-//   def decode(is: InputStream): T =
-//     decoder.decode(is)
-// }
+  def decode(is: InputStream): T =
+    decoder.decode(is)
+}
 
 // //
 // // Derive Coder from Serializable values
@@ -63,7 +53,7 @@ import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 //     new ObjectOutputStream(out).writeObject(ts)
 // }
 
-// trait FromSerializable {
+// sealed trait FromSerializable {
 //   // XXX: probably a bad idea...
 //   // implicit def serializableCoder[T <: Serializable](implicit l: shapeless.LowPriority): Coder[T] =
 //   //   new SerializableCoder[T]
@@ -91,7 +81,7 @@ import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 //       b(c.decode(in))
 // }
 
-// trait FromBijection {
+// sealed trait FromBijection {
 
 //   implicit def collectionfromBijection[A, B](
 //     implicit b: Bijection[Seq[A], B], //TODO: should I use ImplicitBijection ?
@@ -111,7 +101,7 @@ final case class Param[T, PT](label: String, tc: Coder[PT], dereference: T => PT
 //
 // Derive Coder using Magnolia
 //
-private object Help {
+private final object Help {
   @inline def onErrorMsg[T](msg: String)(f: => T) =
     try { f }
     catch { case e: Exception =>
@@ -123,9 +113,9 @@ private object Help {
 * Create a serializable coder by trashing all references to magnolia classes
 */
 
-private object Derived {
+private final object Derived extends Serializable {
 
-  def addErrInfo[A](label: String, c: Coder[A]): Coder[A] =
+  private def addErrInfo[A](label: String, c: Coder[A]): Coder[A] =
     Coder.transform(c) { bc =>
       Coder.beam(new CustomCoder[A] {
         def encode(value: A, os: OutputStream): Unit =
@@ -139,7 +129,7 @@ private object Derived {
       })
     }
 
-  def add[A](a: Coder[Seq[A]], b: Coder[A]): Coder[Seq[A]] =
+  private def add[A](a: Coder[Seq[A]], b: Coder[A]): Coder[Seq[A]] =
     Coder.transform(a) { ca =>
       Coder.transform(b) { cb =>
         Coder.beam(new CustomCoder[Seq[A]]{
@@ -154,8 +144,16 @@ private object Derived {
       }
     }
 
-  def toSeq[A](a: Coder[A]): Coder[Seq[A]] =
-    Coder.xmap(a)(a => Seq(a), _.head)
+  private def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] =
+    Transform[A, B](c, bc => Coder.beam(new CustomCoder[B]{
+      def encode(value: B, os: OutputStream): Unit =
+        bc.encode(t(value), os)
+      def decode(is: InputStream): B =
+        f(bc.decode(is))
+    }))
+
+  private def toSeq[A](a: Coder[A]): Coder[Seq[A]] =
+    xmap(a)(a => Seq(a), _.head)
 
   def combineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any] => T): Coder[T] = {
     val cs =
@@ -166,7 +164,7 @@ private object Derived {
       cs.tail.foldLeft(toSeq(cs.head)) { case (cs, c) =>
         add(cs, c)
       }
-    Coder.xmap(coderValues)(rawConstruct, v => ps.map(_.dereference(v)))
+    xmap(coderValues)(rawConstruct, v => ps.map(_.dereference(v)))
   }
 
 }
@@ -218,7 +216,7 @@ private object Derived {
 //   }
 // }
 
-trait LowPriorityCoderDerivation {
+sealed trait LowPriorityCoderDerivation {
   import language.experimental.macros, magnolia._
   import com.spotify.scio.avro.types.CoderUtils
 
@@ -235,75 +233,56 @@ trait LowPriorityCoderDerivation {
   def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] = ???
 //     new DispatchCoder[T](sealedTrait)
 
-  def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
+  implicit def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
 }
-
-// trait auto {
-//   import language.experimental.macros
-//   import com.spotify.scio.avro.types.CoderUtils
-//   // TODO: can we provide magnolia nice error message when gen is used implicitly ?
-//   implicit def autoCoder[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
-// }
-
-// object auto extends auto
-
-// //
-// // Avro Coders
-// //
-// private[scio] object fallback {
-//   def apply[T: scala.reflect.ClassTag](sc: com.spotify.scio.ScioContext): Coder[T] =
-//     from(com.spotify.scio.Implicits.RichCoderRegistry(sc.pipeline.getCoderRegistry)
-//       .getScalaCoder[T](sc.options))
-// }
 
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.Schema
 
-// private class SlowGenericRecordCoder extends Coder[GenericRecord]{
+private final class SlowGenericRecordCoder extends CustomCoder[GenericRecord]{
 
-//   var coder: Coder[GenericRecord] = _
-//   // TODO: can we find something more efficient than String ?
-//   val sc = StringUtf8Coder.of()
+  var coder: BCoder[GenericRecord] = _
+  // TODO: can we find something more efficient than String ?
+  val sc = StringUtf8Coder.of()
 
-//   def encode(value: GenericRecord, os: OutputStream): Unit = {
-//     val schema = value.getSchema
-//     if(coder == null) {
-//       coder = from(AvroCoder.of(schema))
-//     }
-//     sc.encode(schema.toString, os)
-//     coder.encode(value, os)
-//   }
+  def encode(value: GenericRecord, os: OutputStream): Unit = {
+    val schema = value.getSchema
+    if(coder == null) {
+      coder = AvroCoder.of(schema)
+    }
+    sc.encode(schema.toString, os)
+    coder.encode(value, os)
+  }
 
-//   def decode(is: InputStream): GenericRecord = {
-//     val schemaStr = sc.decode(is)
-//     if(coder == null) {
-//       val schema = new Schema.Parser().parse(schemaStr)
-//       coder = from(AvroCoder.of(schema))
-//     }
-//     coder.decode(is)
-//   }
-// }
+  def decode(is: InputStream): GenericRecord = {
+    val schemaStr = sc.decode(is)
+    if(coder == null) {
+      val schema = new Schema.Parser().parse(schemaStr)
+      coder = AvroCoder.of(schema)
+    }
+    coder.decode(is)
+  }
+}
 
-trait AvroCoders {
-//   self: BaseCoders =>
-//   import language.experimental.macros
-//   // TODO: Use a coder that does not serialize the schema
-  def genericRecordCoder(schema: Schema): Coder[GenericRecord] = ???
-//     new AvroRawCoder(schema)
+sealed trait AvroCoders {
+  import language.experimental.macros
+  // TODO: Use a coder that does not serialize the schema
+  def genericRecordCoder(schema: Schema): Coder[GenericRecord] =
+    Coder.beam(new AvroRawCoder(schema))
 
-//   // XXX: similar to GenericAvroSerializer
-//   def slowGenericRecordCoder: Coder[GenericRecord] =
-//     new SlowGenericRecordCoder
+  // XXX: similar to GenericAvroSerializer
+  def slowGenericRecordCoder: Coder[GenericRecord] =
+    Coder.beam(new SlowGenericRecordCoder)
 
-//   import org.apache.avro.specific.SpecificRecordBase
-//   implicit def genAvro[T <: SpecificRecordBase]: Coder[T] =
-//     macro com.spotify.scio.avro.types.CoderUtils.staticInvokeCoder[T]
+  import org.apache.avro.specific.SpecificRecordBase
+  implicit def genAvro[T <: SpecificRecordBase]: Coder[T] =
+    macro com.spotify.scio.avro.types.CoderUtils.staticInvokeCoder[T]
 }
 
 // //
 // // Protobuf Coders
 // //
-// trait ProtobufCoders {
+// sealed trait ProtobufCoders {
 //   implicit def bytestringCoder: Coder[com.google.protobuf.ByteString] = ???
 //   implicit def timestampCoder: Coder[com.google.protobuf.Timestamp] = ???
 //   implicit def protoGeneratedMessageCoder[T <: com.google.protobuf.GeneratedMessageV3]: Coder[T] = ???
@@ -312,7 +291,7 @@ trait AvroCoders {
 // //
 // // Java Coders
 // //
-// trait JavaCoders {
+// sealed trait JavaCoders {
 //   self: BaseCoders with FromBijection =>
 
 //   implicit def uriCoder: Coder[java.net.URI] = ???
@@ -345,7 +324,7 @@ trait AvroCoders {
 //   implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
 // }
 
-// trait AlgebirdCoders {
+// sealed trait AlgebirdCoders {
 //   self: LowPriorityCoderDerivation with BaseCoders =>
 
 //   import com.twitter.algebird._
@@ -355,12 +334,12 @@ trait AvroCoders {
 //   implicit def topKCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.TopK[K]] = gen[com.twitter.algebird.TopK[K]]
 // }
 
-private object UnitCoder extends CustomCoder[Unit]{
+private final object UnitCoder extends CustomCoder[Unit]{
   def encode(value: Unit, os: OutputStream): Unit = ()
   def decode(is: InputStream): Unit = ()
 }
 
-private object NothingCoder extends CustomCoder[Nothing] {
+private final object NothingCoder extends CustomCoder[Nothing] {
   def encode(value: Nothing, os: OutputStream): Unit = ()
   def decode(is: InputStream): Nothing = ??? // can't possibly happen
 }
@@ -473,23 +452,7 @@ private object NothingCoder extends CustomCoder[Nothing] {
 //   }
 // }
 
-trait AtomCoders {
-  import Coder.beam
-  implicit def byteCoder: Coder[Byte] = beam(ByteCoder.of().asInstanceOf[BCoder[Byte]])
-  implicit def byteArrayCoder: Coder[Array[Byte]] = beam(ByteArrayCoder.of())
-  implicit def bytebufferCoder: Coder[java.nio.ByteBuffer] = beam(???)
-  implicit def stringCoder: Coder[String] = beam(StringUtf8Coder.of())
-  implicit def intCoder: Coder[Int] = beam(VarIntCoder.of().asInstanceOf[BCoder[Int]])
-  implicit def doubleCoder: Coder[Double] = beam(DoubleCoder.of().asInstanceOf[BCoder[Double]])
-  implicit def floatCoder: Coder[Float] = beam(FloatCoder.of().asInstanceOf[BCoder[Float]])
-  implicit def unitCoder: Coder[Unit] = beam(UnitCoder)
-  implicit def nothingCoder: Coder[Nothing] = beam[Nothing](NothingCoder)
-  implicit def booleanCoder: Coder[Boolean] = beam(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
-  implicit def longCoder: Coder[Long] = beam(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
-  implicit def bigdecimalCoder: Coder[BigDecimal] = ???
-}
-
-// trait BaseCoders {
+// sealed trait BaseCoders {
 //   // TODO: support all primitive types
 //   // BigDecimalCoder
 //   // BigIntegerCoder
@@ -524,7 +487,7 @@ trait AtomCoders {
 //   implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
 // }
 
-trait Implicits
+sealed trait Implicits
   extends LowPriorityCoderDerivation
 //   with FromSerializable
 //   with FromBijection
@@ -533,6 +496,6 @@ trait Implicits
 //   with ProtobufCoders
 //   with JavaCoders
 //   with AlgebirdCoders
-//   with Serializable
+  with Serializable
 
-object Implicits extends Implicits
+final object Implicits extends Implicits

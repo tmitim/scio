@@ -37,7 +37,9 @@ private[scio] object CoderUtils {
     val companionType = companionSymbol.typeSignature
 
     q"""
-    new _root_.com.spotify.scio.coders.AvroRawCoder[$companioned](${companionType}.getClassSchema())
+    _root_.com.spotify.scio.coders.Coder.beam(
+      new _root_.com.spotify.scio.coders.AvroRawCoder[$companioned](${companionType}.getClassSchema())
+    )
     """
   }
 
@@ -61,6 +63,7 @@ private[scio] object CoderUtils {
 
     val name = c.freshName(s"$$DerivedCoder")
     val className = TypeName(name)
+    val termName = TermName(name)
 
     // Remove annotations from magnolia since they are not serialiazable and we don't use them anyway
     // TODO: do the same with sealedtrait
@@ -79,20 +82,10 @@ private[scio] object CoderUtils {
 
     val coder = removeAnnotations.transform(getLazyVal)
 
-    val typeName = s"Coder[${wtt.toString}]"
-    val toString = s"Automatically derived $name: $typeName"
     //XXX: find a way to get rid of $outer references at compile time
-    // val tree: c.Tree =
-    //   q"""{
-    //   final class $className extends _root_.com.spotify.scio.coders.WrappedCoder[$wtt] {
-    //     var underlying: _root_.com.spotify.scio.coders.Coder[$wtt] = $coder
-    //     override def toString = $toString
-    //   }
-    //   _root_.com.spotify.scio.coders.Coder.clean(new $className)
-    //   }
-    //   """
-    q"""_root_.com.spotify.scio.coders.Coder.clean($coder)"""
-    // tree
+    val tree: c.Tree = coder
+
+    tree
   }
 
 }

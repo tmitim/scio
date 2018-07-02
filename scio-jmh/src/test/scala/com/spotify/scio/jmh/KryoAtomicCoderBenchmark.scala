@@ -31,8 +31,6 @@ import org.openjdk.jmh.annotations._
 final case class UserId(bytes: Array[Byte])
 final case class User(id: UserId, username: String, email: String)
 final case class SpecializedUser(id: UserId, username: String, email: String)
-
-@deriveCoder
 final case class SpecializedUserForDerived(id: UserId, username: String, email: String)
 
 import com.spotify.scio.coders.Implicits._
