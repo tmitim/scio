@@ -19,7 +19,7 @@ package com.spotify.scio.coders
 
 import java.io.{InputStream, OutputStream}
 import scala.annotation.implicitNotFound
-import org.apache.beam.sdk.coders.{CustomCoder, Coder => BCoder, KvCoder}
+import org.apache.beam.sdk.coders.{Coder => BCoder, KvCoder, AtomicCoder}
 import com.spotify.scio.ScioContext
 import scala.reflect.ClassTag
 
@@ -44,14 +44,20 @@ sealed trait Coder[T] extends Serializable
 final case class Beam[T] private (beam: BCoder[T]) extends Coder[T]
 final case class Fallback[T] private (ct: ClassTag[T]) extends Coder[T]
 final case class Transform[A, B] private (c: Coder[A], f: BCoder[A] => Coder[B]) extends Coder[B]
+final case class Disjonction[T, Id] private (idCoder: Coder[Id], id: T => Id, coder: Map[Id, Coder[T]]) extends Coder[T]
 
-// final case class SerializableCoderLocker[A](@transient b: BCoder[A]) extends CustomCoder[A] {
-//   val coder = com.twitter.chill.Externalizer(b)
-//   def encode(value: A, os: OutputStream): Unit =
-//     coder.get.encode(value, os)
-//   def decode(is: InputStream): A =
-//     coder.get.decode(is)
-// }
+private final case class DisjonctionCoder[T, Id](idCoder: BCoder[Id], id: T => Id, coders: Map[Id, BCoder[T]]) extends AtomicCoder[T] {
+  def encode(value: T, os: OutputStream): Unit =  {
+    val i = id(value)
+    idCoder.encode(i, os)
+    coders(i).encode(value, os)
+  }
+
+  def decode(is: InputStream): T = {
+    val i = idCoder.decode(is)
+    coders(i).decode(is)
+  }
+}
 
 sealed trait CoderGrammar {
   import org.apache.beam.sdk.coders.CoderRegistry
@@ -67,6 +73,8 @@ sealed trait CoderGrammar {
     Fallback[T](ct)
   def transform[A, B](c: Coder[A])(f: BCoder[A] => Coder[B]) =
     Transform(c, f)
+  def disjonction[T, Id: Coder](coder: Map[Id, Coder[T]])(id: T => Id) =
+    Disjonction(Coder[Id], id, coder)
 
   def beam[T](sc: ScioContext, c: Coder[T]): BCoder[T] =
     beam(sc.pipeline.getCoderRegistry, sc.options, c)
@@ -86,6 +94,11 @@ sealed trait CoderGrammar {
       case Transform(c, f) =>
         val u = f(beam(r, o, c))
         beam(r, o, u)
+      case Disjonction(idCoder, id, coders) =>
+        DisjonctionCoder(
+          beam(r, o, idCoder),
+          id,
+          coders.mapValues(u => beam(r, o, u)).map(identity))
     }
   }
 }

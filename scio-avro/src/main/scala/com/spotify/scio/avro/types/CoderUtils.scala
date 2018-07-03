@@ -61,7 +61,7 @@ private[scio] object CoderUtils {
             body
         }
 
-    val name = c.freshName(s"$$DerivedCoder")
+    val name = c.freshName(s"$$ShimDerivedCoder")
     val className = TypeName(name)
     val termName = TermName(name)
 
@@ -76,13 +76,12 @@ private[scio] object CoderUtils {
             case q"com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, $annotations))" =>
               q"_root_.com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, Array()))"
             case q"magnolia.Magnolia.param[$tc, $t, $pt]($name, $isRepeated, $typeclass, $default, $f, $annotations)" =>
-              q"""magnolia.Magnolia.param[$tc, $t, $pt](
-                $name,
-                $isRepeated,
-                $typeclass,
-                $default,
-                $f,
-                Array())"""
+              val tcname = c.freshName(s"paramTypeclasssss")
+              val tcTermName = TermName(tcname)
+              q"""
+              val $tcTermName = $typeclass
+              _root_.magnolia.Magnolia.param[$tc, $t, $pt]($name, $isRepeated, $tcTermName, $default, $f, Array())
+              """
             case t =>
               super.transform(tree)
           }
@@ -92,8 +91,6 @@ private[scio] object CoderUtils {
 
     //XXX: find a way to get rid of $outer references at compile time
     val tree: c.Tree = coder
-    // if(tree.toString.contains("Tuple"))
-    //   println(tree)
     tree
   }
 

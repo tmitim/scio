@@ -25,7 +25,7 @@ import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 // import scala.reflect.ClassTag
 // import scala.collection.{ mutable => m }
 
-final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends CustomCoder[T] {
+final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
 
   // makes the schema scerializable
   val schemaString = schema.toString
@@ -114,7 +114,7 @@ private final object Derived extends Serializable {
 
   private def addErrInfo[A](label: String, c: Coder[A]): Coder[A] =
     Coder.transform(c) { bc =>
-      Coder.beam(new CustomCoder[A] {
+      Coder.beam(new AtomicCoder[A] {
         def encode(value: A, os: OutputStream): Unit =
           Help.onErrorMsg(s"Exception while trying to `encode` field ${label} in ${value}") {
             bc.encode(value, os)
@@ -129,7 +129,7 @@ private final object Derived extends Serializable {
   private def add[A](a: Coder[Seq[A]], b: Coder[A]): Coder[Seq[A]] =
     Coder.transform(a) { ca =>
       Coder.transform(b) { cb =>
-        Coder.beam(new CustomCoder[Seq[A]]{
+        Coder.beam(new AtomicCoder[Seq[A]]{
           def encode(value: Seq[A], os: OutputStream): Unit = {
             ca.encode(value.init, os)
             cb.encode(value.last, os)
@@ -143,7 +143,7 @@ private final object Derived extends Serializable {
 
   private def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] = {
     def toB(bc: BCoder[A]) =
-      new CustomCoder[B]{
+      new AtomicCoder[B]{
         def encode(value: B, os: OutputStream): Unit =
           bc.encode(t(value), os)
         def decode(is: InputStream): B =
@@ -166,7 +166,6 @@ private final object Derived extends Serializable {
       }
     xmap(coderValues)(rawConstruct, v => ps.map(_.dereference(v)))
   }
-
 }
 
 // private final class CombineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any] => T) extends BCoder[T]{
@@ -225,8 +224,16 @@ sealed trait LowPriorityCoderDerivation {
   def combine[T](ctx: CaseClass[Coder, T]): Coder[T] =
     Derived.combineCoder(ctx.parameters, ctx.rawConstruct _)
 
-  def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] = ???
-//     new DispatchCoder[T](sealedTrait)
+  def dispatch[T](sealedTrait: SealedTrait[Coder, T]): Coder[T] = {
+    val idx: Map[magnolia.TypeName, Int] =
+      sealedTrait.subtypes.map(_.typeName).zipWithIndex.toMap
+    val coders: Map[Int, Coder[T]] =
+      sealedTrait.subtypes.map(_.typeclass.asInstanceOf[Coder[T]]).zipWithIndex
+        .map{ case (c, i) => (i, c) }
+        .toMap
+
+    Coder.disjonction[T, Int](coders){ t => sealedTrait.dispatch(t) { subtype => idx(subtype.typeName) } }
+  }
 
   implicit def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
 }
@@ -234,7 +241,7 @@ sealed trait LowPriorityCoderDerivation {
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.Schema
 
-private final class SlowGenericRecordCoder extends CustomCoder[GenericRecord]{
+private final class SlowGenericRecordCoder extends AtomicCoder[GenericRecord]{
 
   var coder: BCoder[GenericRecord] = _
   // TODO: can we find something more efficient than String ?
@@ -329,12 +336,12 @@ sealed trait AvroCoders {
 //   implicit def topKCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.TopK[K]] = gen[com.twitter.algebird.TopK[K]]
 // }
 
-private final object UnitCoder extends CustomCoder[Unit]{
+private final object UnitCoder extends AtomicCoder[Unit]{
   def encode(value: Unit, os: OutputStream): Unit = ()
   def decode(is: InputStream): Unit = ()
 }
 
-private final object NothingCoder extends CustomCoder[Nothing] {
+private final object NothingCoder extends AtomicCoder[Nothing] {
   def encode(value: Nothing, os: OutputStream): Unit = ()
   def decode(is: InputStream): Nothing = ??? // can't possibly happen
 }
