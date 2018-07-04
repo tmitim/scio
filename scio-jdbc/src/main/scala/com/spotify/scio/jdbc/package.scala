@@ -126,7 +126,7 @@ package object jdbc {
         val coder = Coder[T]
         val connOpts = readOptions.connectionOptions
         var transform = jio.JdbcIO.read[T]()
-          .withCoder(coder.toBeam)
+          .withCoder(Coder.beam(self, coder))
           .withDataSourceConfiguration(getDataSourceConfig(readOptions.connectionOptions))
           .withQuery(readOptions.query)
           .withRowMapper(new jio.JdbcIO.RowMapper[T] {

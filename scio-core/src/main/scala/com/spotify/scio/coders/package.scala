@@ -59,6 +59,31 @@ private final case class DisjonctionCoder[T, Id](idCoder: BCoder[Id], id: T => I
   }
 }
 
+// XXX: Workaround a NPE deep down the stack in Beam
+// info]   java.lang.NullPointerException: null value in entry: T=null
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.CollectPreconditions.checkEntryNotNull(CollectPreconditions.java:34)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.RegularImmutableMap.fromEntryArray(RegularImmutableMap.java:71)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.RegularImmutableMap.fromEntries(RegularImmutableMap.java:48)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.ImmutableMap.copyOf(ImmutableMap.java:359)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.ImmutableMap.copyOf(ImmutableMap.java:332)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeResolver$TypeMappingIntrospector.getTypeMappings(TypeResolver.java:351)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeResolver.accordingTo(TypeResolver.java:64)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeToken.resolveType(TypeToken.java:249)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeToken.resolveSupertype(TypeToken.java:262)
+// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeToken.getSupertype(TypeToken.java:387)
+// [info]   at org.apache.beam.sdk.values.TypeDescriptor.getSupertype(TypeDescriptor.java:200)
+// [info]   at org.apache.beam.sdk.util.CoderUtils.getCodedType(CoderUtils.java:180)
+// [info]   at org.apache.beam.sdk.coders.CoderRegistry.verifyCompatible(CoderRegistry.java:515)
+// [info]   at org.apache.beam.sdk.coders.CoderRegistry.getDefaultCoders(CoderRegistry.java:443)
+// [info]   at org.apache.beam.sdk.coders.CoderRegistry.getDefaultCoders(CoderRegistry.java:374)
+// [info]   at org.apache.beam.sdk.coders.CoderRegistry.getCoder(CoderRegistry.java:321)
+// ...
+private class Named[T](u: BCoder[T]) extends AtomicCoder[T] {
+  override def toString = u.toString
+  def encode(value: T, os: OutputStream): Unit = u.encode(value, os)
+  def decode(is: InputStream): T = u.decode(is)
+}
+
 sealed trait CoderGrammar {
   import org.apache.beam.sdk.coders.CoderRegistry
   import org.apache.beam.sdk.options.PipelineOptions
@@ -87,18 +112,18 @@ sealed trait CoderGrammar {
 
   final def beam[T](r: CoderRegistry, o: PipelineOptions, c: Coder[T]): BCoder[T] = {
     c match {
-      case Beam(c) => c
+      case Beam(c) => new Named(c)
       case Fallback(ct) =>
-        com.spotify.scio.Implicits.RichCoderRegistry(r)
-          .getScalaCoder[T](o)(ct)
+        new Named(com.spotify.scio.Implicits.RichCoderRegistry(r)
+          .getScalaCoder[T](o)(ct))
       case Transform(c, f) =>
         val u = f(beam(r, o, c))
-        beam(r, o, u)
+        new Named(beam(r, o, u))
       case Disjonction(idCoder, id, coders) =>
-        DisjonctionCoder(
+        new Named(DisjonctionCoder(
           beam(r, o, idCoder),
           id,
-          coders.mapValues(u => beam(r, o, u)).map(identity))
+          coders.mapValues(u => beam(r, o, u)).map(identity)))
     }
   }
 }
@@ -117,7 +142,7 @@ sealed trait AtomCoders {
   implicit def nothingCoder: Coder[Nothing] = beam[Nothing](NothingCoder)
   implicit def booleanCoder: Coder[Boolean] = beam(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
   implicit def longCoder: Coder[Long] = beam(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
-  implicit def bigdecimalCoder: Coder[BigDecimal] = ???
+  // implicit def bigdecimalCoder: Coder[BigDecimal] = ???
 }
 
 final object Coder extends CoderGrammar with AtomCoders /*with TupleCoders*/ {

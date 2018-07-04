@@ -43,9 +43,9 @@ final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) exten
     decoder.decode(is)
 }
 
-// //
-// // Derive Coder from Serializable values
-// //
+//
+// Derive Coder from Serializable values
+//
 // private[scio] class SerializableCoder[T] extends Coder[T] {
 //   def decode(in: InputStream): T =
 //     new ObjectInputStream(in).readObject().asInstanceOf[T]
@@ -167,53 +167,6 @@ private final object Derived extends Serializable {
     xmap(coderValues)(rawConstruct, v => ps.map(_.dereference(v)))
   }
 }
-
-// private final class CombineCoder[T](ps: Seq[Param[T, _]], rawConstruct: Seq[Any] => T) extends BCoder[T]{
-//   def encode(value: T, os: OutputStream): Unit = {
-//     ps.foreach { case Param(label, tc, deref) =>
-//       Help.onErrorMsg(s"Exception while trying to `encode` field ${label} in ${value}") {
-//         tc.encode(deref(value), os)
-//       }
-//     }
-//   }
-
-//   def decode(is: InputStream): T =
-//     rawConstruct {
-//       val arr = scala.collection.mutable.ArrayBuffer[Any]()
-//       val size = ps.length
-//       var i = 0
-//       while(i < size) {
-//         val Param(label, typeclass, _) = ps(i)
-//         Help.onErrorMsg(s"Exception while trying to `decode` field ${label}") {
-//           arr += typeclass.decode(is)
-//           i = i + 1
-//         }
-//       }
-//       arr
-//     }
-// }
-
-// private final class DispatchCoder[T](sealedTrait: magnolia.SealedTrait[Coder, T]) extends BCoder[T]{
-//   val idx: Map[magnolia.TypeName, Int] =
-//     sealedTrait.subtypes.map(_.typeName).zipWithIndex.toMap
-//   val idc = VarIntCoder.of()
-
-//   def encode(value: T, os: OutputStream): Unit =
-//     sealedTrait.dispatch(value) { subtype =>
-//       Help.onErrorMsg(s"Exception while trying to dispatch call to `encode` for class ${subtype.typeName.full}") {
-//         idc.encode(idx(subtype.typeName), os)
-//         subtype.typeclass.encode(subtype.cast(value), os)
-//       }
-//     }
-
-//   def decode(is: InputStream): T = {
-//     val id = idc.decode(is)
-//     val subtype = sealedTrait.subtypes(id)
-//     Help.onErrorMsg(s"Exception while trying to dispatch call to `decode` for class ${subtype.typeName.full}"){
-//       subtype.typeclass.decode(is)
-//     }
-//   }
-// }
 
 sealed trait LowPriorityCoderDerivation {
   import language.experimental.macros, magnolia._

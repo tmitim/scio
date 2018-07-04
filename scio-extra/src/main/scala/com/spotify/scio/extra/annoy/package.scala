@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 import com.spotify.scio.coders.Coder
-import com.spotify.scio.extra.coders.Implicits._
 
 /**
  * Main package for Annoy side input APIs. Import all.

@@ -63,6 +63,13 @@ import scala.concurrent._
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 
+import org.apache.beam.sdk.coders.{ Coder => BCoder }
+private[scio] class AvroEncodeDoFn[T](coder: BCoder[T]) extends DoFn[T, GenericRecord] {
+  @ProcessElement
+  final def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
+    c.output(AvroBytesUtil.encode(coder, c.element()))
+}
+
 /** Convenience functions for creating SCollections. */
 object SCollection {
 
@@ -922,13 +929,8 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
       if (!isCheckpoint) context.testOut(ObjectFileIO(path))(this)
       saveAsInMemoryTap
     } else {
-      implicit val genCoder = genericRecordCoder(AvroBytesUtil.schema)
       this
-        .parDo(new DoFn[T, GenericRecord] {
-          @ProcessElement
-          private[scio] def processElement(c: DoFn[T, GenericRecord]#ProcessContext): Unit =
-            c.output(AvroBytesUtil.encode(Coder.beam(context, elemCoder), c.element()))
-        })
+        .parDo(new AvroEncodeDoFn[T](Coder.beam(context, elemCoder)))
         .saveAsAvroFile(path, numShards, AvroBytesUtil.schema, suffix, metadata = metadata)
       context.makeFuture(ObjectFileTap[T](ScioUtil.addPartSuffix(path)))
     }

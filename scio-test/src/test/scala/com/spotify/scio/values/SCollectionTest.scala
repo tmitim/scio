@@ -65,7 +65,7 @@ class SCollectionTest extends PipelineSpec {
     }
   }
 
-  // Wont xompile anymore
+  // Wont compile anymore
   /*
   it should "fail applyTransform() with KV output" in {
     // scalastyle:off no.whitespace.before.left.bracket

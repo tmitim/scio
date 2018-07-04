@@ -34,7 +34,6 @@ import org.apache.beam.sdk.{io => gio}
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 import scala.util.{Left, Right}
-import com.spotify.scio.extra.coders.Implicits._
 
 /**
  * Main package for JSON APIs. Import all.

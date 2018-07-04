@@ -197,6 +197,13 @@ object ScioContext {
 
 }
 
+import org.apache.beam.sdk.coders.{ Coder => BCoder }
+private[scio] class AvroDecodeDoFn[T](coder: BCoder[T]) extends DoFn[GenericRecord, T] {
+  @ProcessElement
+  final def processElement(c: DoFn[GenericRecord, T]#ProcessContext): Unit =
+    c.output(AvroBytesUtil.decode(coder, c.element()))
+}
+
 /**
  * Main entry point for Scio functionality. A ScioContext represents a pipeline and can be used to
  * create SCollections and distributed caches on that cluster.
@@ -477,12 +484,7 @@ class ScioContext private[scio] (val options: PipelineOptions,
       val coder = Coder[T]
       val recCoder = genericRecordCoder(AvroBytesUtil.schema)
       this.avroFile[GenericRecord](path, AvroBytesUtil.schema)(classTag[GenericRecord], recCoder)
-        .parDo(new DoFn[GenericRecord, T] {
-          @ProcessElement
-          private[scio] def processElement(c: DoFn[GenericRecord, T]#ProcessContext): Unit = {
-            c.output(AvroBytesUtil.decode(Coder.beam(context, coder), c.element()))
-          }
-        })
+        .parDo(new AvroDecodeDoFn[T](Coder.beam(context, coder)))
         .setName(path)
     }
   }
