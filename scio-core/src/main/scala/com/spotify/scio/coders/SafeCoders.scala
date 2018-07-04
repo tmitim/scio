@@ -22,7 +22,7 @@ import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 // import org.apache.beam.sdk.util.CoderUtils
 // import com.twitter.bijection._
 // import java.io.{ ObjectInputStream, ObjectOutputStream }
-// import scala.reflect.ClassTag
+import scala.reflect.ClassTag
 // import scala.collection.{ mutable => m }
 
 final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
@@ -111,6 +111,7 @@ private final object Help {
 
 private final object Derived extends Serializable {
   import magnolia._
+  import Coder.xmap
 
   private def addErrInfo[A](label: String, c: Coder[A]): Coder[A] =
     Coder.transform(c) { bc =>
@@ -140,17 +141,6 @@ private final object Derived extends Serializable {
         })
       }
     }
-
-  private def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] = {
-    def toB(bc: BCoder[A]) =
-      new AtomicCoder[B]{
-        def encode(value: B, os: OutputStream): Unit =
-          bc.encode(t(value), os)
-        def decode(is: InputStream): B =
-          f(bc.decode(is))
-      }
-    Transform[A, B](c, bc => Coder.beam(toB(bc)))
-  }
 
   private def toSeq[A](a: Coder[A]): Coder[Seq[A]] =
     xmap(a)(a => Seq(a), _.head)
@@ -299,49 +289,49 @@ private final object NothingCoder extends AtomicCoder[Nothing] {
   def decode(is: InputStream): Nothing = ??? // can't possibly happen
 }
 
-// private class OptionCoder[T: Coder] extends Coder[Option[T]] {
-//   val bcoder = BooleanCoder.of().asInstanceOf[BCoder[Boolean]]
-//   def encode(value: Option[T], os: OutputStream): Unit = {
-//     bcoder.encode(value.isDefined, os)
-//     value.foreach { Coder[T].encode(_, os) }
-//   }
+private class OptionCoder[T](tc: BCoder[T]) extends AtomicCoder[Option[T]] {
+  val bcoder = BooleanCoder.of().asInstanceOf[BCoder[Boolean]]
+  def encode(value: Option[T], os: OutputStream): Unit = {
+    bcoder.encode(value.isDefined, os)
+    value.foreach { tc.encode(_, os) }
+  }
 
-//   def decode(is: InputStream): Option[T] =
-//     Option(bcoder.decode(is)).collect {
-//       case true => Coder[T].decode(is)
-//     }
-// }
+  def decode(is: InputStream): Option[T] =
+    Option(bcoder.decode(is)).collect {
+      case true => tc.decode(is)
+    }
+}
 
-// private class SeqCoder[T: Coder] extends Coder[Seq[T]] {
-//   val lc = VarIntCoder.of()
-//   def decode(in: InputStream): Seq[T] = {
-//     val l = lc.decode(in)
-//     (1 to l).map { _ =>
-//       Coder[T].decode(in)
-//     }
-//   }
+private class SeqCoder[T](bc: BCoder[T]) extends AtomicCoder[Seq[T]] {
+  val lc = VarIntCoder.of()
+  def decode(in: InputStream): Seq[T] = {
+    val l = lc.decode(in)
+    (1 to l).map { _ =>
+      bc.decode(in)
+    }
+  }
 
-//   def encode(ts: Seq[T], out: OutputStream): Unit = {
-//     lc.encode(ts.length, out)
-//     ts.foreach { v => Coder[T].encode(v, out) }
-//   }
-// }
+  def encode(ts: Seq[T], out: OutputStream): Unit = {
+    lc.encode(ts.length, out)
+    ts.foreach { v => bc.encode(v, out) }
+  }
+}
 
-// private class ListCoder[T: Coder] extends Coder[List[T]] {
-//   val seqCoder = new SeqCoder[T]
-//   def encode(value: List[T], os: OutputStream): Unit =
-//     seqCoder.encode(value.toSeq, os)
-//   def decode(is: InputStream): List[T] =
-//     seqCoder.decode(is).toList
-// }
+private class ListCoder[T](bc: BCoder[T]) extends AtomicCoder[List[T]] {
+  val seqCoder = new SeqCoder[T](bc)
+  def encode(value: List[T], os: OutputStream): Unit =
+    seqCoder.encode(value.toSeq, os)
+  def decode(is: InputStream): List[T] =
+    seqCoder.decode(is).toList
+}
 
-// private class IterableCoder[T: Coder] extends Coder[Iterable[T]] {
-//   val seqCoder = new SeqCoder[T]
-//   def encode(value: Iterable[T], os: OutputStream): Unit =
-//     seqCoder.encode(value.toSeq, os)
-//   def decode(is: InputStream): Iterable[T] =
-//     seqCoder.decode(is)
-// }
+private class IterableCoder[T](bc: BCoder[T]) extends AtomicCoder[Iterable[T]] {
+  val seqCoder = new SeqCoder[T](bc)
+  def encode(value: Iterable[T], os: OutputStream): Unit =
+    seqCoder.encode(value.toSeq, os)
+  def decode(is: InputStream): Iterable[T] =
+    seqCoder.decode(is)
+}
 
 // private class VectorCoder[T: Coder] extends Coder[Vector[T]] {
 //   val seqCoder = new SeqCoder[T]
@@ -351,13 +341,13 @@ private final object NothingCoder extends AtomicCoder[Nothing] {
 //     seqCoder.decode(is).toVector
 // }
 
-// private class ArrayCoder[T: Coder : ClassTag] extends Coder[Array[T]] {
-//   val seqCoder = new SeqCoder[T]
-//   def encode(value: Array[T], os: OutputStream): Unit =
-//     seqCoder.encode(value.toSeq, os)
-//   def decode(is: InputStream): Array[T] =
-//     seqCoder.decode(is).toArray
-// }
+private class ArrayCoder[T : ClassTag](bc: BCoder[T]) extends AtomicCoder[Array[T]] {
+  val seqCoder = new SeqCoder[T](bc)
+  def encode(value: Array[T], os: OutputStream): Unit =
+    seqCoder.encode(value.toSeq, os)
+  def decode(is: InputStream): Array[T] =
+    seqCoder.decode(is).toArray
+}
 
 // private class ArrayBufferCoder[T: Coder] extends Coder[m.ArrayBuffer[T]] {
 //   val seqCoder = new SeqCoder[T]
@@ -367,25 +357,25 @@ private final object NothingCoder extends AtomicCoder[Nothing] {
 //     m.ArrayBuffer(seqCoder.decode(is):_*)
 // }
 
-// private class MapCoder[K: Coder, V: Coder] extends Coder[Map[K, V]] {
-//   val lc = VarIntCoder.of()
-//   def decode(in: InputStream): Map[K, V] = {
-//     val l = lc.decode(in)
-//     (1 to l).map { _ =>
-//       val k = Coder[K].decode(in)
-//       val v = Coder[V].decode(in)
-//       (k, v)
-//     }.toMap
-//   }
+private class MapCoder[K, V](kc: BCoder[K], vc: BCoder[V]) extends AtomicCoder[Map[K, V]] {
+  val lc = VarIntCoder.of()
+  def decode(in: InputStream): Map[K, V] = {
+    val l = lc.decode(in)
+    (1 to l).map { _ =>
+      val k = kc.decode(in)
+      val v = vc.decode(in)
+      (k, v)
+    }.toMap
+  }
 
-//   def encode(ts: Map[K, V], out: OutputStream): Unit = {
-//     lc.encode(ts.size, out)
-//     ts.foreach { case (k, v) =>
-//       Coder[K].encode(k, out)
-//       Coder[V].encode(v, out)
-//     }
-//   }
-// }
+  def encode(ts: Map[K, V], out: OutputStream): Unit = {
+    lc.encode(ts.size, out)
+    ts.foreach { case (k, v) =>
+      kc.encode(k, out)
+      vc.encode(v, out)
+    }
+  }
+}
 
 // private class MutableMapCoder[K: Coder, V: Coder] extends Coder[m.Map[K, V]] {
 //   val lc = VarIntCoder.of()
@@ -407,46 +397,55 @@ private final object NothingCoder extends AtomicCoder[Nothing] {
 //   }
 // }
 
-// sealed trait BaseCoders {
-//   // TODO: support all primitive types
-//   // BigDecimalCoder
-//   // BigIntegerCoder
-//   // BitSetCoder
-//   // BooleanCoder
-//   // ByteStringCoder
+sealed trait BaseCoders {
+  // TODO: support all primitive types
+  // BigDecimalCoder
+  // BigIntegerCoder
+  // BitSetCoder
+  // BooleanCoder
+  // ByteStringCoder
 
-//   // DurationCoder
-//   // InstantCoder
+  // DurationCoder
+  // InstantCoder
 
-//   // TableRowJsonCoder
+  // TableRowJsonCoder
 
-//   implicit def traversableCoder[T](implicit c: Coder[T]): Coder[TraversableOnce[T]] = ???
-//   implicit def optionCoder[T](implicit c: Coder[T]): Coder[Option[T]] = new OptionCoder[T]
+  // implicit def traversableCoder[T](implicit c: Coder[T]): Coder[TraversableOnce[T]] = ???
+  implicit def seqCoder[T: Coder]: Coder[Seq[T]] =
+     Coder.transform(Coder[T]){ bc => Coder.beam(new SeqCoder[T](bc)) }
 
-//   // TODO: proper chunking implementation
-//   implicit def iterableCoder[T](implicit c: Coder[T]): Coder[Iterable[T]] = new IterableCoder[T]
+  // TODO: proper chunking implementation
+  implicit def iterableCoder[T: Coder]: Coder[Iterable[T]] =
+    Coder.transform(Coder[T]){ bc => Coder.beam(new IterableCoder[T](bc)) }
 
-//   implicit def throwableCoder: Coder[Throwable] = ???
+  // implicit def throwableCoder: Coder[Throwable] = ???
 
-//   // specialized coder. Since `::` is a case class, Magnolia would derive an incorrect one...
-//   implicit def listCoder[T: Coder]: Coder[List[T]] = new ListCoder[T]
-//   implicit def vectorCoder[T: Coder]: Coder[Vector[T]] = new VectorCoder[T]
-//   implicit def seqCoder[T: Coder]: Coder[Seq[T]] = new SeqCoder[T]
-//   implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] = new ArrayBufferCoder[T]
-//   implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
-//   implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] = new ArrayCoder[T]
-//   implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] = new MutableMapCoder[K, V]
-//   implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] = new MapCoder[K, V]
-//   implicit def sortedSetCoder[T: Coder]: Coder[scala.collection.SortedSet[T]] = ???
+  // specialized coder. Since `::` is a case class, Magnolia would derive an incorrect one...
+  implicit def listCoder[T: Coder]: Coder[List[T]] =
+    Coder.transform(Coder[T]){ bc => Coder.beam(new ListCoder[T](bc)) }
 
-//   implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
-// }
+  // implicit def vectorCoder[T: Coder]: Coder[Vector[T]] = new VectorCoder[T]
+  // implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] = new ArrayBufferCoder[T]
+  // implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
+  implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] =
+    Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayCoder[T](bc)) }
+  // implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] = new MutableMapCoder[K, V]
+  implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] =
+    Coder.transform(Coder[K]){ kc =>
+      Coder.transform(Coder[V]){ vc =>
+        Coder.beam(new MapCoder[K, V](kc, vc))
+      }
+    }
+  // implicit def sortedSetCoder[T: Coder]: Coder[scala.collection.SortedSet[T]] = ???
+
+  // implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
+}
 
 sealed trait Implicits
   extends LowPriorityCoderDerivation
 //   with FromSerializable
 //   with FromBijection
-//   with BaseCoders
+  with BaseCoders
   with AvroCoders
 //   with ProtobufCoders
 //   with JavaCoders

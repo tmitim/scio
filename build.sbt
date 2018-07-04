@@ -306,7 +306,7 @@ lazy val scioCore: Project = Project(
     "org.apache.xbean" % "xbean-asm5-shaded" % asmVersion,
     "org.apache.commons" % "commons-pool2" %  commonsPoolVersion,
     // -- used to test Safe codders
-    "com.chuusai" %% "shapeless" % "2.3.3",
+    "com.chuusai" %% "shapeless" % shapelessVersion,
     "com.propensive" %% "magnolia" % magnoliaVersion,
     directRunnerDependency % "test",
     "org.scalatest" %% "scalatest" % scalatestVersion % "test",
@@ -365,7 +365,8 @@ lazy val scioAvro: Project = Project(
     "org.scalatest" %% "scalatest" % scalatestVersion % "test,it",
     "com.github.alexarchambault" %% "scalacheck-shapeless_1.13" % scalacheckShapelessVersion % "test",
     "me.lyh" %% "shapeless-datatype-core" % shapelessDatatypeVersion % "test",
-    "com.propensive" %% "magnolia" % magnoliaVersion
+    "com.propensive" %% "magnolia" % magnoliaVersion,
+    "com.chuusai" %% "shapeless" % shapelessVersion
   )
 ).configs(IntegrationTest)
 

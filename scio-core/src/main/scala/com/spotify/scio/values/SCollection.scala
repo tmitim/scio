@@ -879,7 +879,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    *           windowed.
    * @group window
    */
-  def withWindow[W <: BoundedWindow](implicit coder: Coder[(T, BoundedWindow)]): SCollection[(T, W)] = this.parDo(
+  def withWindow[W <: BoundedWindow](implicit tcoder: Coder[T], wcoder: Coder[BoundedWindow]): SCollection[(T, W)] = this.parDo(
     new DoFn[T, (T, BoundedWindow)] {
       @ProcessElement
       private[scio] def processElement(c: DoFn[T, (T, BoundedWindow)]#ProcessContext,
@@ -929,6 +929,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
       if (!isCheckpoint) context.testOut(ObjectFileIO(path))(this)
       saveAsInMemoryTap
     } else {
+      implicit val avroCoder = genericRecordCoder(AvroBytesUtil.schema)
       this
         .parDo(new AvroEncodeDoFn[T](Coder.beam(context, elemCoder)))
         .saveAsAvroFile(path, numShards, AvroBytesUtil.schema, suffix, metadata = metadata)

@@ -100,6 +100,16 @@ sealed trait CoderGrammar {
     Transform(c, f)
   def disjonction[T, Id: Coder](coder: Map[Id, Coder[T]])(id: T => Id) =
     Disjonction(Coder[Id], id, coder)
+  def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] = {
+    def toB(bc: BCoder[A]) =
+      new AtomicCoder[B]{
+        def encode(value: B, os: OutputStream): Unit =
+          bc.encode(t(value), os)
+        def decode(is: InputStream): B =
+          f(bc.decode(is))
+      }
+    Transform[A, B](c, bc => Coder.beam(toB(bc)))
+  }
 
   def beam[T](sc: ScioContext, c: Coder[T]): BCoder[T] =
     beam(sc.pipeline.getCoderRegistry, sc.options, c)
@@ -128,7 +138,7 @@ sealed trait CoderGrammar {
   }
 }
 
-sealed trait AtomCoders {
+sealed trait AtomCoders extends LowPriorityFallbackCoder {
   import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
   import Coder.beam
   implicit def byteCoder: Coder[Byte] = beam(ByteCoder.of().asInstanceOf[BCoder[Byte]])
@@ -143,26 +153,25 @@ sealed trait AtomCoders {
   implicit def booleanCoder: Coder[Boolean] = beam(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
   implicit def longCoder: Coder[Long] = beam(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
   // implicit def bigdecimalCoder: Coder[BigDecimal] = ???
+
+  implicit def optionCoder[T, S[_] <: Option[_]](implicit c: Coder[T]): Coder[S[T]] =
+    Coder.transform(c){ bc => Coder.beam(new OptionCoder[T](bc)) }
+      .asInstanceOf[Coder[S[T]]]
+
+  implicit def noneCoder: Coder[None.type] =
+    optionCoder[Nothing, Option](nothingCoder).asInstanceOf[Coder[None.type]]
 }
 
-final object Coder extends CoderGrammar with AtomCoders /*with TupleCoders*/ {
-  // TODO: better error message
-  // @deprecated("""
-  //   No implicit coder found for type ${T}. Using a fallback coder.
-  //   Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
-  //   If a type is not supported, consider implementing your own implicit com.spotify.scio.coders.Coder for this type:
+sealed trait LowPriorityFallbackCoder {
+  import language.experimental.macros
+  implicit def implicitFallback[T](implicit lp: shapeless.LowPriority): Coder[T] =
+    macro com.spotify.scio.avro.types.CoderUtils.issueFallbackWarning[T]
+}
 
-  //     class MyTypeCoder extends Coder[MyType] {
-  //       def decode(in: InputStream): MyType = ???
-  //       def encode(ts: MyType, out: OutputStream): Unit = ???
-  //     }
-  //     implicit def myTypeCoder: Coder[MyType] =
-  //       new MyTypeCoder
-  //   """, since="0.6.0")
-  @deprecated("TODO: message", since="0.6.0")
-  implicit def implicitFallback[T: ClassTag](implicit lp: shapeless.LowPriority): Coder[T] =
-    Coder.fallback[T]
-
+final object Coder
+  extends CoderGrammar
+  with AtomCoders
+  with TupleCoders {
   import org.apache.beam.sdk.values.KV
   def kvCoder[K, V](ctx: ScioContext)(implicit k: Coder[K], v: Coder[V]): KvCoder[K, V] =
     KvCoder.of(Coder.beam(ctx, Coder[K]), Coder.beam(ctx, Coder[V]))
