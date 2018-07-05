@@ -46,35 +46,39 @@ private[scio] object CoderUtils {
   def issueFallbackWarning[T: c.WeakTypeTag](c: whitebox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
+    val TypeRef(pre, sym, args) = wtt
     val companioned = wtt.typeSymbol
+
+    val typeName = sym.name
+    val params = args.headOption.map { _ => args.mkString("[", ",", "]") }.getOrElse("")
+    val fullType = typeName + params
 
     c.info(c.enclosingPosition,
       s"""
-      |
       | Warning: No implicit Coder found for type:
       |
-      |   >> ${wtt}
+      |   >> $wtt
       |
       |  Scio will use a fallback Kryo coder instead.
       |  Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
       |  If a type is not supported, consider implementing your own implicit Coder for this type.
       |  It is recommended to declare this Coder in your class companion object:
       |
-      |    object ${wtt} {
-      |      import com.spotify.scio.coders.Coder
-      |      import org.apache.beam.sdk.coders.AtomicCoder
+      |       object ${typeName} {
+      |         import com.spotify.scio.coders.Coder
+      |         import org.apache.beam.sdk.coders.AtomicCoder
       |
-      |      implicit def coder${wtt}: Coder[${wtt}] =
-      |        Coder.beam(new AtomicCoder[${wtt}] {
-      |          def decode(in: InputStream): ${wtt} = ???
-      |          def encode(ts: ${wtt}, out: OutputStream): Unit = ???
-      |        })
-      |    }
+      |         implicit def coder${typeName}: Coder[$fullType] =
+      |           Coder.beam(new AtomicCoder[$fullType] {
+      |             def decode(in: InputStream): $fullType = ???
+      |             def encode(ts: $fullType, out: OutputStream): Unit = ???
+      |           })
+      |       }
       |
       |  If you do want to use a Kryo coder, be explicit about it:
       |
-      |    implicit def coder${wtt}: Coder[${wtt}] =
-      |      Coder.fallback[$wtt]
+      |       implicit def coder${typeName}: Coder[$fullType] = Coder.fallback[$fullType]
+      |
       """.stripMargin, true)
     q"""_root_.com.spotify.scio.coders.Coder.fallback[$wtt]"""
   }
