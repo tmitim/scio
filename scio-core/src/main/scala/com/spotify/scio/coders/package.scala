@@ -143,7 +143,7 @@ sealed trait AtomCoders extends LowPriorityFallbackCoder {
   import Coder.beam
   implicit def byteCoder: Coder[Byte] = beam(ByteCoder.of().asInstanceOf[BCoder[Byte]])
   implicit def byteArrayCoder: Coder[Array[Byte]] = beam(ByteArrayCoder.of())
-  implicit def bytebufferCoder: Coder[java.nio.ByteBuffer] = beam(???)
+  // implicit def bytebufferCoder: Coder[java.nio.ByteBuffer] = beam(???)
   implicit def stringCoder: Coder[String] = beam(StringUtf8Coder.of())
   implicit def intCoder: Coder[Int] = beam(VarIntCoder.of().asInstanceOf[BCoder[Int]])
   implicit def doubleCoder: Coder[Double] = beam(DoubleCoder.of().asInstanceOf[BCoder[Double]])

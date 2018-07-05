@@ -29,6 +29,9 @@ import org.apache.beam.sdk.util.CoderUtils
 import org.openjdk.jmh.annotations._
 
 final case class UserId(bytes: Array[Byte])
+object UserId {
+  implicit def coderUserId: Coder[UserId] = Coder.gen[UserId]
+}
 final case class User(id: UserId, username: String, email: String)
 final case class SpecializedUser(id: UserId, username: String, email: String)
 final case class SpecializedUserForDerived(id: UserId, username: String, email: String)
@@ -51,12 +54,13 @@ class KryoAtomicCoderBenchmark {
   val specializedUserForDerived = SpecializedUserForDerived(userId, "johndoe", "johndoe@spotify.com")
   val tenTimes = List.fill(10)(specializedUserForDerived)
 
+
   val kryoCoder = new KryoAtomicCoder[User](KryoOptions())
   val javaCoder = SerializableCoder.of(classOf[User])
   val specializedCoder = new SpecializedCoder
   val specializedKryoCoder = new KryoAtomicCoder[SpecializedUser](KryoOptions())
-  val derivedCoder = Coder[SpecializedUserForDerived]
-  val derivedListCoder = Coder[List[SpecializedUserForDerived]]
+  val derivedCoder = Coder.beamWithDefault(Coder[SpecializedUserForDerived])
+  val derivedListCoder = Coder.beamWithDefault(Coder[List[SpecializedUserForDerived]])
 
   @Benchmark
   def kryoEncode: Array[Byte] = {
@@ -80,12 +84,12 @@ class KryoAtomicCoderBenchmark {
 
   @Benchmark
   def derivedEncode: Array[Byte] = {
-    CoderUtils.encodeToByteArray(derivedCoder.toBeam, specializedUserForDerived)
+    CoderUtils.encodeToByteArray(derivedCoder, specializedUserForDerived)
   }
 
   @Benchmark
   def derivedListEncode: Array[Byte] = {
-    CoderUtils.encodeToByteArray(derivedListCoder.toBeam, tenTimes)
+    CoderUtils.encodeToByteArray(derivedListCoder, tenTimes)
   }
 
 
@@ -118,12 +122,12 @@ class KryoAtomicCoderBenchmark {
 
   @Benchmark
   def derivedDecode: SpecializedUserForDerived = {
-    CoderUtils.decodeFromByteArray(derivedCoder.toBeam, derivedEncoded)
+    CoderUtils.decodeFromByteArray(derivedCoder, derivedEncoded)
   }
 
   @Benchmark
   def derivedListDecode: List[SpecializedUserForDerived] = {
-    CoderUtils.decodeFromByteArray(derivedListCoder.toBeam, derivedListEncoded)
+    CoderUtils.decodeFromByteArray(derivedListCoder, derivedListEncoded)
   }
 }
 

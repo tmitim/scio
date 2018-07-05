@@ -426,6 +426,9 @@ sealed trait BaseCoders {
   // implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
   implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] =
     Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayCoder[T](bc)) }
+
+  implicit def arrayByteCoder: Coder[Array[Byte]] = Coder.beam(ByteArrayCoder.of())
+
   // implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] = new MutableMapCoder[K, V]
   implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] =
     Coder.transform(Coder[K]){ kc =>

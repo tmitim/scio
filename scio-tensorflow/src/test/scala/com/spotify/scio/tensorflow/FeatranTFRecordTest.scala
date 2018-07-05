@@ -30,9 +30,6 @@ import com.spotify.scio.coders._
 import com.spotify.scio.coders.Implicits._
 
 case class TrainingPoint(x1: Double, label: Double)
-object TrainingPoint {
-  implicit def trainingPointCoder = gen[TrainingPoint]
-}
 
 object FeatureSpecJob {
 

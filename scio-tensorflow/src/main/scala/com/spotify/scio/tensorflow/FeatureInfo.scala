@@ -29,9 +29,6 @@ import com.spotify.scio.coders._
 import com.spotify.scio.coders.Implicits._
 
 private final case class FeatureInfo(name: String, kind: FeatureKind, tags: Map[String, String])
-private object FeatureInfo {
-  implicit def featureInfoCoder: Coder[FeatureInfo] = gen[FeatureInfo]
-}
 
 /** Mapping between Scala types and TF types */
 private object FeatureKind extends Enumeration {

@@ -27,6 +27,7 @@ import org.scalatest.{FlatSpec, Matchers, Assertion}
 import shapeless.test.illTyped
 import com.spotify.scio.values.SCollection
 import com.spotify.scio.ScioContext
+import com.spotify.scio.coders.Coder.gen
 import com.spotify.scio.coders.Implicits._
 
 final case class UserId(bytes: Seq[Byte])

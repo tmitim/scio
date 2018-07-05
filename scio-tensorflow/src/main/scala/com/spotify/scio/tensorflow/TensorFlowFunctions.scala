@@ -207,7 +207,7 @@ class TFExampleSCollectionFunctions[T <: Example](val self: SCollection[T]) {
                           compression: Compression = Compression.UNCOMPRESSED,
                           numShards: Int = 0,
                           tfRecordSpecPath: String = null)(
-    implicit ev: T <:< Example): (Future[Tap[Example]], Future[Tap[String]]) = {
+    implicit ev: T <:< Example, tcoder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) = {
     import scala.concurrent.ExecutionContext.Implicits.global
 
     require(tFRecordSpec != null, "TFRecord spec can't be null")
@@ -256,7 +256,7 @@ class TFExampleSCollectionFunctions[T <: Example](val self: SCollection[T]) {
    */
   def saveAsTfExampleFile(
     path: String,
-    fe: FeatureExtractor[SCollection, _]): (Future[Tap[Example]], Future[Tap[String]]) =
+    fe: FeatureExtractor[SCollection, _])(implicit coder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) =
     saveAsTfExampleFile(path, fe, Compression.UNCOMPRESSED)
 
   /**
@@ -268,7 +268,7 @@ class TFExampleSCollectionFunctions[T <: Example](val self: SCollection[T]) {
    */
   def saveAsTfExampleFile(path: String,
                           fe: FeatureExtractor[SCollection, _],
-                          compression: Compression): (Future[Tap[Example]], Future[Tap[String]]) =
+                          compression: Compression)(implicit coder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) =
     self.saveAsTfExampleFile(path,
                              FeatranTFRecordSpec.fromFeatureSpec(fe.featureNames),
                              compression = compression)

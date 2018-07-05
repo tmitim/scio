@@ -22,7 +22,6 @@ import java.util.UUID
 import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
-import com.spotify.scio.extra.coders.Implicits._
 import com.spotify.scio.values.{SCollection, SideInput}
 import com.spotify.sparkey.SparkeyReader
 import org.apache.beam.sdk.transforms.{DoFn, View}

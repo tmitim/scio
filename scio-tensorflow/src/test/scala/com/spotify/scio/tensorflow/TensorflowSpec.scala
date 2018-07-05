@@ -72,9 +72,6 @@ private object TFSavedJob {
                   petalLength: Option[Double],
                   petalWidth: Option[Double],
                   className: Option[String])
-  object Iris {
-    implicit def irisCoder = gen[Iris]
-  }
 
   val Spec: FeatureSpec[Iris] = FeatureSpec
     .of[Iris]
