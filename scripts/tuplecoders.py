@@ -71,7 +71,7 @@ def main(out):
         package com.spotify.scio.coders
 
         trait TupleCoders {
-          import Implicits.gen
+          import Coder.gen
         ''').replace('  # NOQA', '').lstrip('\n')
 
     N = 22

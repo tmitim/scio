@@ -158,7 +158,7 @@ private final object Derived extends Serializable {
   }
 }
 
-sealed trait LowPriorityCoderDerivation {
+trait LowPriorityCoderDerivation {
   import language.experimental.macros, magnolia._
   import com.spotify.scio.avro.types.CoderUtils
 
@@ -269,15 +269,12 @@ sealed trait AvroCoders {
 //   implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
 // }
 
-// sealed trait AlgebirdCoders {
-//   self: LowPriorityCoderDerivation with BaseCoders =>
-
-//   import com.twitter.algebird._
-//   implicit def cmsHashCoder[K: Coder : CMSHasher] = gen[CMSHash[K]]
-//   implicit def cmsCoder[K: Coder](implicit hcoder: Coder[CMSHash[K]]) = gen[CMS[K]]
-//   implicit def bfCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.BF[K]] = ???
-//   implicit def topKCoder[K](implicit c: Coder[K]): Coder[com.twitter.algebird.TopK[K]] = gen[com.twitter.algebird.TopK[K]]
-// }
+sealed trait AlgebirdCoders {
+  import com.twitter.algebird._
+  implicit def cmsCoder[K]: Coder[CMS[K]] = Coder.fallback
+  implicit def bfCoder[K]: Coder[BF[K]] = Coder.fallback
+  implicit def topKCoder[K]: Coder[TopK[K]] = Coder.fallback
+}
 
 private final object UnitCoder extends AtomicCoder[Unit]{
   def encode(value: Unit, os: OutputStream): Unit = ()
@@ -441,15 +438,14 @@ sealed trait BaseCoders {
   // implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
 }
 
-sealed trait Implicits
-  extends LowPriorityCoderDerivation
+trait Implicits
 //   with FromSerializable
 //   with FromBijection
-  with BaseCoders
+  extends BaseCoders
   with AvroCoders
 //   with ProtobufCoders
 //   with JavaCoders
-//   with AlgebirdCoders
+  with AlgebirdCoders
   with Serializable
 
 final object Implicits extends Implicits

@@ -43,6 +43,10 @@ private[scio] object CoderUtils {
     """
   }
 
+  var verbose = true
+  val reported: scala.collection.mutable.Set[(String, String)] =
+    scala.collection.mutable.Set.empty
+
   def issueFallbackWarning[T: c.WeakTypeTag](c: whitebox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
@@ -53,7 +57,12 @@ private[scio] object CoderUtils {
     val params = args.headOption.map { _ => args.mkString("[", ",", "]") }.getOrElse("")
     val fullType = typeName + params
 
-    c.info(c.enclosingPosition,
+    val toReport = (c.enclosingPosition.toString -> wtt.toString)
+    val alreadyReported = reported.contains(toReport)
+    if(!alreadyReported) reported += toReport
+
+    if(verbose && !alreadyReported) {
+      c.info(c.enclosingPosition,
       s"""
       | Warning: No implicit Coder found for type:
       |
@@ -80,6 +89,15 @@ private[scio] object CoderUtils {
       |       implicit def coder${typeName}: Coder[$fullType] = Coder.fallback[$fullType]
       |
       """.stripMargin, true)
+      verbose = false
+    } else if(!alreadyReported) {
+      c.info(c.enclosingPosition,
+      s"""
+      | Warning: No implicit Coder found for type:
+      |
+      |   >> $wtt
+      """.stripMargin, true)
+    }
     q"""_root_.com.spotify.scio.coders.Coder.fallback[$wtt]"""
   }
 

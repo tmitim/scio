@@ -169,7 +169,8 @@ sealed trait LowPriorityFallbackCoder {
 }
 
 final object Coder
-  extends CoderGrammar
+  extends LowPriorityCoderDerivation
+  with CoderGrammar
   with AtomCoders
   with TupleCoders {
   import org.apache.beam.sdk.values.KV

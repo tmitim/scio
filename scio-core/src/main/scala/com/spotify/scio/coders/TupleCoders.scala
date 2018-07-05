@@ -27,7 +27,7 @@
 package com.spotify.scio.coders
 
 trait TupleCoders {
-  import Implicits.gen
+  import Coder.gen
 
   implicit def tuple2Coder[A: Coder, B: Coder]: Coder[(A, B)] = gen[(A, B)]
   implicit def tuple3Coder[A: Coder, B: Coder, C: Coder]: Coder[(A, B, C)] = gen[(A, B, C)]
