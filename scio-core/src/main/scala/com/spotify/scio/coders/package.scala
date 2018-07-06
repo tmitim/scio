@@ -162,15 +162,14 @@ sealed trait AtomCoders extends LowPriorityFallbackCoder {
     optionCoder[Nothing, Option](nothingCoder).asInstanceOf[Coder[None.type]]
 }
 
-sealed trait LowPriorityFallbackCoder {
+sealed trait LowPriorityFallbackCoder extends LowPriorityCoderDerivation {
   import language.experimental.macros
   implicit def implicitFallback[T](implicit lp: shapeless.LowPriority): Coder[T] =
     macro com.spotify.scio.avro.types.CoderUtils.issueFallbackWarning[T]
 }
 
 final object Coder
-  extends LowPriorityCoderDerivation
-  with CoderGrammar
+  extends CoderGrammar
   with AtomCoders
   with TupleCoders {
   import org.apache.beam.sdk.values.KV

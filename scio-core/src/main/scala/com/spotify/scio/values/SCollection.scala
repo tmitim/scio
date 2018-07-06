@@ -451,11 +451,11 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @group transform
    */
   def quantilesApprox(numQuantiles: Int)
-                     (implicit ord: Ordering[T], coder: Coder[Iterable[T]], dummy: DummyImplicit): SCollection[Iterable[T]] =
-                     quantilesApprox(numQuantiles, ord)(coder)
+                     (implicit ord: Ordering[T], coder: Coder[T], dummy: DummyImplicit): SCollection[Iterable[T]] =
+                     quantilesApprox(numQuantiles, ord)
 
   def quantilesApprox(numQuantiles: Int, ord: Ordering[T])
-                     (implicit coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
+                     (implicit coder: Coder[T]): SCollection[Iterable[T]] = this.transform {
     _
       .pApply(ApproximateQuantiles.globally(numQuantiles, ord))
       .map(_.asInstanceOf[JIterable[T]].asScala)
@@ -530,7 +530,7 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @return a new SCollection whose single value is an `Iterable` of the samples
    * @group transform
    */
-  def sample(sampleSize: Int)(implicit coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
+  def sample(sampleSize: Int)(implicit coder: Coder[T]): SCollection[Iterable[T]] = this.transform {
     _.pApply(Sample.fixedSizeGlobally(sampleSize)).map(_.asScala)
   }
 
@@ -574,10 +574,10 @@ sealed trait SCollection[T] extends PCollectionWrapper[T] {
    * @return a new SCollection whose single value is an `Iterable` of the top k
    * @group transform
    */
-  def top(num: Int)(implicit ord: Ordering[T], coder: Coder[Iterable[T]], d: DummyImplicit): SCollection[Iterable[T]] =
-    top(num, ord)(coder)
+  def top(num: Int)(implicit ord: Ordering[T], coder: Coder[T], d: DummyImplicit): SCollection[Iterable[T]] =
+    top(num, ord)
 
-  def top(num: Int, ord: Ordering[T])(implicit coder: Coder[Iterable[T]]): SCollection[Iterable[T]] = this.transform {
+  def top(num: Int, ord: Ordering[T])(implicit coder: Coder[T]): SCollection[Iterable[T]] = this.transform {
     _.pApply(Top.of(num, ord)).map(_.asInstanceOf[JIterable[T]].asScala)
   }
 

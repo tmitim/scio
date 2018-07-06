@@ -366,7 +366,6 @@ class ScioContext private[scio] (val options: PipelineOptions,
 
     if (_counters.nonEmpty) {
       val counters = _counters.toArray
-      import com.spotify.scio.coders.Implicits._
       this.parallelize(Seq(0)).map { _ =>
         counters.foreach(_.inc(0))
       }

@@ -20,10 +20,10 @@ package com.spotify.scio.coders
 import java.io.{InputStream, OutputStream}
 import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 // import org.apache.beam.sdk.util.CoderUtils
-// import com.twitter.bijection._
+import com.twitter.bijection._
 // import java.io.{ ObjectInputStream, ObjectOutputStream }
 import scala.reflect.ClassTag
-// import scala.collection.{ mutable => m }
+import scala.collection.{ mutable => m }
 
 final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
 
@@ -62,37 +62,40 @@ final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) exten
 //     new SerializableCoder[I => O]
 // }
 
-// //
-// // Derive Coder from twitter Bijection
-// //
-// class CollectionfromBijection[A, B](
-//   implicit b: Bijection[Seq[A], B], c: Coder[Seq[A]]) extends Coder[B] {
-//     def encode(ts: B, out: OutputStream): Unit =
-//       c.encode(b.invert(ts), out)
-//     def decode(in: InputStream): B =
-//       b(c.decode(in))
-// }
+//
+// Derive Coder from twitter Bijection
+//
+final class CollectionfromBijection[A, B](
+  b: Bijection[Seq[A], B], c: BCoder[Seq[A]]) extends AtomicCoder[B] {
+    def encode(ts: B, out: OutputStream): Unit =
+      c.encode(b.invert(ts), out)
+    def decode(in: InputStream): B =
+      b(c.decode(in))
+}
 
-// class MapfromBijection[K, A, B](
-//   implicit b: Bijection[Map[K, A], B], c: Coder[Map[K, A]]) extends Coder[B] {
-//     def encode(ts: B, out: OutputStream): Unit =
-//       c.encode(b.invert(ts), out)
-//     def decode(in: InputStream): B =
-//       b(c.decode(in))
-// }
+final class MapfromBijection[K, A, B](
+  b: Bijection[Map[K, A], B], c: BCoder[Map[K, A]]) extends AtomicCoder[B] {
+    def encode(ts: B, out: OutputStream): Unit =
+      c.encode(b.invert(ts), out)
+    def decode(in: InputStream): B =
+      b(c.decode(in))
+}
 
-// sealed trait FromBijection {
+sealed trait FromBijection {
+  implicit def collectionfromBijection[A, B](
+    implicit b: Bijection[Seq[A], B], //TODO: should I use ImplicitBijection ?
+             c: Coder[Seq[A]]): Coder[B] =
+    Coder.transform(c) { ca =>
+      Coder.beam(new CollectionfromBijection[A, B](b, ca))
+    }
 
-//   implicit def collectionfromBijection[A, B](
-//     implicit b: Bijection[Seq[A], B], //TODO: should I use ImplicitBijection ?
-//              c: Coder[Seq[A]]): Coder[B] =
-//     new CollectionfromBijection[A, B]
-
-//   implicit def mapfromBijection[K, A, B](
-//     implicit b: Bijection[Map[K, A], B], //TODO: should I use ImplicitBijection ?
-//              c: Coder[Map[K, A]]): Coder[B] =
-//     new MapfromBijection[K, A, B]
-// }
+  implicit def mapfromBijection[K, A, B](
+    implicit b: Bijection[Map[K, A], B], //TODO: should I use ImplicitBijection ?
+             c: Coder[Map[K, A]]): Coder[B] =
+    Coder.transform(c) { cm =>
+      Coder.beam(new MapfromBijection[K, A, B](b, cm))
+    }
+}
 
 //
 // Derive Coder using Magnolia
@@ -236,38 +239,38 @@ sealed trait AvroCoders {
 // //
 // // Java Coders
 // //
-// sealed trait JavaCoders {
-//   self: BaseCoders with FromBijection =>
+sealed trait JavaCoders {
+  self: BaseCoders with FromBijection =>
 
-//   implicit def uriCoder: Coder[java.net.URI] = ???
-//   implicit def pathCoder: Coder[java.nio.file.Path] = ???
-//   import java.lang.{Iterable => jIterable}
-//   implicit def jIterableCoder[T](implicit c: Coder[T]): Coder[jIterable[T]] = ???
-//   // Could be derived from Bijection but since it's a very common one let's just support it.
-//   implicit def jlistCoder[T](implicit c: Coder[T]): Coder[java.util.List[T]] =
-//     collectionfromBijection[T, java.util.List[T]]
+  implicit def uriCoder: Coder[java.net.URI] = ???
+  implicit def pathCoder: Coder[java.nio.file.Path] = ???
+  import java.lang.{Iterable => jIterable}
+  implicit def jIterableCoder[T](implicit c: Coder[T]): Coder[jIterable[T]] = ???
+  // Could be derived from Bijection but since it's a very common one let's just support it.
+  implicit def jlistCoder[T](implicit c: Coder[T]): Coder[java.util.List[T]] =
+    collectionfromBijection[T, java.util.List[T]]
 
-//   private def fromScalaCoder[J <: java.lang.Number, S <: AnyVal](coder: Coder[S]): Coder[J] =
-//     coder.asInstanceOf[Coder[J]]
+  private def fromScalaCoder[J <: java.lang.Number, S <: AnyVal](coder: Coder[S]): Coder[J] =
+    coder.asInstanceOf[Coder[J]]
 
-//   implicit val jIntegerCoder: Coder[java.lang.Integer] = fromScalaCoder(Coder.intCoder)
-//   implicit val jLongCoder: Coder[java.lang.Long] = fromScalaCoder(Coder.longCoder)
-//   implicit val jDoubleCoder: Coder[java.lang.Double] = fromScalaCoder(Coder.doubleCoder)
-//   // TODO: Byte, Float, Short
+  implicit val jIntegerCoder: Coder[java.lang.Integer] = fromScalaCoder(Coder.intCoder)
+  implicit val jLongCoder: Coder[java.lang.Long] = fromScalaCoder(Coder.longCoder)
+  implicit val jDoubleCoder: Coder[java.lang.Double] = fromScalaCoder(Coder.doubleCoder)
+  // TODO: Byte, Float, Short
 
-//   implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
-//   implicit def mutationCoder: Coder[com.google.bigtable.v2.Mutation] = ???
+  // implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
+  // implicit def mutationCoder: Coder[com.google.bigtable.v2.Mutation] = ???
 
-//   implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
-//   implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
-//   implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
-//   implicit def instantCoder: Coder[org.joda.time.Instant] = ???
-//   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
-//     from(org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of())
-//   implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
-//   implicit def entityCoder: Coder[com.google.datastore.v1.Entity] = ???
-//   implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
-// }
+  // implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
+  // implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
+  // implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
+  // implicit def instantCoder: Coder[org.joda.time.Instant] = ???
+  implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
+    Coder.beam(org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of())
+  // implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
+  // implicit def entityCoder: Coder[com.google.datastore.v1.Entity] = ???
+  // implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
+}
 
 sealed trait AlgebirdCoders {
   import com.twitter.algebird._
@@ -346,13 +349,13 @@ private class ArrayCoder[T : ClassTag](bc: BCoder[T]) extends AtomicCoder[Array[
     seqCoder.decode(is).toArray
 }
 
-// private class ArrayBufferCoder[T: Coder] extends Coder[m.ArrayBuffer[T]] {
-//   val seqCoder = new SeqCoder[T]
-//   def encode(value: m.ArrayBuffer[T], os: OutputStream): Unit =
-//     seqCoder.encode(value.toSeq, os)
-//   def decode(is: InputStream): m.ArrayBuffer[T] =
-//     m.ArrayBuffer(seqCoder.decode(is):_*)
-// }
+private class ArrayBufferCoder[T](c: BCoder[T]) extends AtomicCoder[m.ArrayBuffer[T]] {
+  val seqCoder = new SeqCoder[T](c)
+  def encode(value: m.ArrayBuffer[T], os: OutputStream): Unit =
+    seqCoder.encode(value.toSeq, os)
+  def decode(is: InputStream): m.ArrayBuffer[T] =
+    m.ArrayBuffer(seqCoder.decode(is):_*)
+}
 
 private class MapCoder[K, V](kc: BCoder[K], vc: BCoder[V]) extends AtomicCoder[Map[K, V]] {
   val lc = VarIntCoder.of()
@@ -374,25 +377,25 @@ private class MapCoder[K, V](kc: BCoder[K], vc: BCoder[V]) extends AtomicCoder[M
   }
 }
 
-// private class MutableMapCoder[K: Coder, V: Coder] extends Coder[m.Map[K, V]] {
-//   val lc = VarIntCoder.of()
-//   def decode(in: InputStream): m.Map[K, V] = {
-//     val l = lc.decode(in)
-//     m.Map((1 to l).map { _ =>
-//       val k = Coder[K].decode(in)
-//       val v = Coder[V].decode(in)
-//       (k, v)
-//     }:_*)
-//   }
+private class MutableMapCoder[K, V](kc: BCoder[K], vc: BCoder[V]) extends AtomicCoder[m.Map[K, V]] {
+  val lc = VarIntCoder.of()
+  def decode(in: InputStream): m.Map[K, V] = {
+    val l = lc.decode(in)
+    m.Map((1 to l).map { _ =>
+      val k = kc.decode(in)
+      val v = vc.decode(in)
+      (k, v)
+    }:_*)
+  }
 
-//   def encode(ts: m.Map[K, V], out: OutputStream): Unit = {
-//     lc.encode(ts.size, out)
-//     ts.foreach { case (k, v) =>
-//       Coder[K].encode(k, out)
-//       Coder[V].encode(v, out)
-//     }
-//   }
-// }
+  def encode(ts: m.Map[K, V], out: OutputStream): Unit = {
+    lc.encode(ts.size, out)
+    ts.foreach { case (k, v) =>
+      kc.encode(k, out)
+      vc.encode(v, out)
+    }
+  }
+}
 
 sealed trait BaseCoders {
   // TODO: support all primitive types
@@ -422,32 +425,40 @@ sealed trait BaseCoders {
     Coder.transform(Coder[T]){ bc => Coder.beam(new ListCoder[T](bc)) }
 
   // implicit def vectorCoder[T: Coder]: Coder[Vector[T]] = new VectorCoder[T]
-  // implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] = new ArrayBufferCoder[T]
+  implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] =
+    Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayBufferCoder[T](bc)) }
+
   // implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
   implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] =
     Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayCoder[T](bc)) }
 
   implicit def arrayByteCoder: Coder[Array[Byte]] = Coder.beam(ByteArrayCoder.of())
 
-  // implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] = new MutableMapCoder[K, V]
+  implicit def mutableMapCoder[K: Coder, V: Coder]: Coder[m.Map[K, V]] =
+    Coder.transform(Coder[K]){ kc =>
+      Coder.transform(Coder[V]){ vc =>
+        Coder.beam(new MutableMapCoder[K, V](kc, vc))
+      }
+    }
+
   implicit def mapCoder[K: Coder, V: Coder]: Coder[Map[K, V]] =
     Coder.transform(Coder[K]){ kc =>
       Coder.transform(Coder[V]){ vc =>
         Coder.beam(new MapCoder[K, V](kc, vc))
       }
     }
-  // implicit def sortedSetCoder[T: Coder]: Coder[scala.collection.SortedSet[T]] = ???
 
+  // implicit def sortedSetCoder[T: Coder]: Coder[scala.collection.SortedSet[T]] = ???
   // implicit def enumerationCoder[E <: Enumeration]: Coder[E#Value] = ???
 }
 
 trait Implicits
 //   with FromSerializable
-//   with FromBijection
   extends BaseCoders
+  with FromBijection
   with AvroCoders
 //   with ProtobufCoders
-//   with JavaCoders
+  with JavaCoders
   with AlgebirdCoders
   with Serializable
 
