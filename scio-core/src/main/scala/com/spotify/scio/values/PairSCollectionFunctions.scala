@@ -718,7 +718,7 @@ class PairSCollectionFunctions[K, V](val self: SCollection[(K, V)]) {
   def sumByKey(implicit sg: Semigroup[V], koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
     this.applyPerKey(Combine.perKey(Functions.reduceFn(sg)), kvToTuple[K, V])
 
-  def sumByKey(sg: Semigroup[V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
+  def sumByKey(sg: Semigroup[V])(implicit koder: Coder[K], voder: Coder[V], d: DummyImplicit): SCollection[(K, V)] =
     sumByKey(sg, koder, voder)
 
   /**
