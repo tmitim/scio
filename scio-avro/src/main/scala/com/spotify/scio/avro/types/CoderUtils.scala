@@ -19,9 +19,7 @@ package com.spotify.scio.avro.types
 
 import org.apache.avro.specific.SpecificRecordBase
 import scala.reflect.macros._
-
-import org.apache.beam.sdk.coders.{Coder, AtomicCoder}
-import java.io.{InputStream, OutputStream}
+import scala.language.higherKinds
 
 private[scio] object CoderUtils {
 
@@ -47,7 +45,7 @@ private[scio] object CoderUtils {
   val reported: scala.collection.mutable.Set[(String, String)] =
     scala.collection.mutable.Set.empty
 
-  def issueFallbackWarning[T: c.WeakTypeTag](c: whitebox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
+  def issueFallbackWarning[T: c.WeakTypeTag](c: blackbox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
     val TypeRef(pre, sym, args) = wtt
@@ -61,44 +59,53 @@ private[scio] object CoderUtils {
     val alreadyReported = reported.contains(toReport)
     if(!alreadyReported) reported += toReport
 
-    if(verbose && !alreadyReported) {
-      c.info(c.enclosingPosition,
+
+    def shortMessage =
       s"""
       | Warning: No implicit Coder found for type:
       |
       |   >> $wtt
-      |
-      |  Scio will use a fallback Kryo coder instead.
-      |  Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
-      |  If a type is not supported, consider implementing your own implicit Coder for this type.
-      |  It is recommended to declare this Coder in your class companion object:
-      |
-      |       object ${typeName} {
-      |         import com.spotify.scio.coders.Coder
-      |         import org.apache.beam.sdk.coders.AtomicCoder
-      |
-      |         implicit def coder${typeName}: Coder[$fullType] =
-      |           Coder.beam(new AtomicCoder[$fullType] {
-      |             def decode(in: InputStream): $fullType = ???
-      |             def encode(ts: $fullType, out: OutputStream): Unit = ???
-      |           })
-      |       }
-      |
-      |  If you do want to use a Kryo coder, be explicit about it:
-      |
-      |       implicit def coder${typeName}: Coder[$fullType] = Coder.fallback[$fullType]
-      |
-      """.stripMargin, true)
-      verbose = false
-    } else if(!alreadyReported) {
-      c.info(c.enclosingPosition,
-      s"""
-      | Warning: No implicit Coder found for type:
-      |
-      |   >> $wtt
-      """.stripMargin, true)
+      """
+
+    def longMessage =
+      shortMessage +
+        s"""
+        |
+        |  Scio will use a fallback Kryo coder instead.
+        |  Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
+        |  If a type is not supported, consider implementing your own implicit Coder for this type.
+        |  It is recommended to declare this Coder in your class companion object:
+        |
+        |       object ${typeName} {
+        |         import com.spotify.scio.coders.Coder
+        |         import org.apache.beam.sdk.coders.AtomicCoder
+        |
+        |         implicit def coder${typeName}: Coder[$fullType] =
+        |           Coder.beam(new AtomicCoder[$fullType] {
+        |             def decode(in: InputStream): $fullType = ???
+        |             def encode(ts: $fullType, out: OutputStream): Unit = ???
+        |           })
+        |       }
+        |
+        |  If you do want to use a Kryo coder, be explicit about it:
+        |
+        |       implicit def coder${typeName}: Coder[$fullType] = Coder.fallback[$fullType]
+        |
+        """
+
+    val fallback = q"""_root_.com.spotify.scio.coders.Coder.fallback[$wtt]"""
+
+    (verbose, alreadyReported) match {
+      case (true, false) =>
+        c.echo(c.enclosingPosition, longMessage.stripMargin)
+        verbose = false
+        fallback
+      case (false, false) =>
+        c.echo(c.enclosingPosition, shortMessage.stripMargin)
+        fallback
+      case (_, _) =>
+        fallback
     }
-    q"""_root_.com.spotify.scio.coders.Coder.fallback[$wtt]"""
   }
 
   // Add a level of indirection to prevent the macro from capturing
