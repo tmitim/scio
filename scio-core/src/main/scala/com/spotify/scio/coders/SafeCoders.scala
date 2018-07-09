@@ -212,7 +212,7 @@ private final class SlowGenericRecordCoder extends AtomicCoder[GenericRecord]{
   }
 }
 
-sealed trait AvroCoders {
+trait AvroCoders {
   import language.experimental.macros
   // TODO: Use a coder that does not serialize the schema
   def genericRecordCoder(schema: Schema): Coder[GenericRecord] =
@@ -239,7 +239,7 @@ sealed trait AvroCoders {
 // //
 // // Java Coders
 // //
-sealed trait JavaCoders {
+trait JavaCoders {
   self: BaseCoders with FromBijection =>
 
   implicit def uriCoder: Coder[java.net.URI] = ???
@@ -272,7 +272,7 @@ sealed trait JavaCoders {
   // implicit def statcounterCoder: Coder[com.spotify.scio.util.StatCounter] = ???
 }
 
-sealed trait AlgebirdCoders {
+trait AlgebirdCoders {
   import com.twitter.algebird._
   implicit def cmsCoder[K]: Coder[CMS[K]] = Coder.fallback
   implicit def bfCoder[K]: Coder[BF[K]] = Coder.fallback
@@ -333,13 +333,13 @@ private class IterableCoder[T](bc: BCoder[T]) extends AtomicCoder[Iterable[T]] {
     seqCoder.decode(is)
 }
 
-// private class VectorCoder[T: Coder] extends Coder[Vector[T]] {
-//   val seqCoder = new SeqCoder[T]
-//   def encode(value: Vector[T], os: OutputStream): Unit =
-//     seqCoder.encode(value.toSeq, os)
-//   def decode(is: InputStream): Vector[T] =
-//     seqCoder.decode(is).toVector
-// }
+private class VectorCoder[T](bc: BCoder[T]) extends AtomicCoder[Vector[T]] {
+  val seqCoder = new SeqCoder[T](bc)
+  def encode(value: Vector[T], os: OutputStream): Unit =
+    seqCoder.encode(value.toSeq, os)
+  def decode(is: InputStream): Vector[T] =
+    seqCoder.decode(is).toVector
+}
 
 private class ArrayCoder[T : ClassTag](bc: BCoder[T]) extends AtomicCoder[Array[T]] {
   val seqCoder = new SeqCoder[T](bc)
@@ -424,7 +424,9 @@ sealed trait BaseCoders {
   implicit def listCoder[T: Coder]: Coder[List[T]] =
     Coder.transform(Coder[T]){ bc => Coder.beam(new ListCoder[T](bc)) }
 
-  // implicit def vectorCoder[T: Coder]: Coder[Vector[T]] = new VectorCoder[T]
+  implicit def vectorCoder[T: Coder]: Coder[Vector[T]] =
+    Coder.transform(Coder[T]){ bc => Coder.beam(new VectorCoder[T](bc)) }
+
   implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] =
     Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayBufferCoder[T](bc)) }
 
