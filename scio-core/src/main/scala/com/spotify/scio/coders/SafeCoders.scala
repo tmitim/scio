@@ -227,28 +227,37 @@ trait AvroCoders {
     macro com.spotify.scio.avro.types.CoderUtils.staticInvokeCoder[T]
 }
 
-// //
-// // Protobuf Coders
-// //
-// sealed trait ProtobufCoders {
-//   implicit def bytestringCoder: Coder[com.google.protobuf.ByteString] = ???
-//   implicit def timestampCoder: Coder[com.google.protobuf.Timestamp] = ???
-//   implicit def protoGeneratedMessageCoder[T <: com.google.protobuf.GeneratedMessageV3]: Coder[T] = ???
-// }
+//
+// Protobuf Coders
+//
+sealed trait ProtobufCoders {
+  implicit def bytestringCoder: Coder[com.google.protobuf.ByteString] =
+    Coder.beam(org.apache.beam.sdk.extensions.protobuf.ByteStringCoder.of())
+}
 
-// //
-// // Java Coders
-// //
+//
+// Java Coders
+//
 trait JavaCoders {
   self: BaseCoders with FromBijection =>
 
-  implicit def uriCoder: Coder[java.net.URI] = ???
-  implicit def pathCoder: Coder[java.nio.file.Path] = ???
+  implicit def uriCoder: Coder[java.net.URI] =
+    Coder.xmap(Coder.beam(StringUtf8Coder.of()))(s => new java.net.URI(s), _.toString)
+
+  implicit def pathCoder: Coder[java.nio.file.Path] =
+    Coder.xmap(Coder.beam(StringUtf8Coder.of()))(s => java.nio.file.Paths.get(s), _.toString)
+
   import java.lang.{Iterable => jIterable}
-  implicit def jIterableCoder[T](implicit c: Coder[T]): Coder[jIterable[T]] = ???
+  implicit def jIterableCoder[T](implicit c: Coder[T]): Coder[jIterable[T]] =
+    Coder.transform(c) { bc =>
+      Coder.beam(org.apache.beam.sdk.coders.IterableCoder.of(bc))
+    }
+
   // Could be derived from Bijection but since it's a very common one let's just support it.
   implicit def jlistCoder[T](implicit c: Coder[T]): Coder[java.util.List[T]] =
-    collectionfromBijection[T, java.util.List[T]]
+    Coder.transform(c) { bc =>
+      Coder.beam(org.apache.beam.sdk.coders.ListCoder.of(bc))
+    }
 
   private def fromScalaCoder[J <: java.lang.Number, S <: AnyVal](coder: Coder[S]): Coder[J] =
     coder.asInstanceOf[Coder[J]]
@@ -264,7 +273,7 @@ trait JavaCoders {
   // implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
   // implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
   // implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
-  // implicit def instantCoder: Coder[org.joda.time.Instant] = ???
+  implicit def instantCoder: Coder[org.joda.time.Instant] = Coder.beam(InstantCoder.of())
   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
     Coder.beam(org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of())
   // implicit def messageCoder: Coder[org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage] = ???
@@ -430,7 +439,11 @@ sealed trait BaseCoders {
   implicit def arraybufferCoder[T: Coder]: Coder[m.ArrayBuffer[T]] =
     Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayBufferCoder[T](bc)) }
 
-  // implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] = ???
+  implicit def bufferCoder[T: Coder]: Coder[scala.collection.mutable.Buffer[T]] =
+    Coder.transform(Coder[T]) { bc =>
+      Coder.xmap(Coder.beam(new SeqCoder[T](bc)))(_.toBuffer, _.toSeq) // Buffer <: Seq
+    }
+
   implicit def arrayCoder[T: Coder : ClassTag]: Coder[Array[T]] =
     Coder.transform(Coder[T]){ bc => Coder.beam(new ArrayCoder[T](bc)) }
 
@@ -459,7 +472,7 @@ trait Implicits
   extends BaseCoders
   with FromBijection
   with AvroCoders
-//   with ProtobufCoders
+  with ProtobufCoders
   with JavaCoders
   with AlgebirdCoders
   with Serializable

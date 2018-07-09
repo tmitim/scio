@@ -152,7 +152,8 @@ sealed trait AtomCoders extends LowPriorityFallbackCoder {
   implicit def nothingCoder: Coder[Nothing] = beam[Nothing](NothingCoder)
   implicit def booleanCoder: Coder[Boolean] = beam(BooleanCoder.of().asInstanceOf[BCoder[Boolean]])
   implicit def longCoder: Coder[Long] = beam(BigEndianLongCoder.of().asInstanceOf[BCoder[Long]])
-  // implicit def bigdecimalCoder: Coder[BigDecimal] = ???
+  implicit def bigdecimalCoder: Coder[BigDecimal] =
+    Coder.xmap(beam(BigDecimalCoder.of()))(BigDecimal.apply, _.bigDecimal)
 
   implicit def optionCoder[T, S[_] <: Option[_]](implicit c: Coder[T]): Coder[S[T]] =
     Coder.transform(c){ bc => Coder.beam(new OptionCoder[T](bc)) }
