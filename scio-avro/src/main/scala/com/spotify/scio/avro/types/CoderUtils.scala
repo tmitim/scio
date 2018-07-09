@@ -45,7 +45,7 @@ private[scio] object CoderUtils {
   val reported: scala.collection.mutable.Set[(String, String)] =
     scala.collection.mutable.Set.empty
 
-  def issueFallbackWarning[T: c.WeakTypeTag](c: blackbox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
+  def issueFallbackWarning[T: c.WeakTypeTag](c: whitebox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
     val TypeRef(pre, sym, args) = wtt
@@ -55,10 +55,14 @@ private[scio] object CoderUtils {
     val params = args.headOption.map { _ => args.mkString("[", ",", "]") }.getOrElse("")
     val fullType = typeName + params
 
+    // Use shapeless magic to find out if a proper implicit is actually available
+    val lowPrio = new shapeless.LowPriorityMacros(c)
+    val secondImplicit = lowPrio.secondOpenImplicitTpe
+    val implicitFound = secondImplicit.isDefined
+
     val toReport = (c.enclosingPosition.toString -> wtt.toString)
     val alreadyReported = reported.contains(toReport)
     if(!alreadyReported) reported += toReport
-
 
     def shortMessage =
       s"""
@@ -96,6 +100,8 @@ private[scio] object CoderUtils {
     val fallback = q"""_root_.com.spotify.scio.coders.Coder.fallback[$wtt]"""
 
     (verbose, alreadyReported) match {
+      case _ if implicitFound =>
+        fallback
       case (true, false) =>
         c.echo(c.enclosingPosition, longMessage.stripMargin)
         verbose = false
@@ -121,17 +127,16 @@ private[scio] object CoderUtils {
     val magTree = magnolia.Magnolia.gen[T](c)
 
     def getLazyVal =
-        magTree match {
-          case q"lazy val $name = $body; $rest" =>
-            body
-        }
+      magTree match {
+        case q"lazy val $name = $body; $rest" =>
+          body
+      }
 
     val name = c.freshName(s"$$ShimDerivedCoder")
     val className = TypeName(name)
     val termName = TermName(name)
 
     // Remove annotations from magnolia since they are not serialiazable and we don't use them anyway
-    // TODO: do the same with sealedtrait
     val removeAnnotations =
       new Transformer {
         override def transform(tree: Tree) =
