@@ -150,6 +150,8 @@ class KryoAtomicCoderTest extends PipelineSpec {
     val options = PipelineOptionsFactory.fromArgs("--kryoRegistrationRequired=true").create()
     val sc = ScioContext(options)
 
+    implicit def alwaysUseKryo[A: ClassTag]: Coder[A] = Coder.fallback[A]
+
     sc.parallelize(1 to 10).map(x => RecordB(x.toString, x))
 
     // scalastyle:off no.whitespace.before.left.bracket
