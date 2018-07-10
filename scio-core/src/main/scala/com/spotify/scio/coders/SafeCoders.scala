@@ -22,7 +22,7 @@ import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
 // import org.apache.beam.sdk.util.CoderUtils
 import com.twitter.bijection._
 // import java.io.{ ObjectInputStream, ObjectOutputStream }
-import scala.reflect.ClassTag
+import scala.reflect.{ClassTag, classTag}
 import scala.collection.{ mutable => m }
 
 final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) extends AtomicCoder[T] {
@@ -181,8 +181,14 @@ trait AvroCoders {
 // Protobuf Coders
 //
 sealed trait ProtobufCoders {
-  implicit def bytestringCoder: Coder[com.google.protobuf.ByteString] =
-    Coder.beam(org.apache.beam.sdk.extensions.protobuf.ByteStringCoder.of())
+  import com.google.protobuf._
+  import org.apache.beam.sdk.extensions.protobuf._
+
+  implicit def bytestringCoder: Coder[ByteString] =
+    Coder.beam(ByteStringCoder.of())
+
+  implicit def protoMessageCoder[T <: Message : ClassTag]: Coder[T] =
+    Coder.beam(ProtoCoder.of(classTag[T].runtimeClass.asInstanceOf[Class[T]]))
 }
 
 //
