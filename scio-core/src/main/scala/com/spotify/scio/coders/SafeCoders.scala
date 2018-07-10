@@ -96,18 +96,6 @@ sealed trait FromBijection {
       Coder.beam(new MapfromBijection[K, A, B](b, cm))
     }
 }
-
-//
-// Derive Coder using Magnolia
-//
-private final object Help {
-  @inline def onErrorMsg[T](msg: String)(f: => T) =
-    try { f }
-    catch { case e: Exception =>
-      throw new RuntimeException(msg, e)
-    }
-}
-
 /**
 * Create a serializable coder by trashing all references to magnolia classes
 */
@@ -116,48 +104,10 @@ private final object Derived extends Serializable {
   import magnolia._
   import Coder.xmap
 
-  private def addErrInfo[A](label: String, c: Coder[A]): Coder[A] =
-    Coder.transform(c) { bc =>
-      Coder.beam(new AtomicCoder[A] {
-        def encode(value: A, os: OutputStream): Unit =
-          Help.onErrorMsg(s"Exception while trying to `encode` field ${label} in ${value}") {
-            bc.encode(value, os)
-          }
-        def decode(is: InputStream): A =
-          Help.onErrorMsg(s"Exception while trying to `decode` field ${label}") {
-            bc.decode(is)
-          }
-      })
-    }
-
-  private def add[A](a: Coder[Seq[A]], b: Coder[A]): Coder[Seq[A]] =
-    Coder.transform(a) { ca =>
-      Coder.transform(b) { cb =>
-        Coder.beam(new AtomicCoder[Seq[A]]{
-          def encode(value: Seq[A], os: OutputStream): Unit = {
-            ca.encode(value.init, os)
-            cb.encode(value.last, os)
-          }
-          def decode(is: InputStream): Seq[A] = {
-            ca.decode(is) :+ cb.decode(is)
-          }
-        })
-      }
-    }
-
-  private def toSeq[A](a: Coder[A]): Coder[Seq[A]] =
-    xmap(a)(a => Seq(a), _.head)
-
   def combineCoder[T](ps: Seq[Param[Coder, T]], rawConstruct: Seq[Any] => T): Coder[T] = {
-    val cs =
-      ps.map { case p =>
-        addErrInfo[Any](p.label, p.typeclass.asInstanceOf[Coder[Any]])
-      }
-    val coderValues =
-      cs.tail.foldLeft(toSeq(cs.head)) { case (cs, c) =>
-        add(cs, c)
-      }
-    xmap(coderValues)(rawConstruct, v => ps.map(_.dereference(v)))
+    val cs = ps.map { case p => (p.label, p.typeclass.asInstanceOf[Coder[Any]]) }.toArray
+    val coderValues = Coder.sequence(cs)
+    xmap(coderValues)(xs => rawConstruct(xs), v => ps.map(_.dereference(v)).toArray)
   }
 }
 

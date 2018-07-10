@@ -45,6 +45,7 @@ final case class Beam[T] private (beam: BCoder[T]) extends Coder[T]
 final case class Fallback[T] private (ct: ClassTag[T]) extends Coder[T]
 final case class Transform[A, B] private (c: Coder[A], f: BCoder[A] => Coder[B]) extends Coder[B]
 final case class Disjonction[T, Id] private (idCoder: Coder[Id], id: T => Id, coder: Map[Id, Coder[T]]) extends Coder[T]
+final case class Record[T] private (cs: Array[(String, Coder[T])]) extends Coder[Array[T]]
 
 private final case class DisjonctionCoder[T, Id](idCoder: BCoder[Id], id: T => Id, coders: Map[Id, BCoder[T]]) extends AtomicCoder[T] {
   def encode(value: T, os: OutputStream): Unit =  {
@@ -84,6 +85,42 @@ private class Named[T](u: BCoder[T]) extends AtomicCoder[T] {
   def decode(is: InputStream): T = u.decode(is)
 }
 
+// Coder used internally specifically for Magnolia derived coders.
+// It's technically possible to define Product coders only in terms of `Coder.transform`
+// This is just faster
+private class RecordCoder[T: ClassTag](cs: Array[(String, BCoder[T])]) extends AtomicCoder[Array[T]] {
+  @inline def onErrorMsg[A](msg: => String)(f: => A) =
+    try { f }
+    catch { case e: Exception =>
+      throw new RuntimeException(msg, e)
+    }
+
+  def encode(value: Array[T], os: OutputStream): Unit = {
+    var i = 0
+    while(i < value.length) {
+      val (label, c) = cs(i)
+      val v = value(i)
+      onErrorMsg(s"Exception while trying to `encode` field ${label} with value ${v}") {
+        c.encode(v, os)
+      }
+      i = i + 1
+    }
+  }
+
+  def decode(is: InputStream): Array[T] = {
+    val vs = new Array[T](cs.length)
+    var i = 0
+    while(i < cs.length) {
+      val (label, c) = cs(i)
+      onErrorMsg(s"Exception while trying to `decode` field ${label}") {
+        vs.update(i, c.decode(is))
+      }
+      i = i + 1
+    }
+    vs
+  }
+}
+
 sealed trait CoderGrammar {
   import org.apache.beam.sdk.coders.CoderRegistry
   import org.apache.beam.sdk.options.PipelineOptions
@@ -101,7 +138,7 @@ sealed trait CoderGrammar {
   def disjonction[T, Id: Coder](coder: Map[Id, Coder[T]])(id: T => Id) =
     Disjonction(Coder[Id], id, coder)
   def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] = {
-    def toB(bc: BCoder[A]) =
+    @inline def toB(bc: BCoder[A]) =
       new AtomicCoder[B]{
         def encode(value: B, os: OutputStream): Unit =
           bc.encode(t(value), os)
@@ -110,6 +147,8 @@ sealed trait CoderGrammar {
       }
     Transform[A, B](c, bc => Coder.beam(toB(bc)))
   }
+  private[scio] def sequence[T](cs: Array[(String, Coder[T])]): Coder[Array[T]] =
+    Record(cs)
 
   def beam[T](sc: ScioContext, c: Coder[T]): BCoder[T] =
     beam(sc.pipeline.getCoderRegistry, sc.options, c)
@@ -129,6 +168,8 @@ sealed trait CoderGrammar {
       case Transform(c, f) =>
         val u = f(beam(r, o, c))
         new Named(beam(r, o, u))
+      case Record(coders) =>
+        new RecordCoder(coders.map(c => c._1 -> beam(r, o, c._2)))
       case Disjonction(idCoder, id, coders) =>
         new Named(DisjonctionCoder(
           beam(r, o, idCoder),
