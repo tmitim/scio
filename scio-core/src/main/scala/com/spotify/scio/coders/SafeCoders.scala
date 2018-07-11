@@ -105,9 +105,26 @@ private final object Derived extends Serializable {
   import Coder.xmap
 
   def combineCoder[T](ps: Seq[Param[Coder, T]], rawConstruct: Seq[Any] => T): Coder[T] = {
-    val cs = ps.map { case p => (p.label, p.typeclass.asInstanceOf[Coder[Any]]) }.toArray
+    val cs = new Array[(String, Coder[Any])](ps.length)
+    var i = 0
+    while(i < ps.length) {
+      val p = ps(i)
+      cs.update(i, (p.label, p.typeclass.asInstanceOf[Coder[Any]]))
+      i = i + 1
+    }
+
     val coderValues = Coder.sequence(cs)
-    xmap(coderValues)(xs => rawConstruct(xs), v => ps.map(_.dereference(v)).toArray)
+    @inline def cToArray(v: T): Array[Any] = {
+      val arr = new Array[Any](ps.length)
+      var i = 0
+      while(i < ps.length) {
+        val p = ps(i)
+        arr.update(i, p.dereference(v))
+        i = i + 1
+      }
+      arr
+    }
+    xmap(coderValues)(xs => rawConstruct(xs), v => cToArray(v))
   }
 }
 
