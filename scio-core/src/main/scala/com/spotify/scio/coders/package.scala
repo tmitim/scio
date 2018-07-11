@@ -79,10 +79,19 @@ private final case class DisjonctionCoder[T, Id](idCoder: BCoder[Id], id: T => I
 // [info]   at org.apache.beam.sdk.coders.CoderRegistry.getDefaultCoders(CoderRegistry.java:374)
 // [info]   at org.apache.beam.sdk.coders.CoderRegistry.getCoder(CoderRegistry.java:321)
 // ...
-private class Named[T](u: BCoder[T]) extends AtomicCoder[T] {
+private case class Named[T](u: BCoder[T]) extends BCoder[T] {
   override def toString = u.toString
   def encode(value: T, os: OutputStream): Unit = u.encode(value, os)
   def decode(is: InputStream): T = u.decode(is)
+  def getCoderArguments(): java.util.List[_ <: BCoder[_]] = u.getCoderArguments()
+  def verifyDeterministic(): Unit = u.verifyDeterministic()
+}
+
+private object Named {
+  def apply[T](u: BCoder[T]) = u match {
+    case Named(_) => u
+    case _ => new Named(u)
+  }
 }
 
 // Coder used internally specifically for Magnolia derived coders.
@@ -161,17 +170,17 @@ sealed trait CoderGrammar {
 
   final def beam[T](r: CoderRegistry, o: PipelineOptions, c: Coder[T]): BCoder[T] = {
     c match {
-      case Beam(c) => new Named(c)
+      case Beam(c) => c
       case Fallback(ct) =>
-        new Named(com.spotify.scio.Implicits.RichCoderRegistry(r)
+        Named(com.spotify.scio.Implicits.RichCoderRegistry(r)
           .getScalaCoder[T](o)(ct))
       case Transform(c, f) =>
         val u = f(beam(r, o, c))
-        new Named(beam(r, o, u))
+        Named(beam(r, o, u))
       case Record(coders) =>
         new RecordCoder(coders.map(c => c._1 -> beam(r, o, c._2)))
       case Disjonction(idCoder, id, coders) =>
-        new Named(DisjonctionCoder(
+        Named(DisjonctionCoder(
           beam(r, o, idCoder),
           id,
           coders.mapValues(u => beam(r, o, u)).map(identity)))
