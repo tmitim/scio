@@ -32,7 +32,6 @@ import org.apache.beam.sdk.io.Compression
 import org.apache.beam.sdk.{io => gio}
 
 import scala.concurrent.Future
-import scala.reflect.ClassTag
 import scala.util.{Left, Right}
 
 /**

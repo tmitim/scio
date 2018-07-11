@@ -35,7 +35,6 @@ import org.apache.commons.compress.compressors.CompressorStreamFactory
 import org.apache.commons.io.{FileUtils, IOUtils}
 
 import scala.concurrent.Future
-import scala.reflect.ClassTag
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
 

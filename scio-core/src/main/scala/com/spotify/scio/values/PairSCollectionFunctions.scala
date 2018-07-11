@@ -20,7 +20,7 @@ package com.spotify.scio.values
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
 
-import java.lang.{Iterable => JIterable, Long => JLong}
+import java.lang.{Iterable => JIterable}
 import java.util.{Map => JMap}
 
 import com.spotify.scio.ScioContext
@@ -32,7 +32,6 @@ import org.apache.beam.sdk.values.{KV, PCollection, PCollectionView}
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.{ArrayBuffer, Map => MMap}
-import scala.reflect.ClassTag
 
 private object PairSCollectionFunctions {
 

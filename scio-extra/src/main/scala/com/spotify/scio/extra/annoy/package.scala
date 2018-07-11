@@ -27,7 +27,6 @@ import org.apache.beam.sdk.values.PCollectionView
 import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
-import com.spotify.scio.coders.Coder
 
 /**
  * Main package for Annoy side input APIs. Import all.

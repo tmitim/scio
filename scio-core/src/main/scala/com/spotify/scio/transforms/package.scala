@@ -30,7 +30,6 @@ import org.apache.beam.sdk.transforms.{DoFn, ParDo}
 import org.apache.beam.sdk.values.{TupleTag, TupleTagList}
 
 import scala.collection.JavaConverters._
-import scala.reflect.ClassTag
 import scala.util.{Failure, Success, Try}
 
 /**

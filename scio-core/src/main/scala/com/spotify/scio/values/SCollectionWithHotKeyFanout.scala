@@ -24,8 +24,6 @@ import com.twitter.algebird.{Aggregator, Monoid, Semigroup}
 import org.apache.beam.sdk.transforms.Combine.PerKeyWithHotKeyFanout
 import org.apache.beam.sdk.transforms.{Combine, SerializableFunction}
 
-import scala.reflect.ClassTag
-
 /**
  * An enhanced SCollection that uses an intermediate node to combine "hot" keys partially before
  * performing the full combine.

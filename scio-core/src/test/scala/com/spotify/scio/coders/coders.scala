@@ -17,14 +17,11 @@
 
 package com.spotify.scio.coders
 
-import java.io.{InputStream, OutputStream}
 import scala.collection.JavaConverters._
-import org.apache.beam.sdk.coders._
 import org.apache.beam.sdk.util.CoderUtils
 import com.twitter.bijection._, Bijection._
 import org.apache.avro.generic.GenericRecord
 import org.scalatest.{FlatSpec, Matchers, Assertion}
-import shapeless.test.illTyped
 import com.spotify.scio.values.SCollection
 import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Coder.gen

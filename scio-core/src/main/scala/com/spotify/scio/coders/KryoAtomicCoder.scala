@@ -33,7 +33,7 @@ import com.twitter.chill.algebird.AlgebirdRegistrar
 import com.twitter.chill.protobuf.ProtobufSerializer
 import org.apache.avro.generic.GenericRecord
 import org.apache.avro.specific.SpecificRecordBase
-import org.apache.beam.sdk.coders.{Coder => BCoder, _}
+import org.apache.beam.sdk.coders._
 import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder
 import org.apache.beam.sdk.options.{PipelineOptions, PipelineOptionsFactory}
 import org.apache.beam.sdk.util.VarInt

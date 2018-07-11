@@ -25,7 +25,6 @@ import org.apache.beam.sdk.transforms.ParDo
 import org.apache.beam.sdk.values.{PCollection, TupleTag, TupleTagList}
 
 import scala.collection.JavaConverters._
-import scala.reflect.ClassTag
 
 /**
  * An enhanced SCollection that provides access to one or more [[SideOutput]]s for some transforms.

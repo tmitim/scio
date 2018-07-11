@@ -17,16 +17,12 @@
 
 package com.spotify.scio.values
 
-import com.spotify.scio.{Implicits, ScioContext}
+import com.spotify.scio.ScioContext
 import com.spotify.scio.coders.Coder
 import org.apache.beam.sdk.transforms.{Combine, DoFn, PTransform, ParDo}
-import org.apache.beam.sdk.values.{KV, PCollection, POutput}
-
-import scala.reflect.ClassTag
+import org.apache.beam.sdk.values.{PCollection, POutput}
 
 private[values] trait PCollectionWrapper[T] extends TransformNameable {
-
-  import Implicits._
 
   /** The [[org.apache.beam.sdk.values.PCollection PCollection]] being wrapped internally. */
   val internal: PCollection[T]

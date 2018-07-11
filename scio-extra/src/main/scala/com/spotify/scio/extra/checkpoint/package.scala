@@ -25,8 +25,6 @@ import com.spotify.scio.util.ScioUtil
 import com.spotify.scio.values.SCollection
 import org.apache.beam.sdk.io.FileSystems
 
-import scala.reflect.ClassTag
-
 /**
  * Main package for checkpoint API. Import all.
  *

@@ -21,8 +21,6 @@ import com.spotify.scio._
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.values.SCollection
 
-import scala.reflect.ClassTag
-
 /** Trait with utility methods for unit testing pipelines. */
 trait PipelineTestUtils {
 

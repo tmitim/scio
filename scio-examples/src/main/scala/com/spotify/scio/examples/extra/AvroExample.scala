@@ -21,7 +21,6 @@ import com.spotify.scio._
 import com.spotify.scio.avro.Account
 import com.spotify.scio.avro.types.AvroType
 import org.apache.avro.Schema
-import org.apache.avro.Schema.Parser
 import org.apache.avro.generic.{GenericData, GenericRecord}
 
 import scala.collection.JavaConverters._

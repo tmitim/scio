@@ -24,8 +24,6 @@ import com.twitter.algebird.{Aggregator, Monoid, Semigroup}
 import org.apache.beam.sdk.transforms.Combine
 import org.apache.beam.sdk.values.PCollection
 
-import scala.reflect.ClassTag
-
 /**
  * An enhanced SCollection that uses an intermediate node to combine parts of the data to reduce
  * load on the final global combine step.

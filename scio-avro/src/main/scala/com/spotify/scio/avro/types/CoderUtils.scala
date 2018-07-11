@@ -19,7 +19,6 @@ package com.spotify.scio.avro.types
 
 import org.apache.avro.specific.SpecificRecordBase
 import scala.reflect.macros._
-import scala.language.higherKinds
 
 private[scio] object CoderUtils {
 

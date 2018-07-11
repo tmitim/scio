@@ -35,7 +35,6 @@ import org.apache.beam.sdk.values.KV
 import org.joda.time.{DateTimeConstants, Duration, Instant}
 
 import scala.collection.JavaConverters._
-import scala.reflect.ClassTag
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
 

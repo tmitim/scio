@@ -19,7 +19,6 @@ package com.spotify.scio
 
 import java.sql.{Driver, PreparedStatement, ResultSet}
 
-import com.spotify.scio.Implicits._
 import com.spotify.scio.io.Tap
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
@@ -29,7 +28,6 @@ import org.apache.beam.sdk.io.jdbc.JdbcIO.DataSourceConfiguration
 import org.apache.beam.sdk.io.{jdbc => jio}
 
 import scala.concurrent.Future
-import scala.reflect.ClassTag
 
 /**
  * Main package for JDBC APIs. Import all.

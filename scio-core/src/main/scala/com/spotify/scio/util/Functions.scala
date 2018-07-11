@@ -21,7 +21,6 @@ import java.lang.{Iterable => JIterable}
 import java.util.{List => JList}
 
 import com.google.common.collect.Lists
-import com.spotify.scio.coders.{KryoAtomicCoder, KryoOptions}
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
 import org.apache.beam.sdk.coders.{CoderRegistry, Coder => BCoder}
@@ -32,7 +31,6 @@ import org.apache.beam.sdk.transforms.{DoFn, SerializableFunction}
 import com.twitter.algebird.{Monoid, Semigroup}
 
 import scala.collection.JavaConverters._
-import scala.reflect.ClassTag
 
 private[scio] object Functions {
 

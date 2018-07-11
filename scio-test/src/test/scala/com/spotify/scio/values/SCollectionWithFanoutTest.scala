@@ -20,7 +20,6 @@ package com.spotify.scio.values
 import com.spotify.scio.testing.PipelineSpec
 import com.twitter.algebird.{Aggregator, Semigroup}
 
-import scala.reflect.ClassTag
 import com.spotify.scio.coders.Coder
 import com.spotify.scio.coders.Implicits._
 
