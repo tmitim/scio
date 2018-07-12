@@ -45,10 +45,12 @@ sealed trait Coder[T] extends Serializable
 final case class Beam[T] private (beam: BCoder[T]) extends Coder[T]
 final case class Fallback[T] private (ct: ClassTag[T]) extends Coder[T]
 final case class Transform[A, B] private (c: Coder[A], f: BCoder[A] => Coder[B]) extends Coder[B]
-final case class Disjonction[T, Id] private (idCoder: Coder[Id], id: T => Id, coder: Map[Id, Coder[T]]) extends Coder[T]
+final case class Disjonction[T, Id] private (
+  idCoder: Coder[Id], id: T => Id, coder: Map[Id, Coder[T]]) extends Coder[T]
 final case class Record[T] private (cs: Array[(String, Coder[T])]) extends Coder[Array[T]]
 
-private final case class DisjonctionCoder[T, Id](idCoder: BCoder[Id], id: T => Id, coders: Map[Id, BCoder[T]]) extends AtomicCoder[T] {
+private final case class DisjonctionCoder[T, Id](
+  idCoder: BCoder[Id], id: T => Id, coders: Map[Id, BCoder[T]]) extends AtomicCoder[T] {
   def encode(value: T, os: OutputStream): Unit =  {
     val i = id(value)
     idCoder.encode(i, os)
@@ -63,25 +65,8 @@ private final case class DisjonctionCoder[T, Id](idCoder: BCoder[Id], id: T => I
 
 // XXX: Workaround a NPE deep down the stack in Beam
 // info]   java.lang.NullPointerException: null value in entry: T=null
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.CollectPreconditions.checkEntryNotNull(CollectPreconditions.java:34)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.RegularImmutableMap.fromEntryArray(RegularImmutableMap.java:71)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.RegularImmutableMap.fromEntries(RegularImmutableMap.java:48)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.ImmutableMap.copyOf(ImmutableMap.java:359)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.collect.ImmutableMap.copyOf(ImmutableMap.java:332)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeResolver$TypeMappingIntrospector.getTypeMappings(TypeResolver.java:351)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeResolver.accordingTo(TypeResolver.java:64)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeToken.resolveType(TypeToken.java:249)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeToken.resolveSupertype(TypeToken.java:262)
-// [info]   at org.apache.beam.sdk.repackaged.com.google.common.reflect.TypeToken.getSupertype(TypeToken.java:387)
-// [info]   at org.apache.beam.sdk.values.TypeDescriptor.getSupertype(TypeDescriptor.java:200)
-// [info]   at org.apache.beam.sdk.util.CoderUtils.getCodedType(CoderUtils.java:180)
-// [info]   at org.apache.beam.sdk.coders.CoderRegistry.verifyCompatible(CoderRegistry.java:515)
-// [info]   at org.apache.beam.sdk.coders.CoderRegistry.getDefaultCoders(CoderRegistry.java:443)
-// [info]   at org.apache.beam.sdk.coders.CoderRegistry.getDefaultCoders(CoderRegistry.java:374)
-// [info]   at org.apache.beam.sdk.coders.CoderRegistry.getCoder(CoderRegistry.java:321)
-// ...
 private case class WrappedBCoder[T](u: BCoder[T]) extends BCoder[T] {
-  override def toString = u.toString
+  override def toString: String = u.toString
   def encode(value: T, os: OutputStream): Unit = u.encode(value, os)
   def decode(is: InputStream): T = u.decode(is)
   def getCoderArguments(): java.util.List[_ <: BCoder[_]] = u.getCoderArguments()
@@ -89,17 +74,19 @@ private case class WrappedBCoder[T](u: BCoder[T]) extends BCoder[T] {
 }
 
 private object WrappedBCoder {
-  def create[T](u: BCoder[T]) = u match {
-    case WrappedBCoder(_) => u
-    case _ => new WrappedBCoder(u)
-  }
+  def create[T](u: BCoder[T]): BCoder[T] =
+    u match {
+      case WrappedBCoder(_) => u
+      case _ => new WrappedBCoder(u)
+    }
 }
 
 // Coder used internally specifically for Magnolia derived coders.
 // It's technically possible to define Product coders only in terms of `Coder.transform`
 // This is just faster
-private class RecordCoder[T: ClassTag](cs: Array[(String, BCoder[T])]) extends AtomicCoder[Array[T]] {
-  @inline def onErrorMsg[A](msg: => String)(f: => A) =
+private class RecordCoder[T: ClassTag](
+  cs: Array[(String, BCoder[T])]) extends AtomicCoder[Array[T]] {
+  @inline def onErrorMsg[A](msg: => String)(f: => A): A =
     try { f }
     catch { case e: Exception =>
       throw new RuntimeException(msg, e)
@@ -136,16 +123,16 @@ sealed trait CoderGrammar {
   import org.apache.beam.sdk.options.PipelineOptions
   import org.apache.beam.sdk.options.PipelineOptionsFactory
 
-  def clean[T](w: BCoder[T]) =
+  def clean[T](w: BCoder[T]): BCoder[T] =
     com.spotify.scio.util.ClosureCleaner.clean(w).asInstanceOf[BCoder[T]]
 
-  def beam[T](beam: BCoder[T]) =
+  def beam[T](beam: BCoder[T]): Coder[T] =
     Beam(beam)
-  def fallback[T](implicit ct: ClassTag[T]) =
+  def fallback[T](implicit ct: ClassTag[T]): Coder[T] =
     Fallback[T](ct)
-  def transform[A, B](c: Coder[A])(f: BCoder[A] => Coder[B]) =
+  def transform[A, B](c: Coder[A])(f: BCoder[A] => Coder[B]): Coder[B] =
     Transform(c, f)
-  def disjonction[T, Id: Coder](coder: Map[Id, Coder[T]])(id: T => Id) =
+  def disjonction[T, Id: Coder](coder: Map[Id, Coder[T]])(id: T => Id): Coder[T] =
     Disjonction(Coder[Id], id, coder)
   def xmap[A, B](c: Coder[A])(f: A => B, t: B => A): Coder[B] = {
     @inline def toB(bc: BCoder[A]) =
@@ -166,7 +153,7 @@ sealed trait CoderGrammar {
   def beamWithDefault[T](
     coder: Coder[T],
     r: CoderRegistry = CoderRegistry.createDefault(),
-    o: PipelineOptions = PipelineOptionsFactory.create()) =
+    o: PipelineOptions = PipelineOptionsFactory.create()): BCoder[T] =
       beam(r, o, coder)
 
   final def beam[T](r: CoderRegistry, o: PipelineOptions, c: Coder[T]): BCoder[T] = {

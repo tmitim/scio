@@ -765,7 +765,8 @@ class ScioContext private[scio] (val options: PipelineOptions,
       val elementCoder = Coder[T]
       wrap(this.applyInternal(t)).setName(name)
         .map { m =>
-          val payload = CoderUtils.decodeFromByteArray(Coder.beam(context, elementCoder), m.getPayload)
+          val payload = CoderUtils.decodeFromByteArray(
+            Coder.beam(context, elementCoder), m.getPayload)
           val attributes = JMapWrapper.of(m.getAttributeMap)
           (payload, attributes)
         }
@@ -866,7 +867,8 @@ class ScioContext private[scio] (val options: PipelineOptions,
    * Distribute a local Scala `Map` to form an SCollection.
    * @group in_memory
    */
-  def parallelize[K, V](elems: Map[K, V])(implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
+  def parallelize[K, V](elems: Map[K, V])(
+    implicit koder: Coder[K], voder: Coder[V]): SCollection[(K, V)] =
   requireNotClosed {
     // TODO: merge Create.of and map ?
     val kvc = Coder.kvCoder[K, V](context)

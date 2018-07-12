@@ -46,7 +46,7 @@ class CodersTest extends FlatSpec with Matchers {
   val userId = UserId(Array[Byte](1, 2, 3, 4))
   val user = User(userId, "johndoe", "johndoe@spotify.com")
 
-  def checkSer[A](implicit c: Coder[A]) = {
+  private def checkSer[A](implicit c: Coder[A]) = {
     val beamCoder = Coder.beamWithDefault(c)
     org.apache.beam.sdk.util.SerializableUtils.ensureSerializable(beamCoder)
   }
@@ -90,7 +90,7 @@ class CodersTest extends FlatSpec with Matchers {
     ???
   }
 
-  object avro {
+  object Avro {
     import com.spotify.scio.avro.{ User => AvUser, Account, Address }
     val accounts: List[Account] = List(new Account(1, "tyoe", "name", 12.5))
     val address = new Address("street1", "street2", "city", "state", "01234", "Sweden")
@@ -113,13 +113,13 @@ class CodersTest extends FlatSpec with Matchers {
   }
 
   it should "support Avro's SpecificRecordBase" in {
-    check(avro.user)
+    check(Avro.user)
   }
 
   it should "support Avro's GenericRecord" in {
-    val schema = avro.user.getSchema
-    val record: GenericRecord = avro.user
-    check(record)(genericRecordCoder(schema), avro.eq)
+    val schema = Avro.user.getSchema
+    val record: GenericRecord = Avro.user
+    check(record)(genericRecordCoder(schema), Avro.eq)
   }
 
   it should "derive coders for product types" in {

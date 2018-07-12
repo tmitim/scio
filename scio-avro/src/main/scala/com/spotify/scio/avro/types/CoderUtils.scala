@@ -35,7 +35,9 @@ private[scio] object CoderUtils {
 
     q"""
     _root_.com.spotify.scio.coders.Coder.beam(
-      new _root_.com.spotify.scio.coders.AvroRawCoder[$companioned](${companionType}.getClassSchema())
+      new _root_.com.spotify.scio.coders.AvroRawCoder[$companioned](
+        ${companionType}.getClassSchema()
+      )
     )
     """
   }
@@ -44,7 +46,9 @@ private[scio] object CoderUtils {
   val reported: scala.collection.mutable.Set[(String, String)] =
     scala.collection.mutable.Set.empty
 
-  def issueFallbackWarning[T: c.WeakTypeTag](c: whitebox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
+  // scalastyle:off method.length
+  def issueFallbackWarning[T: c.WeakTypeTag](
+    c: whitebox.Context)(lp: c.Expr[shapeless.LowPriority]): c.Tree = {
     import c.universe._
     val wtt = weakTypeOf[T]
     val TypeRef(pre, sym, args) = wtt
@@ -75,7 +79,8 @@ private[scio] object CoderUtils {
         s"""
         |
         |  Scio will use a fallback Kryo coder instead.
-        |  Most types should be supported out of the box by simply importing `com.spotify.scio.coders.Implicits._`.
+        |  Most types should be supported out of the box by simply importing
+        |  `com.spotify.scio.coders.Implicits._`.
         |  If a type is not supported, consider implementing your own implicit Coder for this type.
         |  It is recommended to declare this Coder in your class companion object:
         |
@@ -120,8 +125,10 @@ private[scio] object CoderUtils {
     val wtt = weakTypeOf[T]
     val companioned = wtt.typeSymbol
 
-    if(wtt <:< typeOf[Seq[_]])
-      c.abort(c.enclosingPosition, s"Automatic coder derivation can't derive a Coder for $wtt <: Seq")
+    if(wtt <:< typeOf[Seq[_]]) {
+      c.abort(c.enclosingPosition,
+        s"Automatic coder derivation can't derive a Coder for $wtt <: Seq")
+    }
 
     val magTree = magnolia.Magnolia.gen[T](c)
 
@@ -135,13 +142,17 @@ private[scio] object CoderUtils {
     val className = TypeName(name)
     val termName = TermName(name)
 
-    // Remove annotations from magnolia since they are not serialiazable and we don't use them anyway
+    // Remove annotations from magnolia since they are
+    // not serialiazable and we don't use them anyway
+    // scalastyle:off line.size.limit
     val removeAnnotations =
       new Transformer {
         override def transform(tree: Tree) =
           tree match {
-            case Apply(TypeApply(Select(Select(_, TermName("Magnolia")), TermName("caseClass")), _), params @ List(name, isObj, isVal, ps, _, construct)) =>
-              q"_root_.magnolia.Magnolia.caseClass($name, $isObj, $isVal, $ps, scala.Array(), $construct)"
+            case Apply(TypeApply(Select(Select(_, TermName("Magnolia")), TermName("caseClass")), _),
+              params @ List(name, isObj, isVal, ps, _, construct)) =>
+              q"""_root_.magnolia.Magnolia.caseClass(
+                  $name, $isObj, $isVal, $ps, scala.Array(), $construct)"""
             case q"com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, $annotations))" =>
               q"_root_.com.spotify.scio.coders.Implicits.dispatch(new magnolia.SealedTrait($name, $subtypes, Array()))"
             case q"magnolia.Magnolia.param[$tc, $t, $pt]($name, $isRepeated, $typeclass, $default, $f, $annotations)" =>
@@ -155,6 +166,7 @@ private[scio] object CoderUtils {
               super.transform(tree)
           }
       }
+    // scalastyle:on line.size.limit
 
     val coder = removeAnnotations.transform(getLazyVal)
 
@@ -162,5 +174,6 @@ private[scio] object CoderUtils {
     val tree: c.Tree = coder
     tree
   }
+  // scalastyle:on method.length
 
 }

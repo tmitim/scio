@@ -140,7 +140,8 @@ package object dynamic {
      * Save this SCollection as text files specified by the destination function.
      */
     def saveAsTextFile(fileDestination: FileDestinations, suffix: String = ".txt")
-                      (destinationFn: String => String)(implicit ct: ClassTag[T]): Future[Tap[String]] = {
+                      (destinationFn: String => String)
+                      (implicit ct: ClassTag[T]): Future[Tap[String]] = {
       val destinations = DynamicDestinationsUtil.fileFn(fileDestination, suffix, destinationFn)
       saveAsTextFile(destinations, fileDestination.windowedWrites, fileDestination.numShards)
     }

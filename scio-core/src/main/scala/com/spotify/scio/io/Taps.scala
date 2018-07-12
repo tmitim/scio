@@ -50,7 +50,8 @@ trait Taps {
     mkTap(s"Avro: $path", () => isPathDone(path), () => AvroTap[T](path, schema))
 
   /** Get a `Future[Tap[T]]` for typed Avro source. */
-  def typedAvroFile[T <: HasAvroAnnotation : TypeTag: ClassTag : Coder](path: String): Future[Tap[T]] = {
+  def typedAvroFile[T <: HasAvroAnnotation : TypeTag: ClassTag : Coder](
+    path: String): Future[Tap[T]] = {
     val avroT = AvroType[T]
 
     import scala.concurrent.ExecutionContext.Implicits.global

@@ -129,7 +129,8 @@ package object transforms {
      * `parallelism` is the number of concurrent `DoFn`s per worker.
      * @group transform
      */
-    def filterWithParallelism(parallelism: Int)(fn: T => Boolean)(implicit coder: Coder[T]): SCollection[T] = {
+    def filterWithParallelism(parallelism: Int)(fn: T => Boolean)(
+      implicit coder: Coder[T]): SCollection[T] = {
       self.parDo(parallelFilterFn(parallelism)(fn))
     }
 

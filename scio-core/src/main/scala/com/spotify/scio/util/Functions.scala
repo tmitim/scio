@@ -45,7 +45,8 @@ private[scio] object Functions {
     override def getAccumulatorCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VA] =
       Coder.beamWithDefault(vacoder, registry)
 
-    override def getDefaultOutputCoder(registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VO] =
+    override def getDefaultOutputCoder(
+      registry: CoderRegistry, inputCoder: BCoder[VI]): BCoder[VO] =
       Coder.beamWithDefault(vocoder, registry)
   }
 

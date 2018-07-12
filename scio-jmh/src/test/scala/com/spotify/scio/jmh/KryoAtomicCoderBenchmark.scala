@@ -51,7 +51,8 @@ class KryoAtomicCoderBenchmark {
 
   // use hand-optimized coders
   val specializedUser = SpecializedUser(userId, "johndoe", "johndoe@spotify.com")
-  val specializedUserForDerived = SpecializedUserForDerived(userId, "johndoe", "johndoe@spotify.com")
+  val specializedUserForDerived =
+    SpecializedUserForDerived(userId, "johndoe", "johndoe@spotify.com")
   val tenTimes = List.fill(10)(specializedUserForDerived)
 
 

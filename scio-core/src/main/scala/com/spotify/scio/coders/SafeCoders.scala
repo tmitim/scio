@@ -1,27 +1,25 @@
-// /*
-//  * Copyright 2016 Spotify AB.
-//  *
-//  * Licensed under the Apache License, Version 2.0 (the "License");
-//  * you may not use this file except in compliance with the License.
-//  * You may obtain a copy of the License at
-//  *
-//  *     http://www.apache.org/licenses/LICENSE-2.0
-//  *
-//  * Unless required by applicable law or agreed to in writing,
-//  * software distributed under the License is distributed on an
-//  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-//  * KIND, either express or implied.  See the License for the
-//  * specific language governing permissions and limitations
-//  * under the License.
-//  */
+/*
+ * Copyright 2016 Spotify AB.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package com.spotify.scio.coders
 
 import java.io.{InputStream, OutputStream}
 import org.apache.beam.sdk.coders.{ Coder => BCoder, _}
-// import org.apache.beam.sdk.util.CoderUtils
 import com.twitter.bijection._
-// import java.io.{ ObjectInputStream, ObjectOutputStream }
 import scala.reflect.{ClassTag, classTag}
 import scala.collection.{ mutable => m }
 
@@ -42,25 +40,6 @@ final class AvroRawCoder[T](@transient var schema: org.apache.avro.Schema) exten
   def decode(is: InputStream): T =
     decoder.decode(is)
 }
-
-//
-// Derive Coder from Serializable values
-//
-// private[scio] class SerializableCoder[T] extends Coder[T] {
-//   def decode(in: InputStream): T =
-//     new ObjectInputStream(in).readObject().asInstanceOf[T]
-//   def encode(ts: T, out: OutputStream): Unit =
-//     new ObjectOutputStream(out).writeObject(ts)
-// }
-
-// sealed trait FromSerializable {
-//   // XXX: probably a bad idea...
-//   // implicit def serializableCoder[T <: Serializable](implicit l: shapeless.LowPriority): Coder[T] =
-//   //   new SerializableCoder[T]
-
-//   private[scio] implicit def function1Coder[I, O]: Coder[I => O] =
-//     new SerializableCoder[I => O]
-// }
 
 //
 // Derive Coder from twitter Bijection
@@ -96,9 +75,6 @@ sealed trait FromBijection {
       Coder.beam(new MapfromBijection[K, A, B](b, cm))
     }
 }
-/**
-* Create a serializable coder by trashing all references to magnolia classes
-*/
 
 private final object Derived extends Serializable {
   import magnolia._
@@ -145,7 +121,9 @@ trait LowPriorityCoderDerivation {
         .map{ case (c, i) => (i, c) }
         .toMap
 
-    Coder.disjonction[T, Int](coders){ t => sealedTrait.dispatch(t) { subtype => idx(subtype.typeName) } }
+    Coder.disjonction[T, Int](coders){
+      t => sealedTrait.dispatch(t) { subtype => idx(subtype.typeName) }
+    }
   }
 
   implicit def gen[T]: Coder[T] = macro CoderUtils.wrappedCoder[T]
@@ -243,9 +221,9 @@ trait JavaCoders {
   // implicit def mutationCaseCoder: Coder[com.google.bigtable.v2.Mutation.MutationCase] = ???
   // implicit def mutationCoder: Coder[com.google.bigtable.v2.Mutation] = ???
 
-  // implicit def boundedWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.BoundedWindow] = ???
-  // implicit def intervalWindowCoder: Coder[org.apache.beam.sdk.transforms.windowing.IntervalWindow] = ???
-  // implicit def paneinfoCoder: Coder[org.apache.beam.sdk.transforms.windowing.PaneInfo] = ???
+  // implicit def boundedWindowCoder: Coder[BoundedWindow] = ???
+  // implicit def intervalWindowCoder: Coder[IntervalWindow] = ???
+  // implicit def paneinfoCoder: Coder[PaneInfo] = ???
   implicit def instantCoder: Coder[org.joda.time.Instant] = Coder.beam(InstantCoder.of())
   implicit def tablerowCoder: Coder[com.google.api.services.bigquery.model.TableRow] =
     Coder.beam(org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder.of())

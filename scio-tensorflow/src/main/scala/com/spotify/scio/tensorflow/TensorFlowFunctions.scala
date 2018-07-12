@@ -256,7 +256,8 @@ class TFExampleSCollectionFunctions[T <: Example](val self: SCollection[T]) {
    */
   def saveAsTfExampleFile(
     path: String,
-    fe: FeatureExtractor[SCollection, _])(implicit coder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) =
+    fe: FeatureExtractor[SCollection, _])(
+    implicit coder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) =
     saveAsTfExampleFile(path, fe, Compression.UNCOMPRESSED)
 
   /**
@@ -268,7 +269,8 @@ class TFExampleSCollectionFunctions[T <: Example](val self: SCollection[T]) {
    */
   def saveAsTfExampleFile(path: String,
                           fe: FeatureExtractor[SCollection, _],
-                          compression: Compression)(implicit coder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) =
+                          compression: Compression)(
+                          implicit coder: Coder[T]): (Future[Tap[Example]], Future[Tap[String]]) =
     self.saveAsTfExampleFile(path,
                              FeatranTFRecordSpec.fromFeatureSpec(fe.featureNames),
                              compression = compression)
