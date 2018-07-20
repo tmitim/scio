@@ -625,6 +625,24 @@ more accurate the estimate will be; should be <code>&gt;= 16</code>.</p></dd></d
       </span>
       
       <p class="shortcomment cmt">Count the number of elements for each key.</p><div class="fullcomment"><div class="comment cmt"><p>Count the number of elements for each key.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new SCollection of (key, count) pairs</p></dd></dl></div>
+    </li><li name="com.spotify.scio.values.PairSCollectionFunctions#distinctByKey" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="per_key">
+      <a id="distinctByKey:com.spotify.scio.values.SCollection[(K,V)]"></a><a id="distinctByKey:SCollection[(K,V)]"></a>
+      <span class="permalink">
+      <a href="../../../../com/spotify/scio/values/PairSCollectionFunctions.html#distinctByKey:com.spotify.scio.values.SCollection[(K,V)]" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">distinctByKey</span><span class="result">: <a href="SCollection.html" class="extype" name="com.spotify.scio.values.SCollection">SCollection</a>[(<span class="extype" name="com.spotify.scio.values.PairSCollectionFunctions.K">K</span>, <span class="extype" name="com.spotify.scio.values.PairSCollectionFunctions.V">V</span>)]</span>
+      </span>
+      
+      <p class="shortcomment cmt">Return a new SCollection of (key, value) pairs without duplicates based on the keys.</p><div class="fullcomment"><div class="comment cmt"><p>Return a new SCollection of (key, value) pairs without duplicates based on the keys.
+The value is taken randomly for each key.
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>a new SCollection of (key, value) pairs</p></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" class="indented0 " data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a><a id="eq(AnyRef):Boolean"></a>
       <span class="permalink">
